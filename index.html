@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Phase 1 audit workspace for understanding motion in VS Code.">
+	<title>VS Code Motion Audit</title>
+	<link rel="stylesheet" href="./styles.css?v=50">
+	<script src="./previewFrame.js" defer></script>
+	<script src="./app.js?v=36" defer></script>
+</head>
+<body>
+	<a class="skip-link" href="#main-content">Skip to main content</a>
+
+	<header class="app-header">
+		<div class="brand">
+			<h1>VS Code motion audit</h1>
+		</div>
+		<div class="header-actions">
+			<button class="button button-secondary" id="export-button" type="button">
+				Export data
+			</button>
+		</div>
+	</header>
+
+	<div class="app-shell">
+		<aside class="sidebar" id="project-navigation" aria-label="Project navigation">
+			<nav class="section-nav" aria-label="Audit sections">
+				<button class="nav-item active" type="button" data-view="findings" aria-current="page">
+					Findings
+				</button>
+				<!-- PUBLIC_BUILD_REMOVE_START: inventory-nav -->
+				<button class="nav-item" type="button" data-view="inventory" hidden>
+					Inventory
+				</button>
+				<!-- PUBLIC_BUILD_REMOVE_END: inventory-nav -->
+				<button class="nav-item" type="button" data-view="overlap">
+					Coordination
+				</button>
+				<button class="nav-item" type="button" data-view="principles">
+					Principles
+				</button>
+				<button class="nav-item" type="button" data-view="next-steps">
+					Next steps
+				</button>
+			</nav>
+		</aside>
+
+		<div
+			class="sidebar-resizer"
+			id="sidebar-resizer"
+			role="separator"
+			aria-label="Resize navigation panel"
+			aria-controls="project-navigation"
+			aria-orientation="vertical"
+			aria-valuemin="180"
+			aria-valuemax="480"
+			aria-valuenow="268"
+			tabindex="0"
+		></div>
+
+		<main id="main-content" class="main-content" tabindex="-1">
+			<!-- PUBLIC_BUILD_REMOVE_START: inventory-view -->
+			<section class="view" id="inventory-view" data-view-panel="inventory" aria-labelledby="inventory-title" hidden>
+				<div class="page-heading">
+					<div>
+						<h2 id="inventory-title">Inventory</h2>
+					</div>
+				</div>
+
+				<div class="inventory-toolbar" aria-label="Inventory filters">
+					<label class="search-field">
+						<span class="visually-hidden">Search motion examples</span>
+						<input id="search-input" type="search" placeholder="Search name, path, or observation">
+					</label>
+					<label>
+						<span class="visually-hidden">Filter by motion purpose</span>
+						<select id="category-filter">
+							<option value="">All motion purposes</option>
+						</select>
+					</label>
+					<label>
+						<span class="visually-hidden">Filter by source</span>
+						<select id="source-filter">
+							<option value="">All sources</option>
+							<option value="Component animation">Component animation</option>
+							<option value="Product state change">Product state change</option>
+							<option value="Fixture demonstration">Fixture demonstration</option>
+							<option value="Mixed">Mixed</option>
+							<option value="No meaningful animation">No meaningful animation</option>
+						</select>
+					</label>
+				</div>
+
+				<div class="inventory-summary" role="status" aria-live="polite">
+					<span id="filtered-count">0 examples</span>
+					<div class="inventory-summary-actions">
+						<button class="text-button" id="clear-filters-button" type="button">Clear filters</button>
+					</div>
+				</div>
+
+				<div class="table-wrap">
+					<table>
+						<thead>
+							<tr>
+								<th scope="col">Live preview</th>
+								<th scope="col">Component</th>
+								<th scope="col">What users should understand</th>
+								<th scope="col">
+									<span class="label-with-tooltip">
+										Motion purpose
+										<button class="tooltip-trigger" type="button" aria-label="Motion purpose means the user-facing job of the motion: what it helps people understand, such as ongoing work, a layout change, or a need for attention." data-tooltip="The user-facing job of the motion—what it helps people understand, such as ongoing work, a layout change, or a need for attention.">?</button>
+									</span>
+								</th>
+								<th scope="col">
+									<span class="label-with-tooltip">
+										Sources
+										<button class="tooltip-trigger" type="button" aria-label="Sources show whether movement is built into the component, caused by a product state change, created by the Component Explorer demonstration, mixed, or not meaningful motion." data-tooltip="Shows whether movement is built into the component, caused by a product state change, created by the Component Explorer demonstration, mixed, or not meaningful motion.">?</button>
+									</span>
+								</th>
+								<th scope="col"><span class="visually-hidden">Actions</span></th>
+							</tr>
+						</thead>
+						<tbody id="inventory-body"></tbody>
+					</table>
+				</div>
+				<nav class="inventory-pagination" id="inventory-pagination" aria-label="Motion inventory pages">
+					<button class="button button-secondary" id="previous-page-button" type="button">Previous</button>
+					<span id="page-status" aria-live="polite">Page 1 of 1</span>
+					<button class="button button-secondary" id="next-page-button" type="button">Next</button>
+				</nav>
+
+				<div class="empty-state" id="empty-state" hidden>
+					<h3>No examples match these filters</h3>
+					<p>Try clearing one or more filters.</p>
+					<button class="button button-secondary" type="button" id="empty-clear-button">Clear filters</button>
+				</div>
+
+				<section class="summary-section motion-coverage-section" aria-labelledby="motion-coverage-title">
+					<div class="summary-section-heading">
+						<div>
+							<h3 id="motion-coverage-title">Motion coverage matrix</h3>
+							<p>Separates source capability, fixture execution, and live production evidence.</p>
+						</div>
+					</div>
+					<div class="coverage-metrics" id="motion-coverage-metrics" aria-label="Motion coverage summary"></div>
+					<div class="table-wrap">
+						<table class="coverage-table">
+							<caption class="visually-hidden">Motion capabilities and their fixture and production evidence</caption>
+							<thead>
+								<tr>
+									<th scope="col">Surface</th>
+									<th scope="col">Motion and trigger</th>
+									<th scope="col">Implementation</th>
+									<th scope="col">Source</th>
+									<th scope="col">Component Explorer</th>
+									<th scope="col">Production</th>
+									<th scope="col">Overlap relevance</th>
+								</tr>
+							</thead>
+							<tbody id="motion-coverage-body"></tbody>
+						</table>
+					</div>
+				</section>
+			</section>
+			<!-- PUBLIC_BUILD_REMOVE_END: inventory-view -->
+
+			<section class="view active" id="findings-view" data-view-panel="findings" aria-labelledby="findings-title">
+				<div class="page-heading">
+					<div>
+						<h2 id="findings-title">Findings</h2>
+					</div>
+				</div>
+
+				<section class="summary-section" aria-labelledby="component-comparison-title">
+					<div class="summary-section-heading component-comparison-heading">
+						<div>
+							<h3 id="component-comparison-title">Agents Window motion components</h3>
+							<p>Current live VS Code Insiders is the audit baseline. Source and component fixtures are supporting evidence when they match the product. Workflow and cross-surface transitions are out of scope.</p>
+						</div>
+					</div>
+
+					<article class="motion-component-comparison" id="session-title-shimmer-comparison">
+						<div class="motion-component-comparison-header">
+							<div>
+								<h4>Session title shimmer</h4>
+								<p>An unselected in-progress session animates its full title while a PixelSpinner already communicates activity.</p>
+								<p class="component-explorer-reference"><span>Component Explorer</span><a href="./___explorer?fixture=sessions%2FsessionsList%2FSessionsList_ExternalWorkspace&amp;search=SessionsList_ExternalWorkspace" target="_blank" rel="noopener">sessions / sessionsList / SessionsList_ExternalWorkspace</a></p>
+							</div>
+						</div>
+
+						<div class="motion-example-stack">
+							<section class="motion-example-group motion-example-group-component" aria-labelledby="session-title-component-example-title">
+								<div class="motion-example-group-heading motion-example-group-heading-action">
+									<div>
+										<p>Component being audited</p>
+										<h5 id="session-title-component-example-title">Title shimmer with PixelSpinner</h5>
+									</div>
+									<button class="button button-primary" id="play-session-title-shimmer" type="button" aria-pressed="false">
+										Play
+									</button>
+								</div>
+								<div class="session-list-situation" aria-label="Sessions list example with one in-progress session">
+									<div class="session-list-section-heading">
+										<strong>vscode</strong>
+										<span>3</span>
+									</div>
+									<div class="session-list-example-row">
+										<span class="session-list-static-icon session-list-complete-icon" aria-hidden="true"></span>
+										<div>
+											<strong>Fix authentication redirect loop</strong>
+											<span>vscode · 12 mins ago</span>
+										</div>
+									</div>
+									<div class="session-list-example-row session-list-example-row-progress">
+										<span class="audit-pixel-spinner audit-pixel-spinner-grid" aria-hidden="true">
+											<i></i><i></i><i></i><i></i><i></i><i></i>
+										</span>
+										<div>
+											<strong class="audit-session-title-shimmer">Investigate flaky smoke test</strong>
+											<span>Running the smoke tests</span>
+										</div>
+									</div>
+									<div class="session-list-example-row">
+										<span class="session-list-static-icon session-list-complete-icon" aria-hidden="true"></span>
+										<div>
+											<strong>Refresh the getting started guide</strong>
+											<span>vscode-docs · 1 hr ago</span>
+										</div>
+									</div>
+								</div>
+							</section>
+
+							<section class="motion-example-group motion-example-group-scenario" aria-labelledby="session-title-scenario-title">
+								<div class="motion-example-group-heading">
+									<p>Production case</p>
+									<h5 id="session-title-scenario-title">Multiple status motions at the same time</h5>
+								</div>
+								<figure class="motion-scenario-evidence">
+									<video controls preload="metadata" playsinline aria-describedby="multiple-status-motions-caption">
+										<source src="./assets/session-multiple-status-motions.mp4" type="video/mp4">
+										Your browser does not support embedded video.
+									</video>
+									<figcaption id="multiple-status-motions-caption">
+										Several session rows show different animated statuses at the same time. Individually subtle signals combine into a broad, continuously moving field.
+									</figcaption>
+								</figure>
+							</section>
+						</div>
+						<div class="motion-component-evidence">
+							<p><strong>Observed behavior:</strong> The shimmer repeats the same in-progress message already carried by the PixelSpinner.</p>
+							<p><strong>Potential impact:</strong> Because the full title moves, it has a much larger visual footprint than the icon; several running sessions may create broad simultaneous motion in the sidebar without adding new status information.</p>
+						</div>
+						<p class="visually-hidden" id="session-title-shimmer-status" aria-live="polite"></p>
+					</article>
+
+					<article class="motion-component-comparison" id="chat-progress-shimmer-comparison">
+						<div class="motion-component-comparison-header">
+							<div>
+								<h4>Chat progress text shimmer</h4>
+								<p>The active progress message uses a continuous two-second sweep as its in-progress affordance.</p>
+								<p class="component-explorer-reference"><span>Component Explorer</span><a href="./___explorer?fixture=chat%2FchatProgressContentPart%2FWithSpinner&amp;search=WithSpinner" target="_blank" rel="noopener">chat / chatProgressContentPart / WithSpinner</a></p>
+							</div>
+						</div>
+
+						<div class="motion-example-stack">
+							<section class="motion-example-group motion-example-group-component" aria-labelledby="chat-progress-component-example-title">
+								<div class="motion-example-group-heading motion-example-group-heading-action">
+									<div>
+										<p>Component being audited</p>
+										<h5 id="chat-progress-component-example-title">Progress message in a chat response</h5>
+									</div>
+									<button class="button button-primary" id="play-chat-progress-shimmer" type="button" aria-pressed="false">
+										Play
+									</button>
+								</div>
+								<div class="audit-chat-progress-example" aria-label="Chat response with an active progress message">
+									<div class="audit-chat-user-message">Investigate the flaky smoke test and isolate the failure.</div>
+									<div class="audit-chat-response">
+										<div>
+											<span class="audit-chat-response-label">Agent</span>
+											<p class="audit-chat-progress-row"><span class="audit-chat-progress-text">Creating isolated worktree (42%)</span></p>
+										</div>
+									</div>
+								</div>
+							</section>
+
+							<section class="motion-example-group motion-example-group-scenario" aria-labelledby="chat-progress-scenario-title">
+								<div class="motion-example-group-heading">
+									<p>Production case</p>
+									<h5 id="chat-progress-scenario-title">Chat progress alongside other session motion</h5>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-window">
+									<video controls preload="metadata" playsinline aria-describedby="chat-progress-production-caption">
+										<source src="./assets/chat-progress-text-shimmer-production.mp4" type="video/mp4">
+										Your browser does not support embedded video.
+									</video>
+									<figcaption id="chat-progress-production-caption">The production recording shows chat progress text moving alongside other active status signals in the Agents Window.</figcaption>
+								</figure>
+							</section>
+						</div>
+						<div class="motion-component-evidence">
+							<p><strong>Observed behavior:</strong> The moving gradient travels across the full status sentence. In the Agents Window, it can run alongside session PixelSpinners and an unselected session title shimmer.</p>
+							<p><strong>Potential impact:</strong> A small progress update may occupy a broad visual area. The continuous loops represent different tasks but may compete at a similar attention level, making it less clear which progress signal should lead.</p>
+						</div>
+						<p class="visually-hidden" id="chat-progress-shimmer-status" aria-live="polite"></p>
+					</article>
+
+					<article class="motion-component-comparison" id="chat-working-logo-comparison">
+						<div class="motion-component-comparison-header">
+							<div>
+								<h4>ChatWorkingLogo</h4>
+								<p>The Insiders logo draws repeatedly beside the active response status while the agent is working.</p>
+								<p class="component-explorer-reference"><span>Component Explorer</span><a href="./___explorer?fixture=chat%2FlogoMotion%2FchatWorkingLogo%2FDraw&amp;search=Draw" target="_blank" rel="noopener">chat / logoMotion / chatWorkingLogo / Draw</a></p>
+							</div>
+						</div>
+
+						<div class="motion-example-stack">
+							<section class="motion-example-group motion-example-group-component" aria-labelledby="chat-working-logo-component-title">
+								<div class="motion-example-group-heading motion-example-group-heading-action">
+									<div>
+										<p>Component being audited</p>
+										<h5 id="chat-working-logo-component-title">Live response working indicator</h5>
+									</div>
+									<button class="button button-primary" id="play-chat-working-logo" type="button" aria-pressed="false">Play</button>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-strip">
+									<img id="chat-working-logo-frame" src="./assets/live-insiders/chat-working-logo/frame-00.png" alt="Live VS Code Insiders response progress row showing the animated Insiders logo beside the word Considering">
+									<figcaption>Captured directly from VS Code Insiders 1.142.0 during an active response.</figcaption>
+								</figure>
+							</section>
+
+							<section class="motion-example-group motion-example-group-scenario" aria-labelledby="chat-working-logo-scenario-title">
+								<div class="motion-example-group-heading">
+									<p>Production case</p>
+									<h5 id="chat-working-logo-scenario-title">Working logo within the complete Agents Window</h5>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-window">
+									<video controls preload="metadata" playsinline aria-describedby="chat-working-logo-production-caption">
+										<source src="./assets/chat-progress-text-shimmer-production.mp4" type="video/mp4">
+										Your browser does not support embedded video.
+									</video>
+									<figcaption id="chat-working-logo-production-caption">The production recording shows the working logo alongside progress text and other active status signals during the same request.</figcaption>
+								</figure>
+							</section>
+						</div>
+						<div class="motion-component-evidence">
+							<p><strong>Observed behavior:</strong> The logo draw, progress-text shimmer, session PixelSpinner, and input-border loop can all communicate the same request state at once.</p>
+							<p><strong>Potential impact:</strong> The separate loops may flatten the hierarchy instead of letting one primary progress signal lead.</p>
+						</div>
+						<p class="visually-hidden" id="chat-working-logo-status" aria-live="polite"></p>
+					</article>
+
+					<article class="motion-component-comparison" id="local-tool-spinner-comparison">
+						<div class="motion-component-comparison-header">
+							<div>
+								<h4>Local tool PixelSpinner</h4>
+								<p>A six-dot PixelSpinner appears beside a terminal command for the duration of the running tool.</p>
+								<p class="component-explorer-reference"><span>Component Explorer</span><a href="./___explorer?fixture=chat%2FlogoMotion%2FchatWorkingLogo%2FPerformance%2FPixelSpinner&amp;search=PixelSpinner" target="_blank" rel="noopener">chat / logoMotion / chatWorkingLogo / Performance / PixelSpinner</a></p>
+							</div>
+						</div>
+
+						<div class="motion-example-stack">
+							<section class="motion-example-group motion-example-group-component" aria-labelledby="local-tool-spinner-component-title">
+								<div class="motion-example-group-heading motion-example-group-heading-action">
+									<div>
+										<p>Component being audited</p>
+										<h5 id="local-tool-spinner-component-title">Running terminal command indicator</h5>
+									</div>
+									<button class="button button-primary" id="play-local-tool-spinner" type="button" aria-pressed="false">Play</button>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-strip">
+									<img id="local-tool-spinner-frame" src="./assets/live-insiders/local-tool-spinner/context-00.png" alt="Live VS Code Insiders terminal tool row showing a PixelSpinner beside the running command sleep 5">
+									<figcaption>Captured directly from VS Code Insiders while a local terminal command was running.</figcaption>
+								</figure>
+							</section>
+
+							<section class="motion-example-group motion-example-group-scenario" aria-labelledby="local-tool-spinner-scenario-title">
+								<div class="motion-example-group-heading">
+									<p>Production case</p>
+									<h5 id="local-tool-spinner-scenario-title">Tool progress within a complete request</h5>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-window">
+									<video controls preload="metadata" playsinline aria-describedby="local-tool-spinner-production-caption">
+										<source src="./assets/local-tool-pixel-spinner-production.mp4" type="video/mp4">
+										Your browser does not support embedded video.
+									</video>
+									<figcaption id="local-tool-spinner-production-caption">A live request showing the local tool PixelSpinner alongside other ongoing-work motion signals.</figcaption>
+								</figure>
+							</section>
+						</div>
+						<div class="motion-component-evidence">
+							<p><strong>Observed behavior:</strong> During a running terminal tool, the local PixelSpinner appears alongside the response-level working logo, progress-text shimmer, input working border, and session PixelSpinner.</p>
+							<p><strong>Potential impact:</strong> Ongoing work can show several motion signals at the same time, increasing the overall visual activity even when each signal is locally appropriate.</p>
+						</div>
+						<p class="visually-hidden" id="local-tool-spinner-status" aria-live="polite"></p>
+					</article>
+
+					<article class="motion-component-comparison" id="input-working-border-comparison">
+						<div class="motion-component-comparison-header">
+							<div>
+								<h4>Input working border</h4>
+								<p>A continuous 2.5-second color sweep travels around the composer while a request is active.</p>
+								<p class="component-explorer-reference"><span>Closest Component Explorer fixture</span><a href="./___explorer?fixture=chat%2Fwidget%2FchatWidget%2FStreaming&amp;search=Streaming" target="_blank" rel="noopener">chat / widget / chatWidget / Streaming</a></p>
+							</div>
+						</div>
+
+						<div class="motion-example-stack">
+							<section class="motion-example-group motion-example-group-component" aria-labelledby="input-working-border-component-title">
+								<div class="motion-example-group-heading motion-example-group-heading-action">
+									<div>
+										<p>Component being audited</p>
+										<h5 id="input-working-border-component-title">Active chat composer border</h5>
+									</div>
+									<button class="button button-primary" id="play-input-working-border" type="button" aria-pressed="false">Play</button>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-composer">
+									<img id="input-working-border-frame" src="./assets/live-insiders/input-working-border/frame-00.png" alt="Live VS Code Insiders chat composer with the animated working border">
+									<figcaption>Captured directly from the live composer while the request was running.</figcaption>
+								</figure>
+							</section>
+
+							<section class="motion-example-group motion-example-group-scenario" aria-labelledby="input-working-border-scenario-title">
+								<div class="motion-example-group-heading">
+									<p>Production case</p>
+									<h5 id="input-working-border-scenario-title">Composer motion beneath active response motion</h5>
+								</div>
+								<figure class="live-motion-capture live-motion-capture-window">
+									<video controls preload="metadata" playsinline aria-describedby="input-working-border-production-caption">
+										<source src="./assets/input-working-border-production.mp4" type="video/mp4">
+										Your browser does not support embedded video.
+									</video>
+									<figcaption id="input-working-border-production-caption">The production recording shows the working border occupying the full width of the composer while progress motion is already present above it.</figcaption>
+								</figure>
+							</section>
+						</div>
+						<div class="motion-component-evidence">
+							<p><strong>Observed behavior:</strong> The border loops around the full composer while logo and progress-text motion are visible above it.</p>
+							<p><strong>Potential impact:</strong> A background operation may gain a large, persistent visual footprint around the primary input, causing the composer to compete for attention even when no input action is required.</p>
+						</div>
+						<p class="visually-hidden" id="input-working-border-status" aria-live="polite"></p>
+					</article>
+
+					<div id="source-preview-cards"></div>
+				</section>
+
+				<section class="summary-section" aria-labelledby="key-findings-title">
+					<div class="summary-section-heading">
+						<h3 id="key-findings-title">Key findings</h3>
+						<p>The audit shows a system-wide problem, not a few isolated animations: the same status can trigger different motion in different places, and several signals can compete for attention at once.</p>
+					</div>
+					<div class="table-wrap">
+						<table class="findings-table">
+							<caption class="visually-hidden">Current findings from the motion audit</caption>
+							<thead>
+								<tr>
+									<th scope="col">What we found</th>
+									<th scope="col">Why it matters</th>
+									<th scope="col">Examples</th>
+									<th scope="col">What to check next</th>
+								</tr>
+							</thead>
+							<tbody id="findings-body"></tbody>
+						</table>
+					</div>
+				</section>
+
+				<!-- PUBLIC_BUILD_REMOVE_START: purpose-summary -->
+				<section class="summary-section" aria-labelledby="purpose-summary-title" hidden>
+					<div class="summary-section-heading">
+						<h3 id="purpose-summary-title">How motion is currently used in VS Code</h3>
+					</div>
+					<div class="table-wrap">
+						<table class="category-table">
+							<caption class="visually-hidden">Motion purposes represented in the audit</caption>
+							<thead>
+								<tr>
+									<th scope="col">Motion purpose</th>
+									<th scope="col">What it helps users understand</th>
+									<th scope="col">Examples</th>
+									<th scope="col">Count</th>
+								</tr>
+							</thead>
+							<tbody id="category-body"></tbody>
+						</table>
+					</div>
+				</section>
+				<!-- PUBLIC_BUILD_REMOVE_END: purpose-summary -->
+
+				<!-- PUBLIC_BUILD_REMOVE_START: questions -->
+				<section class="summary-section" aria-labelledby="questions-title" hidden>
+					<div class="summary-section-heading">
+						<h3 id="questions-title">What we still need to decide</h3>
+					</div>
+					<div class="table-wrap">
+						<table class="questions-table">
+							<caption class="visually-hidden">Questions that need team discussion</caption>
+							<thead>
+								<tr>
+									<th scope="col">Motion purpose</th>
+									<th scope="col">Question</th>
+									<th scope="col">Component</th>
+									<th scope="col">Visual reference</th>
+								</tr>
+							</thead>
+							<tbody id="question-board"></tbody>
+						</table>
+					</div>
+				</section>
+				<!-- PUBLIC_BUILD_REMOVE_END: questions -->
+
+			</section>
+
+			<section class="view" id="overlap-view" data-view-panel="overlap" aria-labelledby="overlap-title" hidden>
+				<div class="page-heading">
+					<div>
+						<h2 id="overlap-title">Coordination</h2>
+						<p>Timelines distinguish production captures from source- or fixture-confirmed behavior. Counts are profile-specific, unrecorded combinations remain marked for production verification, and sequences not defined by the product are called out explicitly.</p>
+					</div>
+				</div>
+
+				<div class="overlap-legend" aria-label="Timeline legend">
+					<span><i class="overlap-legend-swatch overlap-legend-swatch-production" aria-hidden="true"></i>Production confirmed</span>
+					<span><i class="overlap-legend-swatch overlap-legend-swatch-confirmed" aria-hidden="true"></i>Source or fixture confirmed</span>
+				</div>
+
+				<div class="overlap-board" id="overlap-board"></div>
+			</section>
+
+			<section class="view" id="principles-view" data-view-panel="principles" aria-labelledby="principles-title" hidden>
+				<div class="page-heading principles-heading">
+					<div>
+						<h2 id="principles-title">Principles</h2>
+					</div>
+				</div>
+
+				<section class="principles-reference">
+					<div class="principles-reference-heading">
+						<p>Selected Fluent and Windows principles that could help shape motion in VS Code.</p>
+					</div>
+				<div class="principle-buckets">
+				<section class="principle-bucket" aria-labelledby="useful-motion-title">
+					<h4 class="principle-bucket-title" id="useful-motion-title">Useful motion</h4>
+					<div class="principle-grid principle-grid-useful">
+						<article class="principle-card">
+							<h5>Purpose first</h5>
+							<p>Use motion to explain a change, guide the next step, or confirm an outcome.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Reflect state</h5>
+							<p>Start and stop with the real operation. Never imply unverified progress.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Lead signal</h5>
+							<p>Choose the indicator closest to the work and suppress repeated status motion.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Preserve meaning</h5>
+							<p>Keep every state clear through text, icons, and accessible feedback.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Shared patterns</h5>
+							<p>Use the same motion for equivalent states across VS Code.</p>
+						</article>
+						<article class="principle-card">
+							<h5>User control</h5>
+							<p>Let new input interrupt, skip, or reverse motion immediately.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Natural timing</h5>
+							<p>Match duration and easing to the element’s size and travel distance.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Preserve context</h5>
+							<p>Connect before and after states so people can follow what changed.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Show hierarchy</h5>
+							<p>Distinguish top-level, deeper, and sibling navigation through movement.</p>
+						</article>
+					</div>
+				</section>
+
+				<section class="principle-bucket" aria-labelledby="delightful-motion-title">
+					<h4 class="principle-bucket-title" id="delightful-motion-title">Intentional delight</h4>
+					<div class="principle-grid principle-grid-delight">
+						<article class="principle-card">
+							<h5>Immediate results</h5>
+							<p>Let delight accompany success without blocking the outcome or next action.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Focused delight</h5>
+							<p>Animate only the element tied to the moment, not the surrounding UI.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Meaningful moments</h5>
+							<p>Celebrate significant achievements or transformations—not routine actions.</p>
+						</article>
+						<article class="principle-card">
+							<h5>Product character</h5>
+							<p>Use signature motion, like VS Code Pet, to express personality and mark completion.</p>
+						</article>
+					</div>
+				</section>
+				</div>
+				</section>
+
+				<div class="principles-connection">
+					<p>These principles provide a framework for addressing the issues documented in <a href="#findings-view" data-go-to="findings">Findings</a>.</p>
+				</div>
+			</section>
+
+			<section class="view" id="next-steps-view" data-view-panel="next-steps" aria-labelledby="next-steps-title" hidden>
+				<div class="page-heading">
+					<div>
+						<h2 id="next-steps-title">Next steps</h2>
+						<p>Move from audit findings to tested, shared guidance for motion in VS Code.</p>
+					</div>
+				</div>
+
+				<ol class="next-steps-list">
+					<li><strong>Propose potential solutions</strong><span>Create a few ways to reduce repeated motion and make progress easier to understand.</span></li>
+					<li><strong>Test the solutions</strong><span>Try them in representative components and Coordination scenarios, including Reduced Motion.</span></li>
+					<li><strong>Review with the team</strong><span>Share the prototypes and test results with design, engineering, accessibility, and product partners. Agree which direction should become a shared pattern.</span></li>
+					<li><strong>Document VS Code motion principles</strong><span>Turn the approved direction into clear principles, implementation guidance, examples, and Reduced Motion requirements.</span></li>
+				</ol>
+			</section>
+		</main>
+	</div>
+
+	<!-- PUBLIC_BUILD_REMOVE_START: record-dialog -->
+	<dialog id="record-dialog" class="dialog">
+		<form id="record-form" method="dialog">
+			<div class="dialog-header">
+				<div>
+					<h2 id="record-dialog-title">Add a motion example</h2>
+				</div>
+				<button class="icon-button" id="close-record-dialog" type="button" aria-label="Close motion example dialog">×</button>
+			</div>
+
+			<div class="dialog-body">
+				<input id="record-id" name="id" type="hidden">
+
+				<fieldset>
+					<legend>Identify the example</legend>
+					<div class="form-grid">
+						<label>
+							<span>Component Explorer name <strong aria-hidden="true">*</strong></span>
+							<input id="record-name" name="name" required>
+						</label>
+						<label>
+							<span>Product area</span>
+							<input id="record-area" name="area" placeholder="Chat, Editor, Sessions…">
+						</label>
+						<label class="full-width">
+							<span>Component Explorer path</span>
+							<input id="record-path" name="path" placeholder="chat / widget / chatWidget / …">
+						</label>
+						<label>
+							<span>Source <strong aria-hidden="true">*</strong></span>
+							<select id="record-source" name="source" required>
+								<option value="">Choose a source</option>
+								<option value="Component animation">Component animation</option>
+								<option value="Product state change">Product state change</option>
+								<option value="Fixture demonstration">Fixture demonstration</option>
+								<option value="Mixed">Mixed</option>
+								<option value="No meaningful animation">No meaningful animation</option>
+							</select>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Describe what users experience</legend>
+					<div class="form-grid">
+						<label class="full-width">
+							<span>After seeing this, the user should understand that… <strong aria-hidden="true">*</strong></span>
+							<textarea id="record-understanding" name="understanding" rows="3" required></textarea>
+						</label>
+						<label>
+							<span>Motion purpose <strong aria-hidden="true">*</strong></span>
+							<select id="record-category" name="category" required></select>
+						</label>
+						<label>
+							<span>What starts it?</span>
+							<input id="record-trigger" name="trigger" placeholder="Click, timer, system event…">
+						</label>
+						<label>
+							<span>Before</span>
+							<textarea id="record-before" name="before" rows="3"></textarea>
+						</label>
+						<label>
+							<span>After</span>
+							<textarea id="record-after" name="after" rows="3"></textarea>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Record how it moves</legend>
+					<div class="form-grid">
+						<label>
+							<span>Visual pattern</span>
+							<input id="record-pattern" name="pattern" placeholder="Fade, resize, shimmer…">
+						</label>
+						<label>
+							<span>Area that moves</span>
+							<input id="record-scope" name="scope" placeholder="Icon, row, section, panel…">
+						</label>
+						<label>
+							<span>Duration</span>
+							<input id="record-duration" name="duration" placeholder="180 ms, 2 seconds…">
+						</label>
+						<label>
+							<span>How the speed changes</span>
+							<input id="record-easing" name="easing" placeholder="Linear, ease-out…">
+						</label>
+						<label>
+							<span>Repetition</span>
+							<input id="record-repetition" name="repetition" placeholder="Once, continuous, state-driven…">
+						</label>
+						<label>
+							<span>Other movement nearby</span>
+							<input id="record-nearby" name="nearby" placeholder="Working logo, text shimmer…">
+						</label>
+						<label class="full-width">
+							<span>Reduced-motion behavior</span>
+							<textarea id="record-reduced-motion" name="reducedMotion" rows="2"></textarea>
+						</label>
+						<label class="full-width">
+							<span>Other ways the state is communicated</span>
+							<textarea id="record-nonvisual" name="nonvisual" rows="2" placeholder="Static text, icon, screen-reader announcement…"></textarea>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Capture evidence and discussion</legend>
+					<div class="form-grid">
+						<label class="full-width">
+							<span>What we observed</span>
+							<textarea id="record-observations" name="observations" rows="4" placeholder="Describe the current behavior without proposing a fix."></textarea>
+						</label>
+						<label class="full-width">
+							<span>Open question for the design team</span>
+							<textarea id="record-question" name="question" rows="3" placeholder="Write a neutral question, not a recommendation."></textarea>
+						</label>
+					</div>
+				</fieldset>
+			</div>
+
+			<div class="dialog-footer">
+				<button class="button button-danger" id="delete-record-button" type="button" hidden>Delete record</button>
+				<div class="dialog-footer-spacer"></div>
+				<button class="button button-secondary" id="cancel-record-button" type="button">Cancel</button>
+				<button class="button button-primary" type="submit">Save record</button>
+			</div>
+		</form>
+	</dialog>
+	<!-- PUBLIC_BUILD_REMOVE_END: record-dialog -->
+
+	<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
