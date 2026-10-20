@@ -64,6 +64,72 @@ const categories = [
 	}
 ];
 
+const proposedComponentMotionGuidelines = [
+	{
+		role: 'Acknowledge',
+		useWhen: 'Confirm that VS Code received a click, command, answer, or accepted action.',
+		behavior: 'Use a small change in color, opacity, or scale that begins immediately.',
+		timing: '80–120ms',
+		easing: 'Ease out',
+		curve: 'cubic-bezier(0.2, 0, 0, 1)',
+		constraint: 'Never delay the action or become a second confirmation step.'
+	},
+	{
+		role: 'Indeterminate progress',
+		useWhen: 'Work is active but its remaining duration cannot be measured.',
+		behavior: 'Use one localized, continuously repeating indicator close to the active work.',
+		timing: 'Continuous while active',
+		easing: 'Linear rhythm',
+		curve: 'linear',
+		constraint: 'Use one primary progress signal per scope. Stop it as soon as work pauses or completes.'
+	},
+	{
+		role: 'Determinate progress',
+		useWhen: 'VS Code can report meaningful completion or elapsed progress.',
+		behavior: 'Map movement directly to the measured operation instead of simulating activity.',
+		timing: 'Matches the operation',
+		easing: 'Linear',
+		curve: 'linear',
+		constraint: 'Do not invent progress or let the visual reach completion before the operation does.'
+	},
+	{
+		role: 'Attention needed',
+		useWhen: 'Work has paused and cannot continue without a user response.',
+		behavior: 'Transition once into a persistent icon and status label, then stop moving.',
+		timing: '120–180ms',
+		easing: 'Ease out',
+		curve: 'cubic-bezier(0, 0, 0, 1)',
+		constraint: 'Do not keep loading motion active after the session begins waiting for input.'
+	},
+	{
+		role: 'Completion',
+		useWhen: 'A meaningful task, response, or background operation has finished.',
+		behavior: 'Use one short transition into a stable completed state.',
+		timing: '120–200ms',
+		easing: 'Ease out',
+		curve: 'cubic-bezier(0, 0, 0, 1)',
+		constraint: 'Do not loop the completion treatment or compete with the result.'
+	},
+	{
+		role: 'Time remaining',
+		useWhen: 'An action or recovery option expires after a real period.',
+		behavior: 'Map the motion directly to elapsed time and pair it with persistent text or state.',
+		timing: 'Matches actual time',
+		easing: 'Linear',
+		curve: 'linear',
+		constraint: 'Provide an understandable non-motion indication and never use a decorative countdown.'
+	},
+	{
+		role: 'Emphasis',
+		useWhen: 'A rare, meaningful result benefits from added focus or product character.',
+		behavior: 'Use a finite, one-time treatment that supports the content rather than covering it.',
+		timing: '250–500ms',
+		easing: 'Purpose-specific',
+		curve: 'Define with the prototype',
+		constraint: 'Do not use during ongoing work, required input, or routine completion.'
+	}
+];
+
 const currentFindings = [
 	{
 		finding: 'Motion feels heavier when it repeats or appears in several places.',
@@ -889,8 +955,16 @@ const seededRecords = [
 
 let records = loadRecords();
 let currentView = 'findings';
+const phaseViews = {
+	1: ['findings', 'inventory', 'overlap', 'principles', 'next-steps'],
+	2: ['library', 'properties', 'transitions', 'animation', 'opportunities']
+};
+const lastPhaseViews = { 1: 'findings', 2: 'library' };
 let currentPage = 1;
 let activePreviewId;
+let activeLibraryPreview;
+let activeLibraryCategory = 'components';
+let activeLibraryPerformanceFilter = 'all';
 let toastTimer;
 let activeResizePointerId;
 const pageSize = 25;
@@ -1008,14 +1082,681 @@ const sourcePreviewCards = [
 	}
 ];
 
-initialize();
+const productionLibraryItems = [
+	{
+		recordId: 'working-logo',
+		name: 'Working logo',
+		category: 'components',
+		location: 'Chat progress',
+		fixture: 'chat/logoMotion/chatWorkingLogo/Draw',
+		video: './assets/input-working-border-production.mp4',
+		poster: './assets/live-insiders/streaming-response-poster.jpg',
+		evidence: 'Production capture'
+	},
+	{
+		recordId: 'progress-shimmer',
+		name: 'Progress text shimmer',
+		category: 'components',
+		location: 'Chat status text',
+		fixture: 'chat/chatProgressContentPart/WithSpinner',
+		video: './assets/chat-progress-text-shimmer-production.mp4',
+		poster: './assets/live-insiders/chat-progress-text-shimmer-poster.jpg',
+		evidence: 'Production capture'
+	},
+	{
+		recordId: 'pixel-spinner',
+		name: 'Local tool PixelSpinner',
+		category: 'components',
+		location: 'Inline terminal command in Chat',
+		fixture: 'chat/logoMotion/chatWorkingLogo/Performance/PixelSpinner',
+		video: './assets/local-tool-pixel-spinner-production.mp4',
+		poster: './assets/live-insiders/local-tool-pixel-spinner-poster.jpg',
+		evidence: 'Production capture'
+	},
+	{
+		name: 'Input working border',
+		category: 'components',
+		location: 'Chat composer',
+		purpose: 'Show that a request is in progress.',
+		video: './assets/input-working-border-production.mp4',
+		poster: './assets/live-insiders/input-working-border/frame-00.png',
+		evidence: 'Production capture'
+	},
+	{
+		recordId: 'session-countdown',
+		name: 'Bulk-action undo countdown',
+		category: 'components',
+		location: 'Sessions list notification',
+		fixture: 'sessions/sessionsListNotification/BulkDoneNotificationAnimated',
+		video: './assets/bulk-action-undo-countdown-production.mp4',
+		poster: './assets/live-insiders/bulk-action-undo-countdown-poster.jpg',
+		evidence: 'Production capture'
+	},
+	{
+		name: 'Voice state indicators',
+		category: 'components',
+		location: 'Voice-mode composer',
+		purpose: 'Communicate listening and speaking activity.',
+		fixture: 'chat/input/chatInput/VoiceModeListening',
+		video: './assets/voice-state-indicators-production.mp4',
+		poster: './assets/live-insiders/voice-state-indicators-poster.jpg',
+		evidence: 'Production capture'
+	},
+	{
+		recordId: 'collapse-transition',
+		name: 'Response detail disclosure',
+		category: 'transitions',
+		location: 'Chat response details',
+		fixture: 'chat/widget/chatWidget/PersistentProgress/Compact/CollapseTransition',
+		before: 'Expanded details',
+		after: 'Compact summary',
+		evidence: 'State diagram · audited pattern'
+	},
+	{
+		recordId: 'find-widget-slide',
+		name: 'Find widget reveal',
+		category: 'transitions',
+		location: 'Editor Find overlay',
+		fixture: 'editor/findWidget/Find',
+		before: 'Editor',
+		after: 'Find controls open',
+		evidence: 'State diagram · audited pattern'
+	},
+	{
+		recordId: 'progressive-content',
+		name: 'Progressive response updates',
+		category: 'transitions',
+		location: 'Chat transcript',
+		fixture: 'chat/widget/chatWidget/PersistentProgress/ActivityUpdates',
+		before: 'Response in progress',
+		after: 'New content arrives',
+		evidence: 'State diagram · audited pattern'
+	},
+	{
+		recordId: 'image-generation-lifecycle',
+		name: 'Generated-image lifecycle',
+		category: 'delights',
+		location: 'Generated-image result in Chat',
+		fixture: 'chat/generatedImages/chatGeneratedImages/GlyphRevealFinal',
+		video: './assets/generated-image-lifecycle-production.mp4',
+		poster: './assets/live-insiders/generated-image-lifecycle-poster.jpg',
+		evidence: 'Component fixture capture · provider-gated in product'
+	}
+].map(item => {
+	if (!item.recordId) {
+		return item;
+	}
+	const record = seededRecords.find(record => record.id === item.recordId);
+	if (!record) {
+		throw new Error(`Missing audited Library record: ${item.recordId}`);
+	}
+	return { purpose: record.understanding, ...item };
+});
 
-function initialize() {
+const lightOnlyLibraryFixtures = new Set([
+	'editor/multiDiffEditor/loading/DocumentSwapRealtime',
+	'editor/multiDiffEditor/loading/IncrementalRealtime'
+]);
+
+const animatedComponentExplorerFixtures = [
+	'chat/widget/chatWidget/PersistentProgress/ActivityUpdates',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/AskQuestions',
+	'chat/widget/chatWidget/PersistentProgress/AskQuestionsTool',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/BackgroundAgent',
+	'sessions/sessionsListNotification/BulkDoneNotificationAnimated',
+	'sessions/sessionsListNotification/BulkDoneNotificationWithSessionsAnimated',
+	'chat/generatedImages/chatGeneratedImages/CodexGenerating',
+	'chat/generatedImages/chatGeneratedImages/CodexOverlapping',
+	'chat/widget/chatWidget/PersistentProgress/Compact/CollapseTransition',
+	'chat/widget/chatWidget/PersistentProgress/CollapsedThinking',
+	'chat/widget/chatWidget/PersistentProgress/CollapsedThinkingExpanded',
+	'chat/widget/chatWidget/PersistentProgress/CollapsedThinkingInsiders',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/CompletedStandaloneToolDetails',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/CompletedSubagentNotices',
+	'chat/generatedImages/chatGeneratedImages/CompletedTool',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/CompletedToolChain',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/Confirmation',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/ConfirmationAccepted',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/ConfirmationWidget',
+	'chat/generatedImages/chatGeneratedImages/CopilotGenerating',
+	'chat/generatedImages/chatGeneratedImages/CopilotOverlapping',
+	'chat/widget/chatWidget/PersistentProgress/DisabledLegacyWorking',
+	'editor/multiDiffEditor/loading/DocumentSwapRealtime',
+	'chat/logoMotion/chatWorkingLogo/Draw',
+	'chat/logoMotion/chatWorkingLogo/DrawComparison',
+	'chat/logoMotion/chatWorkingLogo/DrawMonochrome',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ExpandedReasoning',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/ExpandedReasoningWithSubagents',
+	'chat/widget/chatWidget/PersistentProgress/AnimationStyles/Off/ExpandedThinking',
+	'editor/findWidget/Find',
+	'editor/findWidget/FindAndReplace',
+	'chat/widget/chatWidget/PersistentProgress/FixedScrollingThinking',
+	'chat/generatedImages/chatGeneratedImages/GeneratingAfterFailure',
+	'chat/generatedImages/chatGeneratedImages/GeneratingNarrow',
+	'chat/generatedImages/chatGeneratedImages/GlyphRevealFinal',
+	'editor/codeActionList/GroupedCodeActions',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/GroupedToolDetails',
+	'editor/multiDiffEditor/loading/IncrementalRealtime',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/InterwovenThinking',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/InterwovenThinkingCompact',
+	'chat/generatedImages/chatGeneratedImages/Lifecycle',
+	'chat/chatToolRiskBadge/Loading',
+	'chat/chatToolRiskBadge/LoadingElicitationInContext',
+	'chat/chatToolRiskBadge/LoadingInContext',
+	'chat/chatProgressContentPart/LongMessage',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/LongToolChain',
+	'base/resizeObserver/resizeObserver/LoopContext',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/McpAutostart',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/McpConfirmation',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/McpStarting',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/MixedConfirmation',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/MixedMarkdown',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/MixedQuestions',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/MixedToolApproval',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ParallelSubagents',
+	'chat/widget/chatWidget/ToolIconExamples/PatchCompletion',
+	'chat/chatMcpToolCalls/PersistentProgress',
+	'chat/logoMotion/chatWorkingLogo/Performance/PixelSpinner',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/PlanApproved',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/PlanReview',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/PostApproval',
+	'chat/generatedImages/chatGeneratedImages/Preview',
+	'chat/widget/chatWidget/PersistentProgress/PreviewThinking',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/QuestionAnswered',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ReadBackgroundAgent',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ReadBackgroundTerminal',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ReasoningThenProse',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ReasoningThenProseCompact',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ReasoningThenProseExpanded',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ReducedMotion',
+	'editor/renameWidget/RenameClass',
+	'editor/renameWidget/RenameVariable',
+	'chat/widget/chatWidget/ResizeObserverLoopHarness',
+	'chat/widget/chatWidget/ResizeObserverLoopListOnly',
+	'chat/widget/chatWidget/ResizeObserverLoopNoHostLayout',
+	'chat/widget/chatWidget/ResizeObserverLoopStackedTargeted',
+	'chat/widget/chatWidget/PersistentProgress/AnimationStyles/Off/ResponseFooter',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/ResponseStreaming',
+	'chat/widget/chatWidget/PersistentProgress/ResponseStreamingInsiders',
+	'chat/chatAutoModeResolutionContentPart/Routing',
+	'chat/generatedImages/chatGeneratedImages/Running',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/SharedItemSpacing',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/SharedItemSpacingNarrow',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/SingleTool',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/SingleToolActive',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/SingleToolCompleted',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/SingleToolWithDetails',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/StandaloneMcpTool',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/StandaloneSimpleToolDetails',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/StandaloneToolDetails',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/StandaloneToolDetailsExpanded',
+	'chat/widget/chatWidget/Streaming',
+	'chat/chatMcpToolCalls/StreamingProgress',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/StreamingToolCall',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalCommand',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalConfirmation',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalOutput',
+	'chat/widget/chatWidget/PersistentProgress/TerminalTool',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalWithIntention',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalWithIntentionNarrow',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalWithIntentionOutput',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalWithIntentionRunning',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/TerminalWithIntentionStandalone',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/Thinking',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/ThinkingAndStreamingTool',
+	'chat/widget/chatWidget/PersistentProgress/ThinkingAndStreamingToolLegacy',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ThinkingAndTerminalChains',
+	'chat/widget/chatWidget/PersistentProgress/CollapseHandoff/ThinkingAtBottom',
+	'chat/widget/chatWidget/PersistentProgress/ByThinkingStyle/Collapsed/ThinkingExpanded',
+	'chat/widget/chatWidget/PersistentProgress/AnimationStyles/Off/ThinkingHeader',
+	'chat/widget/chatWidget/PersistentProgress/CollapseHandoff/ThinkingToMarkdown',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ToolChain',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/ToolConfirmation',
+	'chat/widget/chatWidget/PersistentProgress/CollapseHandoff/ToolsAtBottom',
+	'chat/widget/chatWidget/PersistentProgress/CollapseHandoff/ToolsToMarkdown',
+	'chat/widget/chatWidget/PersistentProgress/WaitingForBackgroundCommand',
+	'chat/chatProgressContentPart/WithInlineCode',
+	'chat/chatProgressContentPart/WithSpinner',
+	'chat/widget/chatWidget/PersistentProgress/ToolChains/WorktreeCreation',
+	'sessions/sessionsList/SessionsList_Confetti',
+	'sessions/chat/newInput/newChatInput/WithPet',
+	'chat/chatPetAccessoryRig/chatPetAccessoryRig/AllRuntimeStates',
+	'chat/chatPetAccessoryRig/chatPetAccessoryRig/AchievementUnlockStar'
+];
+
+const existingLibraryFixtures = new Set(productionLibraryItems.map(item => item.fixture).filter(Boolean));
+const componentExplorerLibraryItems = animatedComponentExplorerFixtures
+	.filter(fixture => !existingLibraryFixtures.has(fixture))
+	.map(fixture => {
+		const name = formatFixtureName(fixture.split('/').at(-1));
+		const category = getLibraryFixtureCategory(fixture);
+		return {
+			name,
+			category,
+			fixture,
+			location: getLibraryFixtureLocation(fixture),
+			purpose: getLibraryFixturePurpose(category),
+			evidence: `Component Explorer · ${lightOnlyLibraryFixtures.has(fixture) ? 'Light' : 'Dark'} mode`
+		};
+	});
+const libraryItems = [...productionLibraryItems, ...componentExplorerLibraryItems];
+let libraryPerformance;
+
+initialize().catch(error => {
+	console.error('Could not initialize the motion audit.', error);
+});
+
+async function initialize() {
+	libraryPerformance = await loadLibraryPerformance();
 	restoreSidebarWidth();
 	populateCategoryOptions();
 	renderSourcePreviewCards();
+	initializeTransitionPatterns();
+	initializeOpportunityCarousels();
 	bindEvents();
 	render();
+	renderLibrary('components');
+	renderProperties();
+	switchView('library');
+}
+
+function initializeOpportunityCarousels() {
+	document.querySelectorAll('[data-opportunity-carousel]').forEach(carousel => {
+		const slides = [...carousel.querySelectorAll('[data-carousel-slide]')];
+		const status = carousel.querySelector('[data-carousel-status]');
+		let currentIndex = 0;
+		const showSlide = offset => {
+			currentIndex = (currentIndex + offset + slides.length) % slides.length;
+			slides.forEach((slide, index) => {
+				slide.hidden = index !== currentIndex;
+			});
+			status.textContent = `${currentIndex + 1} of ${slides.length}`;
+		};
+		carousel.querySelector('[data-carousel-previous]').addEventListener('click', () => showSlide(-1));
+		carousel.querySelector('[data-carousel-next]').addEventListener('click', () => showSlide(1));
+		carousel.addEventListener('keydown', event => {
+			if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+				return;
+			}
+			if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+				event.preventDefault();
+				showSlide(event.key === 'ArrowLeft' ? -1 : 1);
+			}
+		});
+	});
+}
+
+function initializeTransitionPatterns() {
+	const liveObservations = {
+		content: 'Explorer/Search: no content transition detected. Chat selection was not tested.',
+		expand: 'Explorer folders: no size transition detected. Chat disclosure was not tested.',
+		reveal: 'Panel, Quick Open, and Secondary Side Bar: no surface transition detected. Find: 200 ms linear transform; disabled with Reduced Motion.',
+		layout: 'Editor split and group close: bounds changed without interpolation. Panel maximization was not tested.',
+		connected: 'Go to Definition and Back: no document transition or animated destination-line highlight detected.',
+		handoff: 'Not verified in this build. The isolated Chat view was read-only; no live agent operation was run.',
+		instant: 'Editor-tab switches: no content transition detected. Typing and drag-resizing were not measured.'
+	};
+	const timing = {
+		easing: 'cubic-bezier(0, 0, 0.58, 1)',
+		delay: 0,
+		iterations: 1
+	};
+	const patterns = [
+		{
+			id: 'content',
+			number: '01',
+			title: 'Content replacement',
+			description: 'Fade in the selected view while keeping the surrounding workspace fixed.',
+			scenarios: ['Explorer to Search.', 'Selecting another chat conversation.'],
+			evidence: [
+				{ label: 'Docs: view switching', url: 'https://code.visualstudio.com/docs/editing/getting-started/userinterface' },
+				{ label: 'Docs: chat selection', url: 'https://code.visualstudio.com/docs/agents/run/chat-view#_switch-chats-within-a-session' }
+			],
+			avoid: 'Search keystrokes, background updates, repeated switches, or selecting the current view.',
+			effect: 'entrance',
+			duration: 160,
+			offsetY: 6,
+			properties: 'opacity, transform',
+			range: 'Opacity 0 to 1; translateY 6px to 0.',
+			focus: 'Preserve view selection and saved context. Background updates must not move focus.',
+			action: 'Switch to Search',
+			reverse: 'Switch to Explorer',
+			before: 'Explorer is visible.',
+			after: 'Search is visible.',
+			markup: `<div class="transition-demo-sidebar">
+				<div class="transition-demo-bar" data-demo-heading>EXPLORER</div>
+				<div class="transition-demo-content" data-demo-target>
+					<div data-demo-before><strong>PROJECT</strong><p>src /</p><p class="transition-demo-selected">app.ts</p><p>styles.css</p><p>package.json</p></div>
+					<div data-demo-after hidden><label class="transition-demo-search">Search <input value="useTheme" readonly tabindex="-1" aria-label="Illustrative search query"></label><p>2 results in 1 file</p><p class="transition-demo-selected">theme.ts</p><p>export function useTheme()</p></div>
+				</div>
+			</div>`
+		},
+		{
+			id: 'expand',
+			number: '02',
+			title: 'Expand and collapse',
+			description: 'Reveal details beside their summary without shifting the whole conversation.',
+			scenarios: ['Chat response details.', 'Nested file groups in Explorer.'],
+			evidence: [
+				{ label: 'Audit: response disclosure', view: 'library' },
+				{ label: 'Docs: file nesting', url: 'https://code.visualstudio.com/docs/editing/getting-started/userinterface#_file-nesting' }
+			],
+			avoid: 'Rapid keyboard-driven tree navigation or repeated toggles.',
+			effect: 'height',
+			disclosure: true,
+			duration: 180,
+			properties: 'height',
+			range: 'Height: 0 to measured detail height. Reverse on collapse, then hide.',
+			focus: 'Keep focus on the disclosure. Return it there before hiding a focused descendant.',
+			action: 'Expand details',
+			reverse: 'Collapse details',
+			before: 'Tool details are collapsed.',
+			after: 'Tool details are expanded.',
+			markup: `<div class="transition-demo-chat">
+				<div class="transition-demo-bar">CHAT</div>
+				<p>Find the theme configuration.</p>
+				<div class="transition-demo-tool"><strong data-demo-heading>+ Read theme.ts</strong><span>Completed</span></div>
+				<div class="transition-demo-details" data-demo-target hidden><code>export const theme = {<br>&nbsp; color: '#4daafc',<br>&nbsp; mode: 'dark'<br>};</code></div>
+				<p>The theme is defined in <code>src/theme.ts</code>.</p>
+			</div>`
+		},
+		{
+			id: 'reveal',
+			number: '03',
+			title: 'Surface entrance and exit',
+			description: 'Reveal a supporting tool from its anchored edge; keep the editor stable.',
+			scenarios: ['Terminal Panel.', 'Secondary Side Bar.', 'Quick Open.'],
+			evidence: [
+				{ label: 'Docs: Panel and side bars', url: 'https://code.visualstudio.com/docs/configure/custom-layout' },
+				{ label: 'Docs: Quick Open', url: 'https://code.visualstudio.com/docs/editing/getting-started/userinterface#_explorer-view' }
+			],
+			avoid: 'Startup layout restoration, background visibility changes, or rapid toggles.',
+			effect: 'height',
+			disclosure: true,
+			duration: 180,
+			properties: 'height',
+			range: 'Bottom Panel: 0 to measured height; reverse on close. Quick Open and dialogs need a separate overlay treatment.',
+			focus: 'Focus user-opened tools; restore the trigger on close. Automatic reveals must not move focus.',
+			action: 'Open Terminal',
+			reverse: 'Close Terminal',
+			before: 'The Panel is closed.',
+			after: 'Terminal is open in the Panel.',
+			markup: `<div class="transition-demo-editor">
+				<div class="transition-demo-bar">app.ts</div>
+				<div class="transition-demo-code"><span>// Your editor stays in place</span><br><br>export function activate() {<br>&nbsp; registerCommands();<br>}</div>
+				<div class="transition-demo-terminal" data-demo-target hidden><strong>TERMINAL</strong><p>project % npm run build<br><span>Build completed.</span></p></div>
+			</div>`
+		},
+		{
+			id: 'layout',
+			number: '04',
+			title: 'Layout change',
+			description: 'Resize groups or panels while preserving the active file and reading position.',
+			scenarios: ['Split or close an editor group.', 'Maximize or restore the Panel.'],
+			evidence: [
+				{ label: 'Docs: editor groups and Panel layout', url: 'https://code.visualstudio.com/docs/configure/custom-layout' }
+			],
+			avoid: 'Dragging, sash resizing, window resizing, or routine text reflow.',
+			effect: 'width',
+			duration: 180,
+			properties: 'width',
+			range: 'Original group: full to half width; reverse on close. Resize bounds, not text.',
+			focus: 'Keep file, selection, and scroll position. Resizing must not move focus; a split may focus the new group.',
+			action: 'Split editor',
+			reverse: 'Close split',
+			before: 'One editor group is visible.',
+			after: 'Two editor groups show app.ts side by side.',
+			markup: `<div class="transition-demo-layout">
+				<div class="transition-demo-group transition-demo-primary" data-demo-target>
+					<div class="transition-demo-bar">app.ts</div>
+					<div class="transition-demo-code">export function<br>activate() {<br>&nbsp; register();<br>}</div>
+				</div>
+				<div class="transition-demo-group transition-demo-secondary" data-demo-after hidden>
+					<div class="transition-demo-bar">app.ts (split)</div>
+					<div class="transition-demo-code">export function<br>activate() {<br>&nbsp; register();<br>}</div>
+				</div>
+			</div>`
+		},
+		{
+			id: 'connected',
+			number: '05',
+			title: 'Connected navigation',
+			description: 'Open the destination immediately. An optional line highlight shows where you landed.',
+			scenarios: ['Go to Definition, then Back.', 'Peek Definition or References.'],
+			evidence: [
+				{ label: 'Docs: code navigation', url: 'https://code.visualstudio.com/docs/editing/editingevolved' }
+			],
+			avoid: 'Repeated jumps or an already-clear selection. Never animate the whole document.',
+			effect: 'highlight',
+			duration: 180,
+			properties: 'background-color',
+			range: 'Line tint: accent to transparent. Navigation stays instant.',
+			focus: 'Focus the destination symbol. Back restores the source file, caret, and scroll position.',
+			action: 'Go to definition',
+			reverse: 'Back to reference',
+			before: 'app.ts contains a call to getTheme().',
+			after: 'theme.ts shows the getTheme() definition.',
+			markup: `<div class="transition-demo-editor">
+				<div class="transition-demo-bar" data-demo-before>app.ts</div>
+				<div class="transition-demo-bar" data-demo-after hidden>theme.ts</div>
+				<div class="transition-demo-code">
+					<p data-demo-before>// A reference to the theme</p>
+					<p data-demo-after hidden>// Definition in theme.ts</p>
+					<div class="transition-demo-highlight" data-demo-target>
+						<code data-demo-before>const theme = getTheme();</code>
+						<code data-demo-after hidden>export function getTheme() {<br>&nbsp; return 'dark';<br>}</code>
+					</div>
+				</div>
+			</div>`
+		},
+		{
+			id: 'handoff',
+			number: '06',
+			title: 'State handoff',
+			description: 'Stop outdated progress feedback and reveal the confirmed state: content, completion, or input needed.',
+			scenarios: ['Chat progress becoming available content.', 'An agent pausing for confirmation.'],
+			evidence: [
+				{ label: 'Audit: response updates', view: 'library' },
+				{ label: 'Production capture: user confirmation', view: 'overlap' }
+			],
+			avoid: 'Streamed tokens, intermediate updates, or an already-resolved state. Never invent progress or success.',
+			effect: 'fade',
+			duration: 120,
+			properties: 'opacity',
+			range: 'Incoming opacity: 0 to 1. Remove the old status immediately.',
+			focus: 'Keep focus; announce the state once. Never auto-focus an approval action.',
+			action: 'Simulate input needed',
+			reverse: 'Reset to working',
+			before: 'Working: checking the requested changes.',
+			after: 'Input needed: review the request before work can continue.',
+			markup: `<div class="transition-demo-chat">
+				<div class="transition-demo-bar">CHAT / TOOL STATUS</div>
+				<p>Update the project configuration.</p>
+				<div class="transition-demo-handoff" data-demo-target>
+					<div data-demo-before><strong>Working</strong><p>Checking the requested changes.</p><p>No action needed yet.</p></div>
+					<div data-demo-after hidden><strong>Input needed</strong><p>Review the request to edit settings.json.</p><p>Work is paused until you respond.</p></div>
+				</div>
+			</div>`
+		},
+		{
+			id: 'instant',
+			number: '07',
+			title: 'Instant change',
+			description: 'Update directly when motion adds no useful context.',
+			scenarios: ['Editor-tab switches.', 'Typing, cursor movement, and text selection.', 'Dragging a resize handle.'],
+			evidence: [
+				{ label: 'Docs: tabs and editing', url: 'https://code.visualstudio.com/docs/editing/getting-started/userinterface' },
+				{ label: 'Docs: layout resizing', url: 'https://code.visualstudio.com/docs/configure/custom-layout' }
+			],
+			avoid: 'Always for these high-frequency actions. Do not add fades, slides, or delays.',
+			effect: 'none',
+			duration: 0,
+			properties: 'None (direct state update)',
+			range: 'Content and active-tab styling change together.',
+			focus: 'Keep editing focus; update selection, caret, and accessibility state immediately.',
+			action: 'Open theme.ts',
+			reverse: 'Open app.ts',
+			before: 'app.ts is selected.',
+			after: 'theme.ts is selected.',
+			markup: `<div class="transition-demo-editor">
+				<div class="transition-demo-tabs"><span class="is-selected" data-demo-tab-before>app.ts</span><span data-demo-tab-after>theme.ts</span></div>
+				<div class="transition-demo-code" data-demo-target><code data-demo-before>import { theme } from './theme';<br><br>export function activate() {<br>&nbsp; applyTheme(theme);<br>}</code><code data-demo-after hidden>export const theme = {<br>&nbsp; color: '#4daafc',<br>&nbsp; mode: 'dark'<br>};</code></div>
+			</div>`
+		}
+	];
+	document.getElementById('transition-shared-values').innerHTML = `
+		<div><dt>Playback</dt><dd>${timing.delay} ms delay; ${timing.iterations} run per action. No loops or stagger.</dd></div>
+		<div><dt>Interruption</dt><dd>Cancel the current run for new input. Never queue actions.</dd></div>
+		<div><dt>Reduced Motion</dt><dd>0 ms; retain state and labels. Follow each pattern's focus rules.</dd></div>
+	`;
+	const container = document.getElementById('transition-patterns');
+	container.innerHTML = patterns.map(pattern => `
+		<article class="transition-pattern" id="transition-${pattern.id}" aria-labelledby="transition-${pattern.id}-title">
+			<div class="transition-pattern-copy">
+				<p class="transition-eyebrow">${pattern.number}</p>
+				<h4 id="transition-${pattern.id}-title">${pattern.title}</h4>
+				<dl class="transition-pattern-guidance">
+					<dt>Use when</dt><dd><ul class="transition-scenarios">${pattern.scenarios.map(scenario => `<li>${escapeHtml(scenario)}</li>`).join('')}</ul></dd>
+					<dt>Behavior</dt><dd>${pattern.description}</dd>
+					<dt>Avoid</dt><dd>${pattern.avoid}</dd>
+				</dl>
+				<details class="transition-evidence">
+					<summary>Why this direction</summary>
+					<div class="transition-observation"><strong>Observed in Insiders</strong><p>${liveObservations[pattern.id]}</p></div>
+					<strong>Sources</strong>
+					<ul>${pattern.evidence.map(source => `<li><a href="${source.url ? escapeHtml(source.url) : `#${source.view}-view`}" ${source.view ? `data-go-to="${source.view}"` : 'target="_blank" rel="noopener"'}>${escapeHtml(source.label)}</a></li>`).join('')}</ul>
+				</details>
+			</div>
+			<div class="transition-example">
+				<div class="transition-example-label"><span>Proposed schematic</span><span>${pattern.duration} ms / ${pattern.duration ? 'ease-out' : 'no animation'}</span></div>
+				<div class="transition-demo" data-demo-kind="${pattern.id}">
+					<div class="transition-demo-titlebar" aria-hidden="true"><i></i><i></i><i></i><span>VS Code</span></div>
+					<div class="transition-demo-workspace">
+						<div class="transition-demo-activity" aria-hidden="true"><span>▱</span><span>⌕</span><span>⑂</span></div>
+						${pattern.markup}
+					</div>
+					<div class="transition-demo-statusbar" aria-hidden="true">main<span>UTF-8</span></div>
+				</div>
+				<div class="transition-demo-controls">
+					<button class="button button-secondary" type="button" data-transition-toggle aria-controls="transition-${pattern.id}-surface">${pattern.action}</button>
+					<label><input type="checkbox" data-transition-reduced> Preview Reduced Motion</label>
+				</div>
+				<p class="transition-demo-status" role="status" aria-live="polite">${pattern.before}</p>
+			</div>
+			<section class="transition-technical" aria-labelledby="transition-${pattern.id}-technical-title">
+				<h5 id="transition-${pattern.id}-technical-title">Prototype values</h5>
+				<dl class="transition-technical-grid">
+					<div><dt>Animated properties</dt><dd><code>${pattern.properties}</code></dd></div>
+					<div><dt>Timing</dt><dd><strong>${pattern.duration} ms</strong>${pattern.effect === 'highlight' ? ' / highlight only' : pattern.duration ? ' / each direction' : ' / immediate'}</dd></div>
+					<div><dt>Easing</dt><dd><strong>${pattern.duration ? 'Ease out' : 'None'}</strong>${pattern.duration ? `<code class="transition-curve">${timing.easing}</code>` : ''}</dd></div>
+					<div><dt>Range and direction</dt><dd>${pattern.range}</dd></div>
+					<div><dt>Focus and context</dt><dd>${pattern.focus}</dd></div>
+				</dl>
+			</section>
+		</article>
+	`).join('');
+
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+	const activeAnimations = new Map();
+	const finishTransition = target => {
+		activeAnimations.get(target)?.cancel();
+		activeAnimations.delete(target);
+		const card = target.closest('.transition-pattern');
+		const button = card.querySelector('[data-transition-toggle]');
+		if (button.hasAttribute('aria-expanded')) {
+			target.hidden = button.getAttribute('aria-expanded') === 'false';
+		}
+	};
+	reducedMotion.addEventListener('change', event => {
+		if (event.matches) {
+			activeAnimations.forEach((animation, target) => finishTransition(target));
+		}
+	});
+
+	patterns.forEach(pattern => {
+		const card = document.getElementById(`transition-${pattern.id}`);
+		const button = card.querySelector('[data-transition-toggle]');
+		const target = card.querySelector('[data-demo-target]');
+		const reducedPreview = card.querySelector('[data-transition-reduced]');
+		target.id = `transition-${pattern.id}-surface`;
+		let expanded = false;
+		if (pattern.disclosure) {
+			button.setAttribute('aria-expanded', 'false');
+		}
+		reducedPreview.addEventListener('change', () => {
+			if (reducedPreview.checked) {
+				finishTransition(target);
+			}
+		});
+		button.addEventListener('click', () => {
+			const previousHeight = target.getBoundingClientRect().height;
+			const previousWidth = target.getBoundingClientRect().width;
+			finishTransition(target);
+			expanded = !expanded;
+			button.textContent = expanded ? pattern.reverse : pattern.action;
+			card.querySelector('.transition-demo-status').textContent = expanded ? pattern.after : pattern.before;
+			card.querySelectorAll('[data-demo-before]').forEach(element => element.hidden = expanded);
+			card.querySelectorAll('[data-demo-after]').forEach(element => element.hidden = !expanded);
+			if (pattern.id === 'content') {
+				card.querySelector('[data-demo-heading]').textContent = expanded ? 'SEARCH' : 'EXPLORER';
+			} else if (pattern.id === 'instant') {
+				card.querySelector('[data-demo-tab-before]').classList.toggle('is-selected', !expanded);
+				card.querySelector('[data-demo-tab-after]').classList.toggle('is-selected', expanded);
+			} else if (pattern.id === 'layout') {
+				card.querySelector('.transition-demo-layout').classList.toggle('is-split', expanded);
+			} else if (pattern.disclosure) {
+				target.hidden = !expanded;
+				button.setAttribute('aria-expanded', String(expanded));
+				if (pattern.id === 'expand') {
+					card.querySelector('[data-demo-heading]').textContent = `${expanded ? '-' : '+'} Read theme.ts`;
+				}
+			}
+			if (pattern.duration === 0 || reducedMotion.matches || reducedPreview.checked) {
+				return;
+			}
+			let frames;
+			if (pattern.effect === 'entrance') {
+				frames = [{ opacity: 0, transform: `translateY(${pattern.offsetY}px)` }, { opacity: 1, transform: 'translateY(0)' }];
+			} else if (pattern.effect === 'height') {
+				target.hidden = false;
+				const nextHeight = expanded ? target.getBoundingClientRect().height : 0;
+				frames = [{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }];
+			} else if (pattern.effect === 'width') {
+				frames = [{ width: `${previousWidth}px` }, { width: `${target.getBoundingClientRect().width}px` }];
+			} else if (pattern.effect === 'highlight') {
+				frames = [{ backgroundColor: 'rgba(77, 170, 252, 0.24)' }, { backgroundColor: 'rgba(77, 170, 252, 0)' }];
+			} else if (pattern.effect === 'fade') {
+				frames = [{ opacity: 0 }, { opacity: 1 }];
+			}
+			const animation = target.animate(frames, {
+				...timing,
+				duration: pattern.duration
+			});
+			activeAnimations.set(target, animation);
+			const settle = () => {
+				if (activeAnimations.get(target) !== animation) {
+					return;
+				}
+				activeAnimations.delete(target);
+				if (pattern.disclosure) {
+					target.hidden = !expanded;
+				}
+			};
+			animation.onfinish = settle;
+		});
+	});
+}
+
+async function loadLibraryPerformance() {
+	const response = await fetch('./assets/library-animation-performance.json', { cache: 'no-store' });
+	if (!response.ok) {
+		throw new Error(`Could not load Library performance data: HTTP ${response.status}`);
+	}
+	const data = await response.json();
+	if (!data || typeof data !== 'object' || !data.results || typeof data.results !== 'object') {
+		throw new Error('Library performance data has an invalid shape.');
+	}
+	return data;
 }
 
 function loadRecords() {
@@ -1078,6 +1819,43 @@ function populateCategoryOptions() {
 }
 
 function bindEvents() {
+	bindMotionGuidance();
+	document.querySelectorAll('[data-phase]').forEach(button => {
+		button.addEventListener('click', () => switchView(lastPhaseViews[button.dataset.phase]));
+	});
+	const libraryTabs = [...document.querySelectorAll('[data-library-category]')];
+	libraryTabs.forEach((tab, index) => {
+		tab.addEventListener('click', () => renderLibrary(tab.dataset.libraryCategory));
+		tab.addEventListener('keydown', event => {
+			let nextIndex;
+			switch (event.key) {
+				case 'ArrowRight': nextIndex = (index + 1) % libraryTabs.length; break;
+				case 'ArrowLeft': nextIndex = (index + libraryTabs.length - 1) % libraryTabs.length; break;
+				case 'Home': nextIndex = 0; break;
+				case 'End': nextIndex = libraryTabs.length - 1; break;
+				default: return;
+			}
+			event.preventDefault();
+			libraryTabs[nextIndex].focus();
+			renderLibrary(libraryTabs[nextIndex].dataset.libraryCategory);
+		});
+	});
+	document.querySelectorAll('[data-library-performance]').forEach(button => {
+		button.addEventListener('click', () => {
+			activeLibraryPerformanceFilter = button.dataset.libraryPerformance;
+			renderLibrary(activeLibraryCategory);
+		});
+	});
+	document.getElementById('library-grid').addEventListener('click', event => {
+		const playButton = event.target.closest('[data-library-preview-fixture]');
+		if (playButton) {
+			startLibraryFixturePreview(playButton);
+			return;
+		}
+		if (event.target.closest('[data-library-stop-preview]')) {
+			stopLibraryFixturePreview();
+		}
+	});
 	elements.navItems.forEach(item => {
 		item.addEventListener('click', () => switchView(item.dataset.view));
 	});
@@ -1448,8 +2226,66 @@ function clampSidebarToViewport() {
 	setSidebarWidth(getSidebarWidth());
 }
 
+function bindMotionGuidance() {
+	document.querySelectorAll('.motion-guide').forEach(guide => {
+		guide.addEventListener('click', event => {
+			const link = event.target.closest('a[href^="#"]');
+			if (!link || link.hasAttribute('data-go-to')) {
+				return;
+			}
+			const target = document.getElementById(link.getAttribute('href').slice(1));
+			if (!guide.contains(target)) {
+				return;
+			}
+			for (let parent = target; parent && parent !== guide; parent = parent.parentElement) {
+				if (parent.tagName === 'DETAILS') {
+					parent.open = true;
+				}
+			}
+		});
+	});
+	document.querySelectorAll('[data-icon-fixture]').forEach(link => {
+		if (isPublicBuild) {
+			const label = document.createElement('span');
+			label.className = 'icon-fixture-label';
+			label.textContent = `${link.textContent} (local fixture)`;
+			link.replaceWith(label);
+			return;
+		}
+		const parameters = new URLSearchParams({
+			fixture: link.dataset.iconFixture,
+			search: link.dataset.iconFixture.split('/').at(-2)
+		});
+		link.href = `${componentExplorerUrl}?${parameters}`;
+		link.target = '_blank';
+		link.rel = 'noreferrer';
+	});
+}
+
 function switchView(view) {
+	const phase = Object.keys(phaseViews).find(phase => phaseViews[phase].includes(view));
+	if (!phase || !elements.viewPanels.some(panel => panel.dataset.viewPanel === view)) {
+		console.error(`Cannot open motion audit page: ${view}`);
+		return;
+	}
+	if (currentView !== view) {
+		stopSessionTitleShimmer();
+		stopChatProgressShimmer();
+		liveMotionFramePlayers.filter(player => player.interval).forEach(stopLiveMotionFramePlayer);
+		document.querySelectorAll('.source-preview-card.is-playing [data-source-preview-button]').forEach(toggleSourcePreview);
+		document.querySelectorAll('video').forEach(video => video.pause());
+	}
 	currentView = view;
+	lastPhaseViews[phase] = view;
+	document.querySelectorAll('[data-phase]').forEach(button => {
+		const active = button.dataset.phase === phase;
+		button.classList.toggle('active', active);
+		button.setAttribute('aria-pressed', String(active));
+	});
+	document.querySelectorAll('[data-phase-navigation]').forEach(nav => {
+		nav.hidden = nav.dataset.phaseNavigation !== phase;
+	});
+	document.querySelector('.header-actions').hidden = phase !== '1';
 	elements.navItems.forEach(item => {
 		const active = item.dataset.view === view;
 		item.classList.toggle('active', active);
@@ -1468,6 +2304,276 @@ function switchView(view) {
 
 	document.getElementById('main-content').focus({ preventScroll: true });
 	window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function renderLibrary(category) {
+	activeLibraryCategory = category;
+	const tabs = [...document.querySelectorAll('[data-library-category]')];
+	tabs.forEach(tab => {
+		const active = tab.dataset.libraryCategory === category;
+		tab.classList.toggle('active', active);
+		tab.setAttribute('aria-selected', String(active));
+		tab.tabIndex = active ? 0 : -1;
+	});
+	const grid = document.getElementById('library-grid');
+	activeLibraryPreview = undefined;
+	grid.querySelectorAll('video').forEach(video => video.pause());
+	grid.setAttribute('aria-labelledby', tabs.find(tab => tab.dataset.libraryCategory === category).id);
+	const categoryItems = libraryItems.filter(item => item.category === category);
+	const filteredItems = categoryItems.filter(item => {
+		if (activeLibraryPerformanceFilter === 'all') {
+			return true;
+		}
+		return getLibraryAnimationMeasurements(item).some(animation => animation.rating.toLowerCase() === activeLibraryPerformanceFilter);
+	});
+	document.querySelectorAll('[data-library-performance]').forEach(button => {
+		const active = button.dataset.libraryPerformance === activeLibraryPerformanceFilter;
+		button.classList.toggle('active', active);
+		button.setAttribute('aria-pressed', String(active));
+	});
+	const itemLabel = category === 'components' ? 'component' : category === 'transitions' ? 'transition state' : 'delight';
+	document.getElementById('library-summary').textContent = 'CPU cost measures one animation instance with other detected motion paused. High: every paired increase is at least 5 CPU percentage points; Moderate: at least 1; Low: every increase is between -1 and +1. These are audit prioritization thresholds for this fixture implementation and size, not product slowdown percentages. A dash means no reliable individual rating; transitions without a matched replay also show a dash.';
+	grid.innerHTML = filteredItems.length ? filteredItems.map(item => `
+		<article class="library-card">
+			<div class="library-preview">
+				${item.video ? `
+					<video controls muted playsinline preload="none"${item.poster ? ` poster="${escapeHtml(item.poster)}"` : ''} aria-label="${escapeHtml(item.name)} recording">
+						<source src="${escapeHtml(item.video)}" type="video/mp4">
+						Your browser does not support embedded video.
+					</video>
+				` : item.fixture && !isPublicBuild ? `
+					${getLibraryFixturePreviewMarkup(item.fixture, item.name)}
+				` : item.before ? `
+					<div class="library-state-diagram" role="img" aria-label="${escapeHtml(item.before)} to ${escapeHtml(item.after)}">
+						<span>${escapeHtml(item.before)}</span><span aria-hidden="true">&rarr;</span><span>${escapeHtml(item.after)}</span>
+					</div>
+				` : `
+					<div class="library-fixture-preview">
+						<span>Live preview available in the local audit</span>
+					</div>
+				`}
+			</div>
+			<div class="library-card-body">
+				<p class="library-evidence">${escapeHtml(item.evidence)}</p>
+				<h3>${escapeHtml(item.name)}</h3>
+				<dl class="library-metadata">
+					<div><dt>Purpose</dt><dd>${escapeHtml(item.purpose)}</dd></div>
+					<div><dt>CPU cost</dt><dd>${getLibraryPerformanceMarkup(item)}</dd></div>
+					${item.fixture ? `<div><dt>Component</dt><dd>${isPublicBuild ? escapeHtml(item.name) : `<a href="${escapeHtml(getLibraryFixtureUrl(item.fixture))}" target="_blank" rel="noreferrer">Open component</a>`}</dd></div>` : ''}
+				</dl>
+			</div>
+		</article>
+	`).join('') : `
+		<div class="library-empty-state">
+			<strong>No ${escapeHtml(itemLabel)}s match this filter.</strong>
+			<span>No individual animations with this CPU cost rating in this category. Choose All to see the motion patterns.</span>
+		</div>
+	`;
+}
+
+function getLibraryAnimationMeasurements(item) {
+	const result = item.fixture ? libraryPerformance.results[item.fixture] : undefined;
+	if (result?.scope !== 'individual-animation' || !Array.isArray(result.animations)) {
+		return [];
+	}
+	return result.animations.map(animation => {
+		const valid = animation.benchmarkVersion === 2 && animation.scope === 'individual-animation' &&
+			animation.status === 'animation-screened' && !animation.unverified && Array.isArray(animation.pairs) &&
+			animation.pairs.length >= 3 && animation.pairs.every(pair => {
+				const active = pair?.active;
+				const baseline = pair?.baseline;
+				return active?.verification?.isolationVerified === true && baseline?.verification?.isolationVerified === true &&
+					active.isolationVerifiedThroughoutSample === true && baseline.isolationVerifiedThroughoutSample === true &&
+					active.verification.targetId === animation.id && baseline.verification.targetId === animation.id &&
+					active.verification.disabled === false && baseline.verification.disabled === true &&
+					active.verification.stateHash && active.verification.stateHash === baseline.verification.stateHash &&
+					[active.rendererCpuUtilization, baseline.rendererCpuUtilization].every(Number.isFinite);
+			});
+		if (!valid) {
+			return { ...animation, rating: 'unrated' };
+		}
+		const deltas = animation.pairs.map(pair => pair.active.rendererCpuUtilization - pair.baseline.rendererCpuUtilization);
+		const minimum = Math.min(...deltas);
+		const maximum = Math.max(...deltas);
+		const rating = minimum >= 5 ? 'High' : minimum >= 1 ? 'Moderate'
+			: minimum > -1 && maximum < 1 ? 'Low' : 'unrated';
+		const median = values => {
+			const sorted = [...values].sort((a, b) => a - b);
+			const middle = Math.floor(sorted.length / 2);
+			return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+		};
+		return {
+			...animation, rating,
+			cpu: {
+				active: median(animation.pairs.map(pair => pair.active.rendererCpuUtilization)),
+				baseline: median(animation.pairs.map(pair => pair.baseline.rendererCpuUtilization)),
+				delta: median(deltas), range: [minimum, maximum]
+			}
+		};
+	});
+}
+
+function getLibraryPerformanceRating(item) {
+	const ratings = getLibraryAnimationMeasurements(item).map(animation => animation.rating.toLowerCase());
+	return ['high', 'moderate', 'low'].find(rating => ratings.includes(rating)) ?? 'unrated';
+}
+
+function getLibraryPerformanceMarkup(item) {
+	const animations = getLibraryAnimationMeasurements(item);
+	const unavailable = '<span class="performance-unavailable" aria-label="No reliable individual CPU rating" title="Not independently measured, failed isolation, or too variable to rate. This is not a Low rating.">&mdash;</span>';
+	if (!animations.length) {
+		return unavailable;
+	}
+	const signed = value => `${value >= 0 ? '+' : ''}${value.toFixed(1)}`;
+	return animations.map(animation => {
+		const label = animation.name === 'chat-thinking-shimmer' ? 'Thinking text shimmer'
+			: animation.name === 'session-title-shimmer' ? 'Session title shimmer' : animation.name;
+		const name = `<strong class="animation-cpu-name" title="${escapeHtml(animation.name)}">${escapeHtml(label)}</strong>`;
+		if (animation.rating === 'unrated') {
+			return `<div class="animation-cpu-result">${name}${unavailable}</div>`;
+		}
+		const cpu = animation.cpu;
+		if (!cpu || ![cpu.active, cpu.baseline, cpu.delta].every(Number.isFinite) ||
+			!Array.isArray(cpu.range) || cpu.range.length !== 2 || !cpu.range.every(Number.isFinite)) {
+			return `<div class="animation-cpu-result">${name}${unavailable}</div>`;
+		}
+		const advice = animation.rating === 'High' ? 'Prioritize optimization' : animation.rating === 'Moderate' ? 'Consider optimization' : 'Low overhead';
+		return `<div class="animation-cpu-result">
+			${name}
+			<span class="performance-result performance-${animation.rating.toLowerCase()}">
+				<strong title="Extra renderer CPU in percentage points; 100% equals one fully used CPU core. Not percent slower.">${escapeHtml(signed(cpu.delta))} CPU pp</strong><span>${animation.rating}</span>
+			</span>
+			<span class="performance-method">${escapeHtml(advice)} · ${cpu.active.toFixed(1)}% on / ${cpu.baseline.toFixed(1)}% off</span>
+			<span class="performance-method">${animation.pairs.length} pairs · range ${escapeHtml(cpu.range.map(signed).join(' to '))} pp · one instance</span>
+		</div>`;
+	}).join('');
+}
+
+function getLibraryFixturePreviewMarkup(fixture, name) {
+	return `
+		<div class="library-fixture-preview" data-library-fixture="${escapeHtml(fixture)}" data-library-fixture-name="${escapeHtml(name)}">
+			<img class="library-fixture-thumbnail" src="${escapeHtml(getLibraryFixtureThumbnailUrl(fixture))}" alt="" loading="lazy">
+			<button class="library-play-button" type="button" data-library-preview-fixture="${escapeHtml(fixture)}" aria-label="Play ${escapeHtml(name)} motion"></button>
+		</div>
+	`;
+}
+
+function startLibraryFixturePreview(button) {
+	const container = button.closest('.library-fixture-preview');
+	const fixture = button.dataset.libraryPreviewFixture;
+	const name = container?.dataset.libraryFixtureName;
+	if (!container || !fixture || !name) {
+		console.error('Cannot start Library preview: missing fixture metadata.');
+		return;
+	}
+	stopLibraryFixturePreview();
+	enableComponentExplorerAnimations();
+	container.classList.add('is-playing');
+	container.innerHTML = `
+		<span class="library-fixture-loading">Loading motion…</span>
+		<iframe class="preview-frame" title="${escapeHtml(name)} animated preview"></iframe>
+		<button class="button button-secondary library-fixture-stop" type="button" data-library-stop-preview>Stop preview</button>
+	`;
+	const frame = container.querySelector('iframe');
+	frame.addEventListener('load', async () => {
+		const prepared = await window.MotionPreview.preparePreviewFrame(frame, { centerNaturalSize: true });
+		if (prepared) {
+			container.classList.add('is-ready');
+			return;
+		}
+		const loadingStatus = container.querySelector('.library-fixture-loading');
+		if (loadingStatus) {
+			loadingStatus.textContent = 'Preview unavailable. Open the component to view it in Component Explorer.';
+		}
+	}, { once: true });
+	frame.src = getLibraryFixtureUrl(fixture);
+	activeLibraryPreview = { container, fixture, name };
+}
+
+function stopLibraryFixturePreview() {
+	if (!activeLibraryPreview) {
+		return;
+	}
+	const { container, fixture, name } = activeLibraryPreview;
+	container.classList.remove('is-playing');
+	container.outerHTML = getLibraryFixturePreviewMarkup(fixture, name);
+	activeLibraryPreview = undefined;
+}
+
+function formatFixtureName(name) {
+	return name
+		.replace(/_/g, ' ')
+		.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+		.replace(/\bMcp\b/g, 'MCP')
+		.replace(/\bVs Code\b/g, 'VS Code');
+}
+
+function getLibraryFixtureCategory(fixture) {
+	if (/generatedImages|Confetti|Pet|AchievementUnlockStar/i.test(fixture)) {
+		return 'delights';
+	}
+	if (/PersistentProgress|ToolIconExamples|chatWidget\/Streaming|findWidget|multiDiffEditor|renameWidget|ResizeObserver/i.test(fixture)) {
+		return 'transitions';
+	}
+	return 'components';
+}
+
+function getLibraryFixtureLocation(fixture) {
+	if (fixture.startsWith('sessions/')) {
+		return 'Sessions';
+	}
+	if (fixture.startsWith('editor/')) {
+		return 'Editor';
+	}
+	if (fixture.startsWith('base/')) {
+		return 'Base UI';
+	}
+	if (fixture.includes('/generatedImages/')) {
+		return 'Chat · Generated images';
+	}
+	if (fixture.includes('/logoMotion/')) {
+		return 'Chat · Logo motion';
+	}
+	if (fixture.includes('/chatWidget/')) {
+		return 'Chat widget';
+	}
+	return 'Chat';
+}
+
+function getLibraryFixturePurpose(category) {
+	if (category === 'transitions') {
+		return 'Show how the interface moves between meaningful states.';
+	}
+	if (category === 'delights') {
+		return 'Use expressive motion to add character or celebrate a result.';
+	}
+	return 'Communicate status or activity through an animated component.';
+}
+
+function getLibraryFixtureUrl(fixture) {
+	const theme = lightOnlyLibraryFixtures.has(fixture) ? 'Light' : 'Dark';
+	return `${componentExplorerUrl}?fixture=${encodeURIComponent(`${fixture}/${theme}`)}`;
+}
+
+function getLibraryFixtureThumbnailUrl(fixture) {
+	const fileName = fixture
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-|-$/g, '');
+	return `./assets/library-thumbnails/${fileName}.jpg`;
+}
+
+function renderProperties() {
+	document.getElementById('properties-body').innerHTML = proposedComponentMotionGuidelines.map(guideline => `
+		<tr>
+			<th scope="row">${escapeHtml(guideline.role)}</th>
+			<td>${escapeHtml(guideline.useWhen)}</td>
+			<td>${escapeHtml(guideline.behavior)}</td>
+			<td>${escapeHtml(guideline.timing)}</td>
+			<td><strong>${escapeHtml(guideline.easing)}</strong><code class="property-value">${escapeHtml(guideline.curve)}</code></td>
+			<td>${escapeHtml(guideline.constraint)}</td>
+		</tr>
+	`).join('');
 }
 
 function render() {

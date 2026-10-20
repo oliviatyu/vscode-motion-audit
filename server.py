@@ -1,11 +1,13 @@
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import re
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).parent
 COMPONENT_EXPLORER_ORIGIN = 'http://localhost:5123'
+LIBRARY_THUMBNAIL_PATH = re.compile(r'^/assets/library-thumbnails/[a-z0-9-]+\.jpg$')
 LOCAL_FILES = {
 	'/',
 	'/index.html',
@@ -21,9 +23,21 @@ LOCAL_FILES = {
 	'/assets/local-tool-pixel-spinner-production.mp4',
 	'/assets/voice-state-indicators-production.mp4',
 	'/assets/generated-image-lifecycle-production.mp4',
+	'/assets/opportunities-chats-list-production.mp4',
+	'/assets/opportunities-title-shimmer-current-production.mp4',
+	'/assets/opportunities-input-needed-status-production.mp4',
+	'/assets/opportunities-sessions-list-production.mp4',
+	'/assets/opportunities-competing-motion-production.mp4',
+	'/assets/opportunities-header-status-1.png',
+	'/assets/opportunities-header-status-2.png',
+	'/assets/opportunities-header-status-3.png',
+	'/assets/library-performance.json',
+	'/assets/library-animation-performance.json',
 	'/assets/live-insiders/request-production-case.png',
 	'/assets/live-insiders/aquarium-production-case.png',
 	'/assets/live-insiders/chat-progress-text-shimmer-poster.jpg',
+	'/assets/live-insiders/bulk-action-undo-countdown-poster.jpg',
+	'/assets/live-insiders/voice-state-indicators-poster.jpg',
 	'/assets/live-insiders/agent-details-loading.mp4',
 	'/assets/live-insiders/agent-details-loading-poster.jpg',
 	'/assets/live-insiders/bulk-completion-while-running.mp4',
@@ -54,13 +68,13 @@ class MotionAuditHandler(SimpleHTTPRequestHandler):
 
 	def end_headers(self):
 		path = self.path.split('?', 1)[0]
-		if path in LOCAL_FILES:
+		if path in LOCAL_FILES or LIBRARY_THUMBNAIL_PATH.fullmatch(path):
 			self.send_header('Cache-Control', 'no-store')
 		super().end_headers()
 
 	def do_GET(self):
 		path = self.path.split('?', 1)[0]
-		if path in LOCAL_FILES:
+		if path in LOCAL_FILES or LIBRARY_THUMBNAIL_PATH.fullmatch(path):
 			return super().do_GET()
 		self._proxy_component_explorer()
 

@@ -4,7 +4,9 @@
 	"private": true,
 	"description": "Interactive audit of motion patterns in the VS Code Agents Window.",
 	"scripts": {
+		"benchmark:library-performance": "node scripts/benchmark-library-performance-all.mjs",
 		"build": "node scripts/build-public.mjs",
+		"capture:library-thumbnails": "node scripts/capture-library-thumbnails.mjs",
 		"preview": "python3 -m http.server 4174 --directory _site"
 	}
 }
