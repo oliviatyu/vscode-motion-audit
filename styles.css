@@ -424,10 +424,15 @@ h3 {
 	font-size: 0.8rem;
 }
 
-.library-metadata div {
+.library-metadata > div {
 	display: grid;
 	grid-template-columns: 106px minmax(0, 1fr);
 	gap: 12px;
+}
+
+.library-metadata > .library-cpu-metadata {
+	grid-template-columns: minmax(0, 1fr);
+	gap: 6px;
 }
 
 .library-metadata dt {
@@ -456,14 +461,28 @@ h3 {
 	gap: 7px;
 }
 
+.animation-cpu-result {
+	min-width: 0;
+	padding: 10px 0;
+	border-top: 1px solid var(--border);
+}
+
+.animation-cpu-result:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.animation-cpu-result:last-child {
+	padding-bottom: 0;
+}
+
 .animation-cpu-result + .animation-cpu-result {
-	margin-top: 12px;
+	margin-top: 4px;
 }
 
 .animation-cpu-name {
 	display: block;
 	margin-bottom: 4px;
-	overflow-wrap: anywhere;
 	font-size: 0.75rem;
 }
 

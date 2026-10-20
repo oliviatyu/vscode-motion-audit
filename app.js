@@ -2358,7 +2358,7 @@ function renderLibrary(category) {
 				<h3>${escapeHtml(item.name)}</h3>
 				<dl class="library-metadata">
 					<div><dt>Purpose</dt><dd>${escapeHtml(item.purpose)}</dd></div>
-					<div><dt>CPU cost</dt><dd>${getLibraryPerformanceMarkup(item)}</dd></div>
+					<div class="library-cpu-metadata"><dt>CPU cost</dt><dd>${getLibraryPerformanceMarkup(item)}</dd></div>
 					${item.fixture ? `<div><dt>Component</dt><dd>${isPublicBuild ? escapeHtml(item.name) : `<a href="${escapeHtml(getLibraryFixtureUrl(item.fixture))}" target="_blank" rel="noreferrer">Open component</a>`}</dd></div>` : ''}
 				</dl>
 			</div>
