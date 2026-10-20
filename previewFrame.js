@@ -9,9 +9,10 @@ window.MotionPreview = (() => {
 
 			await waitForElement(frameWindow, '.component-fixture-container');
 			await delay(80);
+			const animationsEnabled = options.animationsEnabled !== false;
 			const animationCheckbox = [...frameDocument.querySelectorAll('input[type="checkbox"]')]
 				.find(input => input.parentElement?.parentElement?.textContent?.includes('enableAnimations'));
-			if (animationCheckbox && !animationCheckbox.checked) {
+			if (animationsEnabled && animationCheckbox && !animationCheckbox.checked) {
 				animationCheckbox.click();
 				await delay(120);
 			}
@@ -23,20 +24,38 @@ window.MotionPreview = (() => {
 				return false;
 			}
 			const fixtureStyle = frameWindow.getComputedStyle(activeFixture);
-			const computedWidth = Number.parseFloat(fixtureStyle.width) > 0 ? fixtureStyle.width : 'fit-content';
-			const computedHeight = Number.parseFloat(fixtureStyle.height) > 0 ? fixtureStyle.height : 'fit-content';
-			const naturalWidth = activeFixture.style.width || computedWidth;
-			const naturalHeight = activeFixture.style.height || computedHeight;
+			const fixtureBounds = activeFixture.getBoundingClientRect();
+			const computedWidth = Number.parseFloat(fixtureStyle.width);
+			const computedHeight = Number.parseFloat(fixtureStyle.height);
+			const naturalWidthPixels = Math.max(activeFixture.scrollWidth, fixtureBounds.width, computedWidth || 0);
+			const naturalHeightPixels = Math.max(activeFixture.scrollHeight, fixtureBounds.height, computedHeight || 0);
+			const naturalWidth = `${Math.ceil(naturalWidthPixels)}px`;
+			const naturalHeight = `${Math.ceil(naturalHeightPixels)}px`;
+			const fitPadding = 24;
+			const naturalScale = options.centerNaturalSize
+				? Math.min(
+					Math.max(frameWindow.innerWidth - fitPadding, 1) / Math.max(naturalWidthPixels, 1),
+					Math.max(frameWindow.innerHeight - fitPadding, 1) / Math.max(naturalHeightPixels, 1),
+					1
+				)
+				: 1;
+			const previewWidth = options.centerNaturalSize ? naturalWidth : options.fullSize ? naturalWidth : '360px';
+			const previewHeight = options.centerNaturalSize ? naturalHeight : options.fullSize ? naturalHeight : '224px';
+			const previewMaxWidth = options.centerNaturalSize ? 'none' : '100vw';
+			const previewMaxHeight = options.centerNaturalSize ? 'none' : '100vh';
+			const previewOverflow = options.centerNaturalSize ? 'visible' : 'hidden';
 
-			const enableFixtureAnimations = () => {
+			const applyFixtureAnimationState = () => {
 				fixtures.forEach(fixture => {
-					if (fixture.classList.contains('disable-animations')) {
+					if (animationsEnabled) {
 						fixture.classList.remove('disable-animations');
+					} else {
+						fixture.classList.add('disable-animations');
 					}
 				});
 			};
-			enableFixtureAnimations();
-			const animationClassObserver = new frameWindow.MutationObserver(enableFixtureAnimations);
+			applyFixtureAnimationState();
+			const animationClassObserver = new frameWindow.MutationObserver(applyFixtureAnimationState);
 			fixtures.forEach(fixture => animationClassObserver.observe(fixture, { attributes: true, attributeFilter: ['class'] }));
 			activeFixture.id = 'motion-preview-fixture';
 			frameDocument.body.appendChild(activeFixture);
@@ -55,6 +74,7 @@ window.MotionPreview = (() => {
 				body {
 					display: grid !important;
 					place-items: center !important;
+					position: relative !important;
 				}
 
 				#root {
@@ -64,13 +84,21 @@ window.MotionPreview = (() => {
 				#motion-preview-fixture {
 					position: relative !important;
 					inset: auto !important;
-					width: ${options.fullSize ? naturalWidth : '360px'} !important;
-					height: ${options.fullSize ? naturalHeight : '224px'} !important;
-					max-width: 100vw !important;
-					max-height: 100vh !important;
+					width: ${previewWidth} !important;
+					height: ${previewHeight} !important;
+					max-width: ${previewMaxWidth} !important;
+					max-height: ${previewMaxHeight} !important;
 					margin: auto !important;
-					overflow: hidden !important;
+					overflow: ${previewOverflow} !important;
 					border: 0 !important;
+					${options.centerNaturalSize ? `
+						position: absolute !important;
+						top: 50% !important;
+						left: 50% !important;
+						margin: 0 !important;
+						transform: translate(-50%, -50%) scale(${naturalScale}) !important;
+						transform-origin: center !important;
+					` : ''}
 				}
 			`;
 			frameDocument.head.appendChild(previewStyles);
@@ -84,11 +112,15 @@ window.MotionPreview = (() => {
 				background: '#0d0f12'
 			});
 			Object.assign(activeFixture.style, {
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
 				background: '#0d0f12'
 			});
+			if (!options.centerNaturalSize) {
+				Object.assign(activeFixture.style, {
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center'
+				});
+			}
 			return true;
 		} catch {
 			frame.title = `${frame.title} (preview unavailable)`;

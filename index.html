@@ -3,11 +3,11 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Phase 1 audit workspace for understanding motion in VS Code.">
+	<meta name="description" content="A motion audit and motion-library foundation for VS Code.">
 	<title>VS Code Motion Audit</title>
-	<link rel="stylesheet" href="./styles.css?v=50">
+	<link rel="stylesheet" href="./styles.css?v=59">
 	<script src="./previewFrame.js" defer></script>
-	<script src="./app.js?v=36" defer></script>
+	<script src="./app.js?v=43" defer></script>
 </head>
 <body>
 	<a class="skip-link" href="#main-content">Skip to main content</a>
@@ -16,6 +16,10 @@
 		<div class="brand">
 			<h1>VS Code motion audit</h1>
 		</div>
+		<nav class="phase-nav" aria-label="Project phase">
+			<button class="phase-button active" type="button" data-phase="1" aria-pressed="true">Phase 1</button>
+			<button class="phase-button" type="button" data-phase="2" aria-pressed="false">Phase 2</button>
+		</nav>
 		<div class="header-actions">
 			<button class="button button-secondary" id="export-button" type="button">
 				Export data
@@ -25,7 +29,7 @@
 
 	<div class="app-shell">
 		<aside class="sidebar" id="project-navigation" aria-label="Project navigation">
-			<nav class="section-nav" aria-label="Audit sections">
+			<nav class="section-nav" data-phase-navigation="1" aria-label="Phase 1 pages">
 				<button class="nav-item active" type="button" data-view="findings" aria-current="page">
 					Findings
 				</button>
@@ -43,6 +47,13 @@
 				<button class="nav-item" type="button" data-view="next-steps">
 					Next steps
 				</button>
+			</nav>
+			<nav class="section-nav" data-phase-navigation="2" aria-label="Phase 2 pages" hidden>
+				<button class="nav-item" type="button" data-view="library">Current motion</button>
+				<button class="nav-item" type="button" data-view="properties">Component motion</button>
+				<button class="nav-item" type="button" data-view="transitions">Interface transitions</button>
+				<button class="nav-item" type="button" data-view="animation">Animated icons</button>
+				<button class="nav-item" type="button" data-view="opportunities">Opportunities</button>
 			</nav>
 		</aside>
 
@@ -624,6 +635,520 @@
 					<li><strong>Review with the team</strong><span>Share the prototypes and test results with design, engineering, accessibility, and product partners. Agree which direction should become a shared pattern.</span></li>
 					<li><strong>Document VS Code motion principles</strong><span>Turn the approved direction into clear principles, implementation guidance, examples, and Reduced Motion requirements.</span></li>
 				</ol>
+			</section>
+			<section class="view phase-two-view" id="library-view" data-view-panel="library" aria-labelledby="library-title" hidden>
+				<div class="page-heading">
+					<div>
+						<h2 id="library-title">Current motion</h2>
+						<p>Compare the extra CPU used by individual animations to prioritize motion optimization.</p>
+					</div>
+				</div>
+				<div class="library-controls">
+					<div class="library-tabs" role="tablist" aria-label="Current motion categories">
+						<button id="library-components-tab" class="library-tab active" type="button" role="tab" aria-selected="true" aria-controls="library-grid" data-library-category="components">Components</button>
+						<button id="library-transitions-tab" class="library-tab" type="button" role="tab" aria-selected="false" aria-controls="library-grid" tabindex="-1" data-library-category="transitions">Transition states</button>
+						<button id="library-delights-tab" class="library-tab" type="button" role="tab" aria-selected="false" aria-controls="library-grid" tabindex="-1" data-library-category="delights">Delights</button>
+					</div>
+					<div class="library-performance-filter">
+						<span id="library-performance-filter-label">CPU cost</span>
+						<div class="library-filter-options" role="group" aria-labelledby="library-performance-filter-label">
+							<button class="library-filter-button active" type="button" aria-pressed="true" data-library-performance="all">All</button>
+							<button class="library-filter-button" type="button" aria-pressed="false" data-library-performance="low">Low</button>
+							<button class="library-filter-button" type="button" aria-pressed="false" data-library-performance="moderate">Moderate</button>
+							<button class="library-filter-button" type="button" aria-pressed="false" data-library-performance="high">High</button>
+						</div>
+					</div>
+				</div>
+				<p id="library-summary" class="library-summary" aria-live="polite"></p>
+				<p class="library-summary"><a href="./assets/library-animation-performance.json" target="_blank" rel="noreferrer">Raw individual-animation CPU measurements</a></p>
+				<div id="library-grid" class="library-grid" role="tabpanel" aria-labelledby="library-components-tab" tabindex="0"></div>
+			</section>
+
+			<section class="view phase-two-view motion-guide" id="properties-view" data-view-panel="properties" aria-labelledby="properties-title" hidden>
+				<div class="page-heading">
+					<div>
+						<p class="motion-guide-eyebrow">Proposed guidance</p>
+						<h2 id="properties-title">Component motion</h2>
+						<p>Proposed component-level motion guidance for VS Code. Choose a role based on what the interface needs to communicate, then apply its behavior, timing, and easing consistently.</p>
+					</div>
+				</div>
+				<nav class="motion-guide-nav" aria-label="Component motion sections">
+					<a href="#component-principles">Principles</a>
+					<a href="#component-roles">Choose a motion role</a>
+					<a href="#component-rules">Shared guidelines</a>
+					<a href="#component-evidence">Supporting evidence</a>
+				</nav>
+				<p class="guideline-notice"><strong>Direction for review.</strong> These roles and values are starting points for prototyping and team review, not approved motion tokens.</p>
+				<p class="supporting-text">For feedback within a component: acknowledgment, progress, attention, completion, time remaining, and emphasis. Use Interface transitions for relationships between surfaces and Animated icons for glyph-level behavior.</p>
+
+				<section class="motion-guide-section" id="component-principles" aria-labelledby="component-principles-title">
+					<h3 id="component-principles-title">Principles</h3>
+					<ol class="motion-guide-principles">
+						<li><h4>Choose by meaning</h4><p>Distinguish work in progress, a request for input, and a confirmed outcome. Select the role that explains the actual state rather than the most noticeable effect.</p></li>
+						<li><h4>Let the operation set the pace</h4><p>Measured progress and countdowns follow real values. Feedback starts promptly, stops when its state ends, and never delays the result or the next action.</p></li>
+						<li><h4>Keep emphasis proportional</h4><p>Use one primary progress signal per scope. Reserve added emphasis for meaningful moments, and preserve the same information without motion.</p></li>
+					</ol>
+				</section>
+				<section class="motion-guide-section" id="component-roles" aria-labelledby="component-roles-title">
+					<h3 id="component-roles-title">Choose a motion role</h3>
+					<p>Choose the feedback role first, then use its behavior and constraints to evaluate a prototype. Timings and easing below are proposals, not measured product specifications.</p>
+					<div class="table-wrap phase-two-table">
+					<table>
+						<caption class="visually-hidden">Proposed component motion guidelines for VS Code</caption>
+						<thead><tr><th scope="col">Motion role</th><th scope="col">Use when</th><th scope="col">Behavior</th><th scope="col">Timing</th><th scope="col">Easing</th><th scope="col">Constraints</th></tr></thead>
+						<tbody id="properties-body"></tbody>
+					</table>
+					</div>
+				</section>
+				<section class="motion-guide-section" id="component-rules" aria-labelledby="component-rules-title">
+					<h3 id="component-rules-title">Shared guidelines</h3>
+					<ul class="motion-guide-rules">
+						<li><strong>Behavior:</strong> Bind the treatment to the real component state. Preserve separate paused, failed, cancelled, and completed outcomes; do not invent progress.</li>
+						<li><strong>Constraints:</strong> Keep feedback local. Do not move unrelated content, block input, or layer multiple signals for the same scope.</li>
+						<li><strong>Reduced Motion:</strong> Honor the resolved workbench preference. Remove optional interpolation and repeating decoration while keeping state labels and meaningful measured updates.</li>
+						<li><strong>Validation:</strong> Check rapid input, interruption, failure, cancellation, simultaneous activity, keyboard and screen-reader feedback, and preference changes in the live product before standardizing values.</li>
+					</ul>
+				</section>
+				<details class="motion-guide-evidence" id="component-evidence">
+					<summary>Supporting evidence</summary>
+					<p>The current audit documents overlapping progress signals, needs-input treatments, generated-image completion, and a real undo countdown. Those cases motivate state-based roles and scoped feedback; they do not validate the proposed timing ranges or prove that every role needs animation.</p>
+					<ul>
+						<li><a href="#findings-view" data-go-to="findings">Findings</a>: existing component observations and product recordings.</li>
+						<li><a href="#overlap-view" data-go-to="overlap">Coordination</a>: simultaneous activity across session, response, tool, and field scopes.</li>
+						<li><a href="#library-view" data-go-to="library">Current motion</a>: recordings and component states to compare against a proposal.</li>
+					</ul>
+					<p class="supporting-text">The audit is the research base, not an approval of these roles or values. Some directions need further live validation and user testing.</p>
+				</details>
+			</section>
+
+			<section class="view phase-two-view transitions-guide motion-guide" id="transitions-view" data-view-panel="transitions" aria-labelledby="transitions-title" hidden>
+				<div class="page-heading">
+					<div>
+						<p class="motion-guide-eyebrow">Proposed guidance</p>
+						<h2 id="transitions-title">Interface transitions</h2>
+						<p>Help people follow what changes without losing their place in the workspace.</p>
+					</div>
+				</div>
+
+				<nav class="motion-guide-nav" aria-label="Interface transitions sections">
+					<a href="#transition-principles">Principles</a>
+					<a href="#transition-choices">Choose a transition pattern</a>
+					<a href="#transition-shared">Shared guidelines</a>
+					<a href="#transition-evidence">Supporting evidence</a>
+				</nav>
+				<p class="guideline-notice"><strong>Direction for review.</strong> Seven proposed patterns informed by live observations and existing audit evidence. Schematics and prototype values are not current product specifications.</p>
+				<p class="supporting-text">For changes between content, details, surfaces, and layouts. Use Component motion for feedback roles and Animated icons for motion inside individual glyphs.</p>
+				<section class="motion-guide-section" id="transition-principles" aria-labelledby="transition-principles-title">
+					<h3 id="transition-principles-title">Principles</h3>
+					<ol class="motion-guide-principles">
+						<li><h4>Start with no animation</h4><p>Animate only when the change needs explanation. Keep rapid, repeated, and already-clear changes immediate; never delay input or results.</p></li>
+						<li><h4>Preserve the workspace relationship</h4><p>Keep the surrounding editor stable. Connect a changed surface to its origin without moving the whole workbench or implying an unintended hierarchy.</p></li>
+						<li><h4>Keep context and control</h4><p>Preserve selection and reading position. Let new input interrupt, and retain state, labels, and the appropriate focus behavior when motion is off.</p></li>
+					</ol>
+				</section>
+				<section class="motion-guide-section" id="transition-choices" aria-labelledby="transition-choices-title">
+					<h3 id="transition-choices-title">Choose a transition pattern</h3>
+					<p>Choose by the relationship that changes. Each pattern separates the recommendation, prototype values, and supporting observations.</p>
+					<div id="transition-patterns"></div>
+				</section>
+				<section class="motion-guide-section transition-technical transition-shared" id="transition-shared" aria-labelledby="transition-shared-title">
+					<h3 id="transition-shared-title">Shared guidelines</h3>
+					<dl class="transition-technical-grid" id="transition-shared-values"></dl>
+					<p class="transition-shared-note">VS Code uses <code>workbench.reduceMotion</code>; web demos follow <code>prefers-reduced-motion</code>. Demos are manual and keep focus on their controls.</p>
+				</section>
+				<details class="motion-guide-evidence" id="transition-evidence">
+					<summary>Supporting evidence</summary>
+					<p class="transition-coverage-note">Live audit: Insiders 1.143.0, build <code>341e0fa</code>, macOS, October 19, 2026. Tested 18 actions with Reduced Motion off and on in an isolated profile. Agent handoffs remain unverified. Each pattern's supporting details distinguish observed behavior from the proposal; documentation links establish interactions, not proposed motion.</p>
+					<p>For the measured view, folder, Panel, Quick Open, side-bar, split, tab, and definition-navigation actions, no surface transition was detected. The Find widget used a 200 ms linear transform, suppressed with Reduced Motion. This does not mean those actions have zero processing latency.</p>
+					<p class="supporting-text">Chat disclosure and selection, state handoffs, Panel maximization, typing, and drag-resizing were not measured in this run. The proposals and their examples are not claims of live validation for those cases.</p>
+				</details>
+			</section>
+
+			<section class="view phase-two-view icon-research motion-guide" id="animation-view" data-view-panel="animation" aria-labelledby="animation-title" hidden>
+				<div class="page-heading">
+					<div>
+						<p class="motion-guide-eyebrow">Proposed guidance</p>
+						<h2 id="animation-title">Animated icons</h2>
+						<p>Give every moving icon a clear job. Show where work is happening, distinguish a request for attention, and preserve meaning when motion is off.</p>
+					</div>
+				</div>
+
+				<nav class="motion-guide-nav" aria-label="Animated icons sections">
+					<a href="#icon-guidance">Principles</a>
+					<a href="#icon-directions">Choose a motion role</a>
+					<a href="#icon-rules">Shared guidelines</a>
+					<a href="#icon-components">Supporting evidence</a>
+				</nav>
+
+				<p class="guideline-notice"><strong>Direction for review.</strong> Recommendations grounded in current product and Component Explorer research. The shared timing baseline is a proposal to test, not a shipped standard.</p>
+				<p class="supporting-text">For motion within individual icons, not layout transitions, text shimmer, composer borders, or large progress surfaces.</p>
+
+				<section class="icon-research-section" id="icon-guidance" aria-labelledby="icon-guidance-title">
+					<h3 id="icon-guidance-title">Principles</h3>
+					<ol class="icon-proposal-list">
+						<li><h4>Make the state clear</h4><p>Distinguish ongoing work, input needed, and outcomes through recognizable glyphs and labels. Motion alone is not a status.</p></li>
+						<li><h4>Coordinate by purpose</h4><p>Choose one primary indicator per operation; retain local feedback for distinct work. Test a shared rhythm for comparable activity loops, not every animation.</p></li>
+						<li><h4>Preserve meaning without motion</h4><p>Keep status and available actions understandable when animation is off. Never make a paused operation look like work is continuing.</p></li>
+					</ol>
+				</section>
+
+				<section class="icon-research-section" id="icon-directions" aria-labelledby="icon-directions-title">
+					<h3 id="icon-directions-title">Choose a motion role</h3>
+					<p>Choose by what the user needs to understand. These are proposed roles, not existing component families.</p>
+					<div class="icon-direction-grid">
+						<article class="icon-direction-card">
+							<p class="icon-evidence-label">01 / Work is continuing</p>
+							<h4>Indeterminate activity</h4>
+							<dl>
+								<div><dt>Use when</dt><dd>Work is active and its completion time is unknown.</dd></div>
+								<div><dt>Behavior</dt><dd>Loop beside the operation's label, only while it runs. Loop speed must not imply a completion percentage.</dd></div>
+							</dl>
+							<details class="icon-direction-rationale"><summary>Why this direction</summary><p>The working logo and local tool PixelSpinner already show unknown-duration activity at different scopes. PR fields and submission use separate loading states. This supports operation-bound feedback, not a universal spinner for every wait.</p><a href="#icon-working-logo">Working-logo evidence</a> · <a href="#icon-pixel-spinner">Local-activity evidence</a> · <a href="#icon-loading-glyph">Field and connection evidence</a></details>
+						</article>
+						<article class="icon-direction-card">
+							<p class="icon-evidence-label">02 / A person needs to act</p>
+							<h4>Attention needed</h4>
+							<dl>
+								<div><dt>Use when</dt><dd>Work is paused for approval, input, or another decision.</dd></div>
+								<div><dt>Behavior</dt><dd>Show a stable attention glyph and “Input needed” label. Do not keep a loading loop running while waiting.</dd></div>
+							</dl>
+							<details class="icon-direction-rationale"><summary>Why this direction</summary><p>Current session and subagent implementations distinguish running grid from waiting ring, but the ring is also used for loading elsewhere. Existing input-needed product captures show competing icon and row signals. A non-looping waiting state is a proposed change, not a claim about today's behavior.</p><a href="#icon-pixel-spinner">Current state semantics</a> · <a href="#opportunities-view" data-go-to="opportunities">Input-needed product cases in Opportunities</a></details>
+						</article>
+						<article class="icon-direction-card">
+							<p class="icon-evidence-label">03 / A live signal is changing</p>
+							<h4>Live input / output feedback</h4>
+							<dl>
+								<div><dt>Use when</dt><dd>Genuine listening or speaking benefits from visible signal feedback.</dd></div>
+								<div><dt>Behavior</dt><dd>Follow the real signal within the glyph. Keep connecting and idle distinct from capture; validate with live audio.</dd></div>
+							</dl>
+							<details class="icon-direction-rationale"><summary>Why this direction — needs live validation</summary><p>Voice source separates connecting, idle, listening, and speaking, with audio-reactive bars and a CSS fallback. Reviewed listening/speaking fixtures were static. This role is grounded in that implementation but needs a live audio check before choosing a waveform or rhythm.</p><a href="#icon-static">Voice observations and verification gap</a></details>
+						</article>
+					</div>
+					<p class="supporting-text">Show completion, failure, and cancellation as stable outcomes. Use measured progress, not a decorative loop, when a real value is available.</p>
+				</section>
+
+				<section class="icon-research-section" id="icon-rules" aria-labelledby="icon-rules-title">
+					<h3 id="icon-rules-title">Shared guidelines</h3>
+					<section class="icon-technical-guide" id="icon-technical" aria-labelledby="icon-technical-title">
+						<h4 id="icon-technical-title">Technical motion guidance</h4>
+						<p><strong>Test 1,500 ms per complete activity cycle</strong>, using existing Codicon rotation as the baseline. Equal durations may feel different across mechanisms; compare before adopting a shared value.</p>
+						<div class="table-wrap icon-research-table">
+							<table>
+								<caption class="visually-hidden">Proposed animated icon timing baseline and exceptions, with easing guidance</caption>
+								<thead><tr><th scope="col">Motion family</th><th scope="col">Timing</th><th scope="col">Easing and rhythm</th></tr></thead>
+								<tbody>
+									<tr><th scope="row">Activity loops</th><td><strong>1,500 ms / cycle</strong><br>Proposed shared baseline for rotation, ring, and grid. <a href="#icon-loading-glyph">Existing Codicon value</a>.</td><td>Retain <code>steps(30)</code> for Codicon and sequenced keyframes for dots. Test <code>linear</code> for new constant-speed rotation; one duration does not require one easing.</td></tr>
+									<tr><th scope="row">Multi-stage working logo</th><td><strong>2,667 ms / cycle</strong><br>Retain the <a href="#icon-working-logo">existing Draw cycle</a> as an initial exception.</td><td>Preserve the draw, hold, unravel, and rest sequence. Evaluate alongside the shared activity baseline.</td></tr>
+									<tr><th scope="row">Attention / one-time cues</th><td><strong>0 ms</strong> for the proposed static attention state. Any one-time cue needs separate duration testing.</td><td>No ongoing loop. If a settling cue is needed, test <code>ease-out</code>; no cue duration is standardized yet.</td></tr>
+									<tr><th scope="row">Live signal feedback</th><td><strong>Signal-driven</strong>, not a fixed cycle. <a href="#icon-static">Needs live validation</a>.</td><td>Follow actual input / output; tune smoothing in live tests rather than using a decorative loop.</td></tr>
+								</tbody>
+							</table>
+						</div>
+						<p class="supporting-text"><a href="#icon-validation">Comparison and implementation checklist</a> · <a href="#icon-pixel-spinner">Current grid / ring baselines</a></p>
+					</section>
+					<ul class="motion-guide-rules">
+						<li><strong>Keep motion local:</strong> Animate within a stable icon slot. Keep the control, hit target, label, and surrounding layout still.</li>
+						<li><strong>Stop with the operation:</strong> Show new states immediately, without waiting for a cycle to finish. Pause when hidden and dispose animation work when removed.</li>
+						<li><strong>Honor Reduced Motion:</strong> Replace optional motion with a recognizable static glyph and explicit status, not a slower loop. Respond to preference changes during playback.</li>
+					</ul>
+				</section>
+
+				<details class="icon-evidence-appendix motion-guide-evidence">
+					<summary>Supporting evidence</summary>
+					<p>The observations support these proposals, not a validated redesign. Review simultaneous activity in <a href="#overlap-view" data-go-to="overlap">Coordination</a> and the supporting <a href="#findings-view" data-go-to="findings">Findings</a>. Repeated indicators suggest a coordination question, not proven user confusion.</p>
+					<details class="icon-direction-rationale" id="icon-validation">
+						<summary>Comparison and implementation checklist</summary>
+						<ul class="motion-guide-rules">
+							<li><strong>Compare rhythms:</strong> Test the proposed 1,500 ms cycle against the current <a href="#icon-pixel-spinner">1,200 ms ring and 1,820 ms grid</a>, alongside Codicon and the 2,667 ms logo. Compare perceived speed, clarity, distraction, and loop boundaries individually and together at real icon sizes in the editor. Document justified exceptions.</li>
+							<li><strong>Specify the mechanism:</strong> Reuse an appropriate component. Record animated properties, ranges, transform origin, cycle or cue duration, repeat count, easing / keyframes, delays, and holds. Mark observed versus proposed values; for live feedback, document signal mapping, update rate, smoothing, and idle thresholds instead.</li>
+							<li><strong>Test interruption:</strong> Exercise rapid start / stop, replacement, failure, cancellation, hiding, removal, and becoming visible again. Cancel stale callbacks; do not replay old states or restart a one-time cue on focus or re-render.</li>
+							<li><strong>Verify accessibility:</strong> Test state recognition, keyboard use, and screen-reader feedback without per-frame announcements. Check browser preference, workbench setting, and changes during playback separately; fixture overrides do not validate the live setting. See the <a href="#icon-coverage">motion-policy checks and limits</a>.</li>
+							<li><strong>Validate live signals:</strong> Test genuine listening / speaking, connecting, idle, and failure. Smoothing must not mask meaningful changes or imply idle capture. Static voice fixtures do not establish responsiveness or user comprehension.</li>
+						</ul>
+					</details>
+				<section class="icon-research-section" id="icon-components" aria-labelledby="icon-components-title">
+					<h3 id="icon-components-title">Observed components</h3>
+					<p>These are implementation families found in the research, not a new classification of UI transitions. Timings describe the inspected code; they are not proposed motion tokens.</p>
+					<div class="icon-research-grid">
+						<article class="icon-evidence-card" id="icon-working-logo">
+							<div class="icon-evidence-body">
+								<p class="icon-evidence-label">Product recording + Component Explorer + source</p>
+								<h4>Working logo</h4>
+								<p>The VS Code mark draws, holds, unravels, and rests while response-level work is active. The cycle communicates activity, not measured progress.</p>
+								<dl>
+									<div><dt>Implementation</dt><dd>JavaScript updates SVG paths; Draw cycle: 2,667 ms.</dd></div>
+									<div><dt>Variants reviewed</dt><dd>Colored, monochrome, no-icon, inactive, and reduced-motion fixtures.</dd></div>
+									<div><dt>Motion policy</dt><dd>The dedicated reduced-motion fixture holds the assembled mark. The no-icon variant remains hidden. Source pauses rendering when inactive or not visible.</dd></div>
+								</dl>
+								<p class="supporting-text">The fixture supplies a class-based motion override: its Draw probe can still animate when only the browser preference is changed. This is not evidence that the live workbench setting is ignored.</p>
+								<div class="icon-evidence-links">
+									<a href="#icon-coverage" data-icon-fixture="chat/logoMotion/chatWorkingLogo/DrawComparison/Dark">Compare logo variants in Component Explorer</a>
+									<a href="#icon-coverage" data-icon-fixture="chat/logoMotion/chatWorkingLogo/DrawComparisonReducedMotion/Dark">Inspect reduced-motion fixture</a>
+								</div>
+								<details><summary>Implementation evidence</summary><p><code>vs/workbench/contrib/chat/browser/widget/chatWorkingLogo.ts</code><br><code>vs/workbench/test/browser/componentFixtures/chat/chatWorkingLogo.fixture.ts</code></p><p>SVG path comparisons confirmed Draw motion. CSS animation counts alone do not detect this JavaScript animation.</p></details>
+							</div>
+							<figure>
+								<video controls muted playsinline preload="none" poster="./assets/live-insiders/streaming-response-poster.jpg" aria-label="Existing live product recording showing the working logo in Chat">
+									<source src="./assets/input-working-border-production.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+								<figcaption>Existing live product capture. The logo appears in Chat alongside other progress treatments; the recording is not an isolated icon test.</figcaption>
+							</figure>
+						</article>
+
+						<article class="icon-evidence-card" id="icon-pixel-spinner">
+							<div class="icon-evidence-body">
+								<p class="icon-evidence-label">Product recording + Component Explorer + source</p>
+								<h4>PixelSpinner: grid and ring</h4>
+								<p>Six dots form a compact status indicator. The grid cascades vertically; the ring cycles a highlight around those same six positions.</p>
+								<dl>
+									<div><dt>Implementation</dt><dd>16 px CSS component; grid cycle: 1,820 ms; ring cycle: 1,200 ms.</dd></div>
+									<div><dt>Meaning in context</dt><dd>Session and subagent consumers use grid for running and ring for waiting / needs input. Other consumers also use the ring for loading; shape alone is not a universal state vocabulary.</dd></div>
+									<div><dt>Motion policy</dt><dd>The shared component becomes six stationary dots for the browser's reduced-motion preference. The class-only probe did not stop it; session hosts additionally choose a static icon through the accessibility service.</dd></div>
+								</dl>
+								<p>Source consumers include session status, agent-session lists, terminal-tool rows, subagents, MCP startup, rich-link status, background-shell output, customization discovery, and action buttons. A shared primitive does not guarantee identical host behavior.</p>
+								<div class="icon-evidence-links">
+									<a href="#icon-coverage" data-icon-fixture="chat/logoMotion/chatWorkingLogo/Performance/PixelSpinner/Dark">Inspect grid component</a>
+									<a href="#icon-coverage" data-icon-fixture="sessions/sessionsList/SessionsList_CollapsedNeedsInputSections/Dark">Inspect needs-input ring in context</a>
+									<a href="#icon-coverage" data-icon-fixture="platform/buttonBar/IconToSpinnerWidth/Dark">Inspect button icon replacement</a>
+								</div>
+								<details><summary>Implementation evidence</summary><p><code>vs/base/browser/ui/pixelSpinner/pixelSpinner.ts</code><br><code>vs/base/browser/ui/pixelSpinner/pixelSpinner.css</code><br><code>vs/sessions/browser/sessionStatusIcon.ts</code><br><code>vs/workbench/contrib/chat/browser/widget/chatContentParts/chatSubagentOpenChat.ts</code><br><code>vs/platform/actions/browser/buttonbar.ts</code></p><p>The component tracks visibility and pauses offscreen CSS motion. The button implementation puts the spinner in the existing leading icon slot when there is one, rather than showing both glyphs.</p></details>
+							</div>
+							<figure>
+								<video controls muted playsinline preload="none" poster="./assets/live-insiders/local-tool-pixel-spinner-poster.jpg" aria-label="Existing live product recording showing a local terminal-tool PixelSpinner">
+									<source src="./assets/local-tool-pixel-spinner-production.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+								<figcaption>Existing live product capture of a local terminal-tool indicator. The ring variant is supported separately by the linked fixture and source.</figcaption>
+							</figure>
+						</article>
+
+						<article class="icon-evidence-card" id="icon-loading-glyph">
+							<div class="icon-evidence-body">
+								<p class="icon-evidence-label">Component Explorer + source</p>
+								<h4>Rotating loading glyphs</h4>
+								<p>The Create Pull Request loading fixture rotates a loading glyph beside both Title and Description. Its Creating fixture instead shows one in the submit button. Ready and failure fixtures do not retain those active loading indicators.</p>
+								<dl>
+									<div><dt>Implementation</dt><dd>Shared Codicon rotation: 1,500 ms, 30 steps per cycle. The voice connecting control rotates its compact glyph through a separate CSS rule.</dd></div>
+									<div><dt>State ownership</dt><dd>The two field indicators share the widget's loading state. Submission uses a separate submitting state. Field inputs expose <code>aria-busy</code>.</dd></div>
+									<div><dt>Motion policy</dt><dd>PR loading and submitting glyphs kept rotating in both browser-reduced and class-only fixture probes. Voice connecting stopped with the reduced-motion class, but not the browser-only probe.</dd></div>
+								</dl>
+								<p class="supporting-text">These isolated checks expose different motion-policy paths. End-to-end behavior with the actual VS Code setting still needs verification; this is not a claim that every loading glyph has the same fallback.</p>
+								<div class="icon-evidence-links">
+									<a href="#icon-coverage" data-icon-fixture="sessions/createPullRequest/Loading/Dark">Inspect field loading</a>
+									<a href="#icon-coverage" data-icon-fixture="sessions/createPullRequest/Creating/Dark">Inspect submission</a>
+									<a href="#icon-coverage" data-icon-fixture="sessions/createPullRequest/GenerationFailed/Dark">Inspect generation failure</a>
+									<a href="#icon-coverage" data-icon-fixture="chat/input/chatInput/VoiceModeConnecting/Dark">Inspect voice connecting</a>
+								</div>
+								<details><summary>Implementation evidence</summary><p><code>vs/base/browser/ui/codicons/codicon/codicon-modifiers.css</code><br><code>vs/sessions/contrib/changes/browser/createPullRequestWidget.ts</code><br><code>vs/workbench/contrib/chat/browser/widget/media/chat.css</code></p><p>The general spin selector does not include every compact glyph alias. Host CSS can animate, suppress, or hide an icon independently.</p></details>
+							</div>
+							<figure>
+								<video controls muted playsinline preload="none" poster="./assets/live-insiders/create-pull-request-generation-poster.jpg" aria-label="Existing Component Explorer recording of pull-request field loading indicators">
+									<source src="./assets/live-insiders/create-pull-request-generation.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+								<figcaption>Existing component-fixture capture of field generation, not a live provider-timing test. Submission is verified separately in the Creating fixture.</figcaption>
+							</figure>
+						</article>
+					</div>
+				</section>
+
+				<section class="icon-research-section" id="icon-static" aria-labelledby="icon-static-title">
+					<h3 id="icon-static-title">Static and source-only cases matter too</h3>
+					<p>Animation labels, loading names, and spin modifiers are not sufficient evidence of visible motion. These cases prevent the page from overstating what was observed.</p>
+					<div class="table-wrap icon-research-table">
+						<table>
+							<caption class="visually-hidden">Static, suppressed, and source-backed icon behavior</caption>
+							<thead><tr><th scope="col">Component / surface</th><th scope="col">What the review supports</th><th scope="col">Evidence and limit</th></tr></thead>
+							<tbody>
+								<tr><th scope="row">Tool-risk loading badge</th><td>The compact loading glyph was static in Loading, LoadingInContext, and LoadingElicitationInContext, with animations enabled.</td><td><a href="#icon-coverage" data-icon-fixture="chat/chatToolRiskBadge/LoadingInContext/Dark">Inspect risk badge</a>. Source requests a spin modifier, but that is not proof of rotation.</td></tr>
+								<tr><th scope="row">Legacy progress and generic tool rows</th><td>WithSpinner was static. Persistent-progress CSS also suppresses many spinner glyphs, and some tool rows use shimmer or hide the leading check/loading slot depending on settings.</td><td><a href="#icon-coverage" data-icon-fixture="chat/chatProgressContentPart/WithSpinner/Dark">Inspect progress fixture</a>. Checked against <code>chatProgressContentPart.ts</code>, <code>chatToolInputOutputContentPart.ts</code>, and <code>chat.css</code>; do not classify the surrounding shimmer as icon motion.</td></tr>
+								<tr><th scope="row">Voice listening, speaking, and waveform</th><td>The standalone listening/speaking fixtures and narrow segmented-control fixture did not show icon animation in this run. Source contains an icon glow, state-specific waveform keyframes, and an audio-driven loop.</td><td><a href="#icon-coverage" data-icon-fixture="chat/input/chatInput/NarrowWithVoiceInputMode/Dark">Inspect segmented control</a>. <code>voiceInputMode.css</code> and <code>voiceInputModeActionViewItem.ts</code> support the implementation; live audio behavior is not confirmed by the static fixtures.</td></tr>
+								<tr><th scope="row">Dictation download ring</th><td>Source defines a 1,200 ms rotating ring and determinate progress updates around the download glyph. No visible download ring was found in the reviewed fixture states.</td><td>Source-backed only: <code>voiceInputMode.css</code> and the dictation download-ring rules in <code>chat.css</code>. Not inferred from the composer glow recording.</td></tr>
+								<tr><th scope="row">Other session and Chat loading consumers</th><td>Source requests icon motion for sync actions, account loading, automation controls, customization/MCP loading, and the Chat composite indicator. PixelSpinner is also reused by rich links, background-shell output, and discovery views.</td><td>Source-backed coverage, not additional live confirmations. Examples: <code>sessionSyncChanges.ts</code>, <code>accountTitleBarState.ts</code>, <code>automationDialog.ts</code>, <code>chatCompositeBar.ts</code>, and <code>mcpListWidget.ts</code>.</td></tr>
+								<tr><th scope="row">Editor, Terminal, and Notebook</th><td>Source uses loading/execution glyphs for inline progress, terminal task or command status, and notebook execution. Terminal status handling can replace the spinner with a static play icon when tab animation is disabled.</td><td>Source-backed extension of scope: <code>inlineProgress.ts</code>, <code>taskTerminalStatus.ts</code>, <code>terminalStatusList.ts</code>, <code>terminalInstance.ts</code>, and <code>codeCellExecutionIcon.ts</code>. These workflows were not runtime-validated in this fixture review.</td></tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<section class="icon-research-section" id="icon-coverage" aria-labelledby="icon-coverage-title">
+					<h3 id="icon-coverage-title">Review coverage and limitations</h3>
+					<p>The full local registry contained 3,407 themed entries. This review rendered every Dark-theme state in the 10 relevant groups below: <strong>522 states</strong>, selected by component family rather than animation labels. Shared source primitives and related consumers were checked separately.</p>
+					<div class="table-wrap icon-research-table">
+						<table>
+							<caption class="visually-hidden">Complete fixture groups reviewed on 19 October 2026</caption>
+							<thead><tr><th scope="col">Complete fixture group</th><th scope="col">States reviewed</th><th scope="col">Run result</th></tr></thead>
+							<tbody>
+								<tr><th scope="row"><code>chat/logoMotion/chatWorkingLogo</code></th><td>10</td><td>10 without reported render errors</td></tr>
+								<tr><th scope="row"><code>chat/chatToolRiskBadge</code></th><td>20</td><td>20 without reported render errors</td></tr>
+								<tr><th scope="row"><code>chat/chatProgressContentPart</code></th><td>5</td><td>5 without reported render errors</td></tr>
+								<tr><th scope="row"><code>chat/chatMcpToolCalls</code></th><td>4</td><td>4 without reported render errors</td></tr>
+								<tr><th scope="row"><code>chat/chatMcpAuthenticationContentPart</code></th><td>1</td><td>1 without reported render errors</td></tr>
+								<tr><th scope="row"><code>chat/input/chatInput</code></th><td>40</td><td>40 without reported render errors</td></tr>
+								<tr><th scope="row"><code>chat/widget/chatWidget/PersistentProgress</code></th><td>353</td><td>337 without reported render errors; 16 reported Draw-path assertions</td></tr>
+								<tr><th scope="row"><code>sessions/sessionsList</code></th><td>62</td><td>62 without reported render errors</td></tr>
+								<tr><th scope="row"><code>sessions/createPullRequest</code></th><td>23</td><td>23 without reported render errors</td></tr>
+								<tr><th scope="row"><code>platform/buttonBar</code></th><td>4</td><td>4 without reported render errors</td></tr>
+							</tbody>
+						</table>
+					</div>
+					<ul class="icon-review-limits">
+						<li><strong>506 clean renders; 16 flagged cases.</strong> The flagged persistent-progress cases produced DOM but reported that Draw paths did not advance. They are not counted as clean confirmations, and are not evidence of a product defect by themselves.</li>
+						<li><strong>CSS and JavaScript checked separately.</strong> CSS animation inspection was supplemented with SVG path sampling for Draw. Targeted policy checks rendered ten states under both browser preferences, plus a separate reduced-motion class probe.</li>
+						<li><strong>Fixture states are not full workflows.</strong> Timers, provider data, service defaults, focus, and motion overrides can be synthetic. End-to-end settings, real audio, loading failures, cancellation, and transitions between states need live validation where noted.</li>
+						<li><strong>Bounded coverage.</strong> This is not a claim to cover every VS Code icon or extension, every theme, or every release. Source-only cases stay visible as gaps rather than being omitted or promoted to runtime observations.</li>
+					</ul>
+					<p class="supporting-text">Recordings are existing audit evidence; the fixture observations are from the current local build on the review date. Local fixture links require Component Explorer. The public build retains fixture names and recorded evidence without linking to an unavailable local server.</p>
+					<p><a href="https://code.visualstudio.com/api/references/icons-in-labels" target="_blank" rel="noreferrer">VS Code product icon documentation</a></p>
+				</section>
+				</details>
+
+			</section>
+
+
+			<section class="view phase-two-view" id="opportunities-view" data-view-panel="opportunities" aria-labelledby="opportunities-title" hidden>
+				<div class="page-heading">
+					<div>
+						<h2 id="opportunities-title">Opportunities</h2>
+					</div>
+				</div>
+				<div class="opportunities-grid">
+					<figure class="opportunity-card">
+						<video controls preload="metadata" playsinline aria-describedby="chats-list-opportunity-caption">
+							<source src="./assets/opportunities-title-shimmer-current-production.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="chats-list-opportunity-caption">
+							<h3>Text shimmer on top-level rows</h3>
+							<p>Product recording: October 19, 2026.</p>
+							<h4>Problem</h4>
+							<ul>
+								<li>Text shimmer appears on unselected, working top-level rows under both “Chats” and workspace folders, but not on working nested chats, creating inconsistent loading feedback.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Keep the loading icon animated, but remove the text shimmer.</li>
+								<li><strong>Guideline: Indeterminate progress.</strong> Use one primary progress signal per scope, close to the active work.</li>
+								<li><strong>Reduced Motion:</strong> Use a static status icon and loading label.</li>
+							</ul>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<video controls preload="metadata" playsinline aria-describedby="sessions-list-opportunity-caption">
+							<source src="./assets/opportunities-sessions-list-production.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="sessions-list-opportunity-caption">
+							<h3>Competing input-needed signals</h3>
+							<h4>Problem</h4>
+							<ul>
+								<li>The question icon and row background repeatedly fade in and out.</li>
+								<li>Their different rhythms make one status appear as two competing signals.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Remove the repeating background animation. Keep a subtle, static highlight while input is needed.</li>
+								<li>Keep the question icon and “Input needed” label static, without pulsing. A brief transition into this state is optional, not required.</li>
+								<li>Preserve the normal hover, selection, and keyboard-focus treatments.</li>
+								<li><strong>Guideline: Attention needed.</strong> Announce the paused state once, then stop moving.</li>
+								<li><strong>Reduced Motion:</strong> Show the final state immediately.</li>
+							</ul>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<video controls preload="metadata" playsinline aria-describedby="input-needed-status-opportunity-caption">
+							<source src="./assets/opportunities-input-needed-status-production.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="input-needed-status-opportunity-caption">
+							<h3>Loading motion while input is needed</h3>
+							<h4>Problem</h4>
+							<ul>
+								<li>The session is waiting for input, but its row still shows animated blue loading dots.</li>
+								<li>The row uses ongoing-work motion instead of the question-mark icon established for “Input needed” in the Sessions list.</li>
+								<li>The input panel at the bottom is waiting for a response, but the animated logo and shimmering status text above compete for attention with the question and Submit button.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Replace the loading dots with the established question-mark icon and an “Input needed” label as soon as the session pauses for a response.</li>
+								<li>Stop the logo animation and text shimmer while waiting for a response. Keep the waiting message still so the question and Submit button are the focus.</li>
+								<li>Use a single 120–180ms ease-out transition.</li>
+								<li>Restore progress motion only when work actually resumes.</li>
+								<li><strong>Guideline: Attention needed.</strong> Stop loading motion when work is waiting for input.</li>
+								<li><strong>Supporting principle:</strong> <a href="https://fluent2.microsoft.design/motion" target="_blank" rel="noopener">Fluent 2 motion guidance</a> says to direct attention toward important elements and keep motion constrained to the element in focus, rather than distracting from the task.</li>
+								<li><strong>Reduced Motion:</strong> Change the icon and label immediately without animation.</li>
+							</ul>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<video controls preload="metadata" playsinline aria-describedby="competing-motion-opportunity-caption">
+							<source src="./assets/opportunities-competing-motion-production.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="competing-motion-opportunity-caption">
+							<h3>Too many simultaneous motion signals</h3>
+							<h4>Problem</h4>
+							<ul>
+								<li>The active session shows motion in its list row, chat header, “Evaluating” status, and input border at the same time. These repeat the same “working” message, making the workspace feel busy and harder to focus on.</li>
+								<li>The animated blue input border draws attention when no input is needed, adding to the distraction.</li>
+								<li>Other session rows also pulse for attention while a session needs terminal approval. The approval request competes with ongoing-work motion instead of standing out.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Keep one animated progress indicator beside “Evaluating” in the open chat.</li>
+								<li>Keep its list-row and header icons still.</li>
+								<li>Remove the blue border animation from the input window when no input is needed.</li>
+								<li>For sessions needing approval, use a steady question-mark icon and “Input needed” label instead of pulsing.</li>
+								<li><strong>Guidelines: Indeterminate progress and Attention needed.</strong> Use one primary progress signal per scope. Announce a request for input once, then keep it still.</li>
+								<li><strong>Reduced Motion:</strong> Use static icons and status labels.</li>
+							</ul>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<div class="opportunity-carousel" data-opportunity-carousel role="region" aria-roledescription="carousel" aria-label="Chat header loading status screenshots">
+							<div class="opportunity-carousel-stage">
+								<div data-carousel-slide role="group" aria-roledescription="slide" aria-label="1 of 3">
+									<a href="./assets/opportunities-header-status-1.png" target="_blank" rel="noopener" aria-label="Open screenshot 1 full size">
+										<img src="./assets/opportunities-header-status-1.png" alt="Opportunity is idle in the Sessions list, but its chat header shows loading dots while Understanding motion is working. Red squares highlight the conflicting indicators." loading="lazy">
+									</a>
+								</div>
+								<div data-carousel-slide role="group" aria-roledescription="slide" aria-label="2 of 3" hidden>
+									<a href="./assets/opportunities-header-status-2.png" target="_blank" rel="noopener" aria-label="Open screenshot 2 full size">
+										<img src="./assets/opportunities-header-status-2.png" alt="Split chat panes show loading dots beside Understanding motion CPU ratings and Animated icons, although the visible working activity is in Understanding motion. Red squares highlight both header indicators." loading="lazy">
+									</a>
+								</div>
+								<div data-carousel-slide role="group" aria-roledescription="slide" aria-label="3 of 3" hidden>
+									<a href="./assets/opportunities-header-status-3.png" target="_blank" rel="noopener" aria-label="Open screenshot 3 full size">
+										<img src="./assets/opportunities-header-status-3.png" alt="Animated icons and Interface transitions both show header loading dots beside completed responses. Red squares highlight the indicators across split chat panes." loading="lazy">
+									</a>
+								</div>
+							</div>
+							<div class="opportunity-carousel-controls">
+								<button class="button button-secondary" type="button" data-carousel-previous aria-label="Previous screenshot">Previous</button>
+								<span data-carousel-status role="status" aria-live="polite" aria-atomic="true">1 of 3</span>
+								<button class="button button-secondary" type="button" data-carousel-next aria-label="Next screenshot">Next</button>
+							</div>
+							<p class="opportunity-carousel-hint">Select an image to open it full size.</p>
+						</div>
+						<figcaption id="header-status-opportunity-caption">
+							<h3>Chat headers show the whole session’s activity</h3>
+							<p>Proposal for team discussion.</p>
+							<h4>Problem</h4>
+							<ul>
+								<li>When one nested chat is working, other chats in the same session also show header loading dots, making idle or completed chats look active.</li>
+								<li>A chat can appear idle in the Sessions list but show loading dots in its header, making it unclear which chat is actually working.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Make each chat header’s loading icon reflect only that chat’s activity, not the whole session’s.</li>
+								<li>Show overall session activity on the parent session, separate from individual chat headers.</li>
+								<li><strong>Guideline: Indeterminate progress.</strong> Keep the indicator close to the work it represents, and make its scope clear.</li>
+								<li><strong>Reduced Motion:</strong> Use a static icon and status label for the same chat.</li>
+							</ul>
+						</figcaption>
+					</figure>
+				</div>
 			</section>
 		</main>
 	</div>
