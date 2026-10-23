@@ -11,7 +11,7 @@ The planned GitHub Pages URL is:
 The public build includes:
 
 - **Phase 1:** the existing Findings, Coordination, Principles, and Next steps.
-- **Phase 2:** Current motion, Component motion, Interface transitions, Animated icons, and Opportunities.
+- **Phase 2:** Current motion, Component motion, Interface transitions, Animated icons, Accessibility, and Opportunities.
 
 It excludes the hidden Inventory, hidden research tables, editing dialog, and local Component Explorer links.
 
@@ -41,6 +41,11 @@ often sharing the same motion family, not 64 independently attributed product
 problems. Native follow-up is partial and described below.
 Component motion proposes role-based timing, easing,
 behavior, and constraints as working hypotheses rather than approved tokens.
+
+Accessibility is a separate Phase 2 page between Animated icons and Opportunities.
+It proposes VS Code motion guidelines, reduced-motion alternatives, and a review
+checklist, with WCAG references separated from product design recommendations.
+Open `?view=accessibility` to link directly to it.
 
 Opportunities has Problems and Prototypes tabs. Problems retains the audit cases.
 Prototypes shows a **Sessions panel** comparison row with three recordings:
@@ -101,7 +106,23 @@ and quality, with audio omitted. The original source recordings are unchanged.
 The earlier browser prototype source and its licensed assets remain in the
 repository but are no longer loaded by the page.
 Opportunities pairs each problem with recorded or screenshot evidence and a
-proposed solution. The chat-header status case includes three annotated
+proposed solution. **Recently discovered problems** (added October 22, 2026)
+separates the four new cases from **Previously documented problems**, with a
+divider and short descriptions guiding reviewers to the latest additions.
+The newest four cases lead the Problems page: the one-off
+Customizations loading treatment, similar grid/ring dot-matrix states, and the
+browser spinner versus Sessions/chat blue grid, and shared colors with different
+meanings. The color case pairs the supplied current-meaning screenshot with
+proposed semantic color guidelines; both open full size and remain proposals for
+team review. The browser case asks the team
+whether to unify or retain a documented exception; it is not a decided redesign.
+The first and third use product recordings; the second is explicitly labeled
+as Component Explorer evidence, not a live product capture or comprehension
+study. Proposed directions reuse a leading loading spinner and a consistent
+static question mark for input needed. They are documented for later prototyping;
+existing cases remain below them. Imported MP4s omit audio and preserve the
+original video streams; source recordings are unchanged.
+The chat-header status case includes three annotated
 screenshots in a manual carousel: use Previous/Next or the left/right arrow keys
 while focused inside it. Select a screenshot to open the full-size image.
 The carousel does not advance automatically or animate between images.

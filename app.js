@@ -957,7 +957,7 @@ let records = loadRecords();
 let currentView = 'findings';
 const phaseViews = {
 	1: ['findings', 'inventory', 'overlap', 'principles', 'next-steps'],
-	2: ['library', 'properties', 'transitions', 'animation', 'opportunities']
+	2: ['library', 'properties', 'transitions', 'animation', 'accessibility', 'opportunities']
 };
 const lastPhaseViews = { 1: 'findings', 2: 'library' };
 let currentPage = 1;

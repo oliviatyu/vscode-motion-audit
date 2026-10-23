@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A motion audit and motion-library foundation for VS Code.">
 	<title>VS Code Motion Audit</title>
-	<link rel="stylesheet" href="./styles.css?v=67">
+	<link rel="stylesheet" href="./styles.css?v=71">
 	<script src="./previewFrame.js" defer></script>
 	<script src="./app.js?v=45" defer></script>
 </head>
@@ -49,11 +49,32 @@
 				</button>
 			</nav>
 			<nav class="section-nav" data-phase-navigation="2" aria-label="Phase 2 pages" hidden>
-				<button class="nav-item" type="button" data-view="library">Current motion</button>
-				<button class="nav-item" type="button" data-view="properties">Component motion</button>
-				<button class="nav-item" type="button" data-view="transitions">Interface transitions</button>
-				<button class="nav-item" type="button" data-view="animation">Animated icons</button>
-				<button class="nav-item" type="button" data-view="opportunities">Opportunities</button>
+				<button class="nav-item nav-item-with-label" type="button" data-view="library">
+					<span>Current motion</span>
+					<span class="nav-item-label">Audit</span>
+				</button>
+				<div class="nav-divider" aria-hidden="true"></div>
+				<button class="nav-item nav-item-with-label" type="button" data-view="properties">
+					<span>Component motion</span>
+					<span class="nav-item-label">Motion principle</span>
+				</button>
+				<div class="nav-divider" aria-hidden="true"></div>
+				<button class="nav-item nav-item-with-label" type="button" data-view="transitions">
+					<span>Interface transitions</span>
+					<span class="nav-item-label">Motion principle</span>
+				</button>
+				<div class="nav-divider" aria-hidden="true"></div>
+				<button class="nav-item nav-item-with-label" type="button" data-view="animation">
+					<span>Animated icons</span>
+					<span class="nav-item-label">Motion principle</span>
+				</button>
+				<div class="nav-divider" aria-hidden="true"></div>
+				<button class="nav-item" type="button" data-view="accessibility">Accessibility</button>
+				<div class="nav-divider" aria-hidden="true"></div>
+				<button class="nav-item nav-item-with-label" type="button" data-view="opportunities">
+					<span>Opportunities</span>
+					<span class="nav-item-label">Audit and prototype</span>
+				</button>
 			</nav>
 		</aside>
 
@@ -1007,6 +1028,95 @@
 			</section>
 
 
+			<section class="view phase-two-view motion-guide" id="accessibility-view" data-view-panel="accessibility" aria-labelledby="accessibility-title" hidden>
+				<div class="page-heading">
+					<div>
+						<p class="motion-guide-eyebrow">Proposed guidance</p>
+						<h2 id="accessibility-title">Accessibility</h2>
+						<p>Communicate change without making motion a requirement for understanding it. People must be able to reduce motion without losing status, progress, or control in VS Code.</p>
+					</div>
+				</div>
+				<nav class="motion-guide-nav" aria-label="Accessibility sections">
+					<a href="#accessibility-principles">Principles</a>
+					<a href="#accessibility-guidelines">VS Code guidelines</a>
+					<a href="#accessibility-alternatives">Reduced-motion alternatives</a>
+					<a href="#accessibility-validation">Review checklist</a>
+					<a href="#accessibility-standards">Standards and sources</a>
+				</nav>
+				<p class="guideline-notice"><strong>Direction for review.</strong> These are proposed product guidelines, not a claim that VS Code meets every criterion. WCAG references are identified separately from our design recommendations.</p>
+
+				<section class="motion-guide-section" id="accessibility-principles" aria-labelledby="accessibility-principles-title">
+					<h3 id="accessibility-principles-title">Principles</h3>
+					<ol class="motion-guide-principles">
+						<li><h4>Preserve meaning without motion</h4><p>Working, needs input, paused, completed, and failed must remain distinguishable through stable labels and icons. Turning animation off must not make an active task look stopped.</p></li>
+						<li><h4>Protect reading and concentration</h4><p>Keep the editor, conversation, and focused controls stable. Background work should not continually compete with the task a person is reading or editing.</p></li>
+						<li><h4>Keep control with the user</h4><p>Let people reduce animation without cancelling work, losing updates, or giving up access to actions. Motion preferences and screen-reader support are separate needs; test both.</p></li>
+					</ol>
+				</section>
+
+				<section class="motion-guide-section" id="accessibility-guidelines" aria-labelledby="accessibility-guidelines-title">
+					<h3 id="accessibility-guidelines-title">VS Code guidelines</h3>
+					<ol class="motion-guide-principles">
+						<li><h4>Honor the resolved reduced-motion preference</h4><p>Use <code>workbench.reduceMotion</code>: <code>auto</code> follows the OS preference, <code>on</code> reduces motion, and <code>off</code> explicitly opts out. Web prototypes follow <code>prefers-reduced-motion</code>. Apply changes while the interface is running, not only at startup. Remove nonessential traveling borders, shimmer, rotation, zoom, and sliding effects rather than merely slowing them down.</p></li>
+						<li><h4>Make every state understandable without animation</h4><p>Pair recognizable icons with clear labels such as Working, Needs approval, Completed, or Failed. Do not rely on movement or color alone. Keep real progress values and available actions; a frozen spinner by itself can look like a stalled operation.</p></li>
+						<li><h4>Provide control over persistent motion</h4><p>Let users disable, stop, or hide nonessential ongoing animation without stopping the agent, terminal command, or download. A discoverable motion setting can provide this control; each spinner does not need its own pause button. Do not assume every loading animation qualifies as essential.</p></li>
+						<li><h4>Keep text, focus, and the viewport stable</h4><p>Use readable status text instead of animating the words people need to read. Do not move a focused control, steal focus for progress updates, or force chat back to the newest output after someone scrolls away. Provide a clear return-to-latest action. Preserve necessary keyboard focus changes when opening or closing a dialog.</p></li>
+						<li><h4>Coordinate motion by task and scope</h4><p>Prefer one primary animated cue for the same activity within a visible task area. Avoid combining a working logo, text shimmer, animated input border, and spinner to repeat the same message. Keep local feedback for genuinely separate tool work, and use quiet, preferably static, status for background sessions. This is a proposed design rule, not a WCAG limit on the number of animations.</p></li>
+						<li><h4>Avoid flashing and abrupt visual effects</h4><p>Do not introduce strobing or rapid high-contrast pulsing. Review concurrent indicators together, including across split chats and the Sessions list. Prefer no flashing; any flashing that remains must meet the WCAG flash thresholds, regardless of whether reduced motion is enabled.</p></li>
+						<li><h4>Expose meaningful status changes to assistive technology</h4><p>Use the existing VS Code accessibility announcement mechanisms for meaningful changes such as Working, Needs approval, and Completed, without taking keyboard focus. Give web status messages appropriate semantics. Avoid announcing every spinner cycle, streamed token, or countdown tick; verify that multiple sessions do not create repeated or competing announcements.</p></li>
+						<li><h4>Keep recovery available beyond a short countdown</h4><p>For bulk Mark as Done and similar Undo notifications, provide an equivalent persistent recovery route or a compliant way to turn off, adjust, or extend the time limit, unless a documented exception applies. Make recovery keyboard accessible. Removing the countdown animation does not remove the time barrier.</p></li>
+					</ol>
+				</section>
+
+				<section class="motion-guide-section" id="accessibility-alternatives" aria-labelledby="accessibility-alternatives-title">
+					<h3 id="accessibility-alternatives-title">Reduced-motion alternatives</h3>
+					<p>Keep the information; change how it is presented. These are proposed treatments to validate in the live product, not descriptions of current behavior.</p>
+					<div class="table-wrap phase-two-table">
+						<table>
+							<caption class="visually-hidden">Proposed reduced-motion alternatives for VS Code motion patterns</caption>
+							<thead><tr><th scope="col">Pattern</th><th scope="col">Reduced-motion treatment</th><th scope="col">Preserve</th></tr></thead>
+							<tbody>
+								<tr><th scope="row">Progress-text shimmer</th><td>Stable, readable Working text with no moving gradient.</td><td>Current operation, meaningful status updates, and cancellation.</td></tr>
+								<tr><th scope="row">Working logo and tool spinner</th><td>Stable status icon with a Working label; distinguish separate tool activity only when useful.</td><td>Which task is active and its paused, failed, or completed outcome.</td></tr>
+								<tr><th scope="row">Animated input border</th><td>Static working treatment without a traveling highlight.</td><td>A distinct keyboard-focus indicator and the ability to keep typing.</td></tr>
+								<tr><th scope="row">Background session-title shimmer</th><td>Static status icon and accessible status label.</td><td>Which sessions are working and which need input.</td></tr>
+								<tr><th scope="row">Panel, disclosure, and layout transitions</th><td>Immediate state changes without nonessential sliding or zooming.</td><td>Selection, context, and appropriate focus placement.</td></tr>
+								<tr><th scope="row">Streaming chat and progress values</th><td>Continue real content and measured-value updates without optional animation or forced scrolling after the user scrolls away.</td><td>Reading position, real progress, and a return-to-latest action.</td></tr>
+								<tr><th scope="row">Undo countdown</th><td>Remove continuous animated depletion; separately provide persistent recovery or compliant timing controls.</td><td>The recovery action, its keyboard access, and clear time-limit information when applicable.</td></tr>
+								<tr><th scope="row">Completion confetti or attention pulses</th><td>Static completion or needs-input icon and label instead of particles, scaling, or repeated pulses.</td><td>Outcome, required next action, and relevant accessible feedback.</td></tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<section class="motion-guide-section" id="accessibility-validation" aria-labelledby="accessibility-validation-title">
+					<h3 id="accessibility-validation-title">Review checklist</h3>
+					<p>Before approving a motion pattern, define its purpose, its no-motion alternative, and how it behaves alongside other activity.</p>
+					<ul class="motion-guide-rules">
+						<li><strong>Preferences:</strong> Test OS reduced motion with <code>auto</code>, explicit <code>on</code> and <code>off</code>, and preference changes while tasks are running. Check CSS, SVG, JavaScript, and embedded surfaces where used.</li>
+						<li><strong>State parity:</strong> Verify working, needs input, paused, cancelled, completed, and failed states with motion enabled and reduced. Do not hide progress or available actions.</li>
+						<li><strong>Concurrent activity:</strong> Review a realistic screen with multiple sessions, split chats, and a running tool. Evaluate combined distraction and flashing, not only isolated components.</li>
+						<li><strong>Keyboard and reading:</strong> Navigate controls, scroll back through a streaming response, and open or close panels. Verify focus and reading position remain predictable.</li>
+						<li><strong>Screen readers:</strong> Check meaningful announcements, labels, and recovery actions. Avoid repeated announcements and unnecessary interruptions.</li>
+						<li><strong>Themes and zoom:</strong> Check dark, light, and high-contrast themes and enlarged UI. Labels and essential status graphics must remain readable, distinguishable, and unclipped.</li>
+						<li><strong>Timing and control:</strong> Check long-running indicators and Undo expiry. Verify disabling decorative motion does not cancel work, and recovery remains usable.</li>
+					</ul>
+				</section>
+
+				<section class="motion-guide-section" id="accessibility-standards" aria-labelledby="accessibility-standards-title">
+					<h3 id="accessibility-standards-title">Standards and sources</h3>
+					<p>Use WCAG 2.2 as a reference for accessibility review, with applicability assessed for each product surface. The guidelines above also include stricter proposed design choices.</p>
+					<ul class="motion-guide-rules">
+						<li><strong>Pause, Stop, Hide - 2.2.2, Level A:</strong> Automatically starting movement lasting more than five seconds alongside other content needs a pause, stop, or hide mechanism unless essential. Auto-updating information has a related requirement without the five-second exception. This is not a rule to stop every task indicator at five seconds. <a href="https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html" target="_blank" rel="noreferrer">Read the criterion</a>.</li>
+						<li><strong>Animation from Interactions - 2.3.3, Level AAA:</strong> Nonessential motion animation triggered by interaction can be disabled. Proposed here as a product baseline beyond AA. <a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html" target="_blank" rel="noreferrer">Read the criterion</a>.</li>
+						<li><strong>Three Flashes or Below Threshold - 2.3.1, Level A:</strong> No more than three flashes in any one-second period, unless below the defined general and red flash thresholds. Our proposed design policy is to avoid flashing altogether. <a href="https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html" target="_blank" rel="noreferrer">Read the criterion</a>.</li>
+						<li><strong>Status Messages - 4.1.3, Level AA:</strong> Applicable status messages are programmatically available to assistive technology without receiving focus. <a href="https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html" target="_blank" rel="noreferrer">Read the criterion</a>.</li>
+						<li><strong>Timing Adjustable - 2.2.1, Level A:</strong> Content-imposed time limits need a way to turn off, adjust, or extend them unless a specified exception applies. Review whether an equivalent persistent recovery route removes the time-limited action. <a href="https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html" target="_blank" rel="noreferrer">Read the criterion</a>.</li>
+						<li><strong>VS Code accessibility:</strong> Use existing accessibility settings, keyboard navigation, Accessible View, and configurable accessibility signals rather than introducing competing feedback systems. <a href="https://code.visualstudio.com/docs/configure/accessibility/accessibility" target="_blank" rel="noreferrer">VS Code accessibility documentation</a>.</li>
+					</ul>
+				</section>
+			</section>
+
 			<section class="view phase-two-view" id="opportunities-view" data-view-panel="opportunities" aria-labelledby="opportunities-title" hidden>
 				<div class="page-heading">
 					<div>
@@ -1019,6 +1129,109 @@
 				</div>
 				<div id="opportunities-problems-panel" role="tabpanel" aria-labelledby="opportunities-problems-tab" tabindex="0">
 				<div class="opportunities-grid">
+					<header class="opportunity-group-heading">
+						<h3>Recently discovered problems</h3>
+						<p>Added October 22, 2026. Start here for the latest observations and directions to discuss.</p>
+					</header>
+					<figure class="opportunity-card">
+						<video controls muted preload="metadata" playsinline poster="./assets/opportunities-customizations-loading.jpg" aria-describedby="customizations-loading-opportunity-caption">
+							<source src="./assets/opportunities-customizations-loading.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="customizations-loading-opportunity-caption">
+							<h3>One-off loading treatment in Customizations</h3>
+							<p>Product recording: October 21, 2026.</p>
+							<h4>Problem</h4>
+							<ul>
+								<li>The Customizations window uses a distinct loading treatment instead of the shared spinner pattern, making loading feedback inconsistent across the product.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Add the shared spinner before “Loading customizations” and keep the source-count text as progress feedback.</li>
+								<li><strong>Guideline: Indeterminate progress.</strong> Use one familiar activity indicator beside the loading label; stop it when loading finishes.</li>
+								<li><strong>Reduced Motion:</strong> Keep a static status icon and loading text.</li>
+							</ul>
+							<p>Direction to prototype and review later.</p>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<video controls muted preload="metadata" playsinline poster="./assets/opportunities-dot-matrix-states.jpg" aria-describedby="dot-matrix-states-opportunity-caption">
+							<source src="./assets/opportunities-dot-matrix-states.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="dot-matrix-states-opportunity-caption">
+							<h3>Similar dot patterns for different states</h3>
+							<p>Component Explorer recording: October 21, 2026.</p>
+							<h4>Problem</h4>
+							<ul>
+								<li>The yellow grid and ring use the same small dot matrix; their subtle motion difference may be too easy to miss when distinguishing ongoing work from input needed.</li>
+								<li>Input needed uses the ring here, but a question-mark icon in the Sessions panel, giving the same state different visual meanings across surfaces.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Use the established question-mark icon for input needed across surfaces, with an explicit “Input needed” label in the status text or tooltip. Reserve animated dot matrices for ongoing work.</li>
+								<li><strong>Guideline: Attention needed.</strong> Keep the waiting state static; do not rely on color or animation rhythm alone to explain it.</li>
+								<li><strong>Reduced Motion:</strong> Keep the states distinguishable with static icons and labels.</li>
+							</ul>
+							<p>Direction to prototype and review later; user comprehension has not yet been tested.</p>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<video controls muted preload="metadata" playsinline poster="./assets/opportunities-browser-loading.jpg" aria-describedby="browser-loading-opportunity-caption">
+							<source src="./assets/opportunities-browser-loading.mp4" type="video/mp4">
+							Your browser does not support embedded video.
+						</video>
+						<figcaption id="browser-loading-opportunity-caption">
+							<h3>Different loading icons across surfaces</h3>
+							<p>Product recording: October 21, 2026.</p>
+							<h4>Problem</h4>
+							<ul>
+								<li>The browser uses a rotating spinner for loading, while Sessions and chat headers use a blue dot-matrix grid, giving ongoing activity different visual treatments across surfaces.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Review with the team whether browser loading should use the shared blue dot-matrix grid, or remain a deliberate browser-specific exception.</li>
+								<li><strong>Guideline: Indeterminate progress.</strong> Reuse a familiar activity indicator for the same meaning; document any context-specific exception.</li>
+								<li><strong>Reduced Motion:</strong> Preserve a static loading icon and an accessible loading label.</li>
+							</ul>
+							<p>Open question for team review; unification is not yet a decided direction.</p>
+						</figcaption>
+					</figure>
+					<figure class="opportunity-card">
+						<div class="opportunity-screenshot-pair">
+							<div>
+								<h4>Problem: current color meanings</h4>
+								<a href="./assets/opportunities-color-meanings.png?v=3" target="_blank" rel="noopener" aria-label="Open current color meanings screenshot full size">
+									<img src="./assets/opportunities-color-meanings.png?v=3" alt="Annotated current color meanings: yellow for input needed on chatRichLink and loading while resolving a chat link; blue for in progress and completed-unread; red for errors; neutral for chat dot-matrix activity and read or completed states; blue and teal brand colors identify Stable and Insiders, not task status." loading="lazy">
+								</a>
+							</div>
+							<p>Select an image to open it full size.</p>
+						</div>
+						<figcaption>
+							<h3>Same color, different meanings</h3>
+							<h4>Problem</h4>
+							<ul>
+								<li>We use the same color for different meanings: yellow for input needed and chat-link loading, and blue for in progress and completed-unread.</li>
+							</ul>
+							<h4>Potential solution</h4>
+							<ul>
+								<li>Define shared semantic color guidelines by role, as proposed in the second screenshot, and apply them consistently across surfaces.</li>
+								<li>When roles share a color, distinguish them with icons, labels, or markers, such as a question mark for input needed and an unread marker for new results.</li>
+								<li><strong>Guideline:</strong> Color supports meaning; it should not be the only way to distinguish states.</li>
+							</ul>
+							<p>Proposed guidelines for team review, not a finalized palette.</p>
+							<div class="opportunity-screenshot-pair">
+								<a href="./assets/opportunities-color-guidelines.png" target="_blank" rel="noopener" aria-label="Open proposed semantic color guidelines screenshot full size">
+									<img class="opportunity-image-natural" src="./assets/opportunities-color-guidelines.png" width="998" height="768" alt="Proposed semantic color guidelines: accent or neutral for working; attention color for input needed; warning color for degraded states; red for errors; success color only for explicit confirmation; accent plus a marker for unread; neutral for idle; brand palette for delight." loading="lazy">
+								</a>
+								<p>Select the image to open it full size.</p>
+							</div>
+						</figcaption>
+					</figure>
+					<header class="opportunity-group-heading opportunity-group-heading-previous">
+						<h3>Previously documented problems</h3>
+						<p>Earlier observations and potential solutions, kept below for reference.</p>
+					</header>
 					<figure class="opportunity-card">
 						<video controls preload="metadata" playsinline aria-describedby="chats-list-opportunity-caption">
 							<source src="./assets/opportunities-title-shimmer-current-production.mp4" type="video/mp4">
