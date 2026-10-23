@@ -19,6 +19,8 @@ It excludes the hidden Inventory, hidden research tables, editing dialog, and lo
 
 Use the phase buttons in the header to switch between the original audit and
 the new foundation. Each phase retains its last selected page during the visit.
+The current page and Opportunities tab are reflected in the URL, so refreshing
+or reopening that URL restores them instead of returning to Current motion.
 
 Current motion groups existing audit evidence into Components, Transition
 states, and Delights. Recordings and live Component Explorer previews are
@@ -40,6 +42,64 @@ problems. Native follow-up is partial and described below.
 Component motion proposes role-based timing, easing,
 behavior, and constraints as working hypotheses rather than approved tokens.
 
+Opportunities has Problems and Prototypes tabs. Problems retains the audit cases.
+Prototypes shows a **Sessions panel** comparison row with three recordings:
+**Icon pulse (3 times)**, **Background pulse (3 times)**, and **Static**. They replace the embedded
+browser recreation. The recordings are proposed treatments, not evidence of
+current shipping behavior or product performance.
+
+Each recording has a concise label from the controlled native OSS CPU comparison:
+Static: **Lowest (87.28%)**; Icon pulse: **Near static (87.74%)**; Background
+pulse: **Highest (94.65%)**. Values are median total application CPU across eight
+15-second trials per option on one Mac, with no executable extensions registered
+or activated, including built-ins. 100% means one logical core, not the whole
+computer. All options retain working dot matrices and native chat motion.
+These are local prototype measurements, not universal product ratings.
+
+A divider separates the **Chat panel** section below it. Six recordings compare
+sticky or inline progress with animated or static input borders, plus a four-pane
+tabbed grid and a single pane with four tabs. All six retain animated working
+header indicators and the working logo/text shimmer. Inline progress stays in the
+conversation and scrolls; it is not removed. Each recording has a short title and
+description. Each card now includes median total native OSS CPU from eight
+15-second trials: Sticky + animated border **78.39%**, Sticky + static border
+**65.88%**, Inline + static border **73.50%**, Inline + animated border **84.37%**,
+Tabbed grid **66.89%**, and Tabbed single pane **54.67%**.
+
+Sticky + static border is the lowest-CPU option among the four matched motion
+conditions in this run. Animated borders add CPU in both placements. The tabbed
+results are labeled **Layout result**, not ranked as isolated motion treatments:
+they have different visible and background chat workloads.
+
+The controlled test used the same Mac on AC, executable extensions explicitly
+disabled and verified inactive before/every block/after, a full-width native
+window, collapsed Sessions sidebar, and matched simulated streaming phases.
+System/display sleep were prevented with `caffeinate`. Eight counterbalanced
+blocks included an identical Sticky + static repeatability control (56 valid
+trials total); its paired mean difference was -0.12 CPU points, with a 95%
+bootstrap interval of approximately -1.78 to +1.94. The matched treatment effects
+were larger than this repeatability variation. Raw process CPU deltas, medians
+and paired intervals were independently checked, including exact bootstrap
+bounds. 100% means one logical core. These values are not directly comparable
+with the historical Sessions-panel test, and do not measure video playback,
+battery use, hardware GPU use or frame smoothness.
+
+A third section, **Sessions + chat panels**, combines Sticky + static border chat
+with Sessions **Static** (Option 1, Recommend), **Icon pulse (3 times)** (Option 2),
+or **Background pulse (3 times)** (Option 3).
+The three native OSS recordings appear side by side, separated from Chat panel by
+a divider. Option 1 reuses the Sticky + static border recording from Chat panel;
+Options 2 and 3 show three attention pulses followed by scrolling with pinned
+progress. No CPU results are included. The additional combined recordings live in
+`assets/prototypes/combined-panels/`.
+
+The videos use native playback and full-screen controls, start paused, and pause
+when leaving the tab or page. Options appear in three columns on desktop
+and stack on narrow screens. MP4 copies and poster images live in
+`assets/prototypes/sessions-panel/` and `assets/prototypes/chat-panel/`; video streams retain their original resolution
+and quality, with audio omitted. The original source recordings are unchanged.
+The earlier browser prototype source and its licensed assets remain in the
+repository but are no longer loaded by the page.
 Opportunities pairs each problem with recorded or screenshot evidence and a
 proposed solution. The chat-header status case includes three annotated
 screenshots in a manual carousel: use Previous/Next or the left/right arrow keys

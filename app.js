@@ -1357,7 +1357,18 @@ async function initialize() {
 	render();
 	renderLibrary('components');
 	renderProperties();
-	switchView('library');
+	const requestedView = new URL(window.location.href).searchParams.get('view');
+	const availableView = elements.viewPanels.some(panel => panel.dataset.viewPanel === requestedView);
+	if (requestedView && !availableView) {
+		console.error(`Cannot restore motion audit page: ${requestedView}`);
+	}
+	switchView(availableView ? requestedView : 'library');
+}
+
+function updateNavigationParameter(name, value) {
+	const url = new URL(window.location.href);
+	url.searchParams.set(name, value);
+	window.history.replaceState(null, '', url);
 }
 
 function initializeOpportunityCarousels() {
@@ -1820,6 +1831,46 @@ function populateCategoryOptions() {
 
 function bindEvents() {
 	bindMotionGuidance();
+	const opportunitiesTabs = [...document.querySelectorAll('[data-opportunities-tab]')];
+	const selectOpportunitiesTab = selectedTab => {
+		updateNavigationParameter('opportunitiesTab', selectedTab.id);
+		opportunitiesTabs.forEach(tab => {
+			const active = tab === selectedTab;
+			tab.classList.toggle('active', active);
+			tab.setAttribute('aria-selected', String(active));
+			tab.tabIndex = active ? 0 : -1;
+			const panel = document.getElementById(tab.getAttribute('aria-controls'));
+			panel.hidden = !active;
+			if (!active) {
+				panel.querySelectorAll('video').forEach(video => video.pause());
+			}
+		});
+	};
+	opportunitiesTabs.forEach((tab, index) => {
+		tab.addEventListener('click', () => selectOpportunitiesTab(tab));
+		tab.addEventListener('keydown', event => {
+			let nextIndex;
+			switch (event.key) {
+				case 'ArrowRight': nextIndex = (index + 1) % opportunitiesTabs.length; break;
+				case 'ArrowLeft': nextIndex = (index + opportunitiesTabs.length - 1) % opportunitiesTabs.length; break;
+				case 'Home': nextIndex = 0; break;
+				case 'End': nextIndex = opportunitiesTabs.length - 1; break;
+				default: return;
+			}
+			event.preventDefault();
+			opportunitiesTabs[nextIndex].focus();
+			selectOpportunitiesTab(opportunitiesTabs[nextIndex]);
+		});
+	});
+	const requestedTab = new URL(window.location.href).searchParams.get('opportunitiesTab');
+	if (requestedTab) {
+		const savedTab = opportunitiesTabs.find(tab => tab.id === requestedTab);
+		if (savedTab) {
+			selectOpportunitiesTab(savedTab);
+		} else {
+			console.error(`Cannot restore Opportunities tab: ${requestedTab}`);
+		}
+	}
 	document.querySelectorAll('[data-phase]').forEach(button => {
 		button.addEventListener('click', () => switchView(lastPhaseViews[button.dataset.phase]));
 	});
@@ -2276,6 +2327,7 @@ function switchView(view) {
 		document.querySelectorAll('video').forEach(video => video.pause());
 	}
 	currentView = view;
+	updateNavigationParameter('view', view);
 	lastPhaseViews[phase] = view;
 	document.querySelectorAll('[data-phase]').forEach(button => {
 		const active = button.dataset.phase === phase;

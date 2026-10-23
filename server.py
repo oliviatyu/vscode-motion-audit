@@ -13,6 +13,21 @@ LOCAL_FILES = {
 	'/index.html',
 	'/styles.css',
 	'/app.js',
+	'/motionPrototype.js',
+	'/motionPrototype.css',
+	'/assets/prototype-pixel-spinner.css',
+	'/assets/prototype-codicon.ttf',
+	'/assets/prototype-working-logo.png',
+	'/assets/prototype-vscode-LICENSE.txt',
+	*(f'/assets/prototypes/sessions-panel/{option}.{extension}'
+		for option in ('icon-pulse', 'background-pulse', 'static')
+		for extension in ('mp4', 'jpg')),
+	*(f'/assets/prototypes/chat-panel/{option}.{extension}'
+		for option in ('sticky-border', 'sticky-static', 'inline-static', 'inline-border', 'tabbed-grid', 'tabbed-single')
+		for extension in ('mp4', 'jpg')),
+	*(f'/assets/prototypes/combined-panels/{option}.{extension}'
+		for option in ('icon-pulse-sticky', 'background-pulse-sticky')
+		for extension in ('mp4', 'jpg')),
 	'/previewFrame.js',
 	'/reference.html',
 	'/reference.js',

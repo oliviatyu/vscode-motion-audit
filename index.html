@@ -5,9 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A motion audit and motion-library foundation for VS Code.">
 	<title>VS Code Motion Audit</title>
-	<link rel="stylesheet" href="./styles.css?v=59">
+	<link rel="stylesheet" href="./styles.css?v=67">
 	<script src="./previewFrame.js" defer></script>
-	<script src="./app.js?v=43" defer></script>
+	<script src="./app.js?v=45" defer></script>
 </head>
 <body>
 	<a class="skip-link" href="#main-content">Skip to main content</a>
@@ -1013,6 +1013,11 @@
 						<h2 id="opportunities-title">Opportunities</h2>
 					</div>
 				</div>
+				<div class="library-tabs" role="tablist" aria-label="Opportunities sections">
+					<button class="library-tab active" id="opportunities-problems-tab" type="button" role="tab" aria-selected="true" aria-controls="opportunities-problems-panel" data-opportunities-tab>Problems</button>
+					<button class="library-tab" id="opportunities-prototypes-tab" type="button" role="tab" aria-selected="false" aria-controls="opportunities-prototypes-panel" tabindex="-1" data-opportunities-tab>Prototypes</button>
+				</div>
+				<div id="opportunities-problems-panel" role="tabpanel" aria-labelledby="opportunities-problems-tab" tabindex="0">
 				<div class="opportunities-grid">
 					<figure class="opportunity-card">
 						<video controls preload="metadata" playsinline aria-describedby="chats-list-opportunity-caption">
@@ -1063,6 +1068,7 @@
 						</video>
 						<figcaption id="input-needed-status-opportunity-caption">
 							<h3>Loading motion while input is needed</h3>
+							<p><span class="source-preview-badge">Confirmed bug</span></p>
 							<h4>Problem</h4>
 							<ul>
 								<li>The session is waiting for input, but its row still shows animated blue loading dots.</li>
@@ -1133,6 +1139,7 @@
 						</div>
 						<figcaption id="header-status-opportunity-caption">
 							<h3>Chat headers show the whole session’s activity</h3>
+							<p><span class="source-preview-badge">Collapsed parent: highest-priority status only</span></p>
 							<p>Proposal for team discussion.</p>
 							<h4>Problem</h4>
 							<ul>
@@ -1148,6 +1155,111 @@
 							</ul>
 						</figcaption>
 					</figure>
+				</div>
+				</div>
+				<div id="opportunities-prototypes-panel" role="tabpanel" aria-labelledby="opportunities-prototypes-tab" tabindex="0" hidden>
+					<section class="prototype-comparison" aria-labelledby="sessions-panel-prototypes-title">
+						<h3 id="sessions-panel-prototypes-title">Sessions panel</h3>
+						<div class="prototype-comparison-row">
+							<figure class="prototype-recording">
+								<figcaption id="sessions-icon-pulse-label">Icon pulse (3 times)<span class="prototype-cpu-label">CPU: Near static &middot; 87.74%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/sessions-panel/icon-pulse.jpg" aria-labelledby="sessions-icon-pulse-label">
+									<source src="./assets/prototypes/sessions-panel/icon-pulse.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="sessions-background-pulse-label">Background pulse (3 times)<span class="prototype-cpu-label">CPU: Highest &middot; 94.65%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/sessions-panel/background-pulse.jpg" aria-labelledby="sessions-background-pulse-label">
+									<source src="./assets/prototypes/sessions-panel/background-pulse.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="sessions-static-label">Static <span class="prototype-recommend-badge">Recommend</span><span class="prototype-cpu-label">CPU: Lowest &middot; 87.28%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/sessions-panel/static.jpg" aria-labelledby="sessions-static-label">
+									<source src="./assets/prototypes/sessions-panel/static.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+						</div>
+						<p class="prototype-cpu-note">Median total OSS CPU across eight 15-second trials per option on one Mac, with extensions off. 100% = one CPU core, not the whole computer; all options retain working animations.</p>
+					</section>
+					<section class="prototype-comparison" aria-labelledby="chat-panel-prototypes-title">
+						<h3 id="chat-panel-prototypes-title">Chat panel</h3>
+						<div class="prototype-comparison-row">
+							<figure class="prototype-recording">
+								<figcaption id="chat-sticky-border-label">Sticky + animated border<span class="prototype-option-description" id="chat-sticky-border-description">Progress pinned above the input; input border animates.</span><span class="prototype-cpu-label">CPU: Higher &middot; 78.39%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/chat-panel/sticky-border.jpg" aria-labelledby="chat-sticky-border-label" aria-describedby="chat-sticky-border-description">
+									<source src="./assets/prototypes/chat-panel/sticky-border.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="chat-sticky-static-label">Sticky + static border <span class="prototype-recommend-badge">Recommend</span><span class="prototype-option-description" id="chat-sticky-static-description">Progress pinned above the input; input border stays still.</span><span class="prototype-cpu-label">CPU: Lowest matched &middot; 65.88%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/chat-panel/sticky-static.jpg" aria-labelledby="chat-sticky-static-label" aria-describedby="chat-sticky-static-description">
+									<source src="./assets/prototypes/chat-panel/sticky-static.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="chat-inline-static-label">Inline + static border<span class="prototype-option-description" id="chat-inline-static-description">Progress scrolls with the chat; input border stays still.</span><span class="prototype-cpu-label">CPU: Higher &middot; 73.50%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/chat-panel/inline-static.jpg" aria-labelledby="chat-inline-static-label" aria-describedby="chat-inline-static-description">
+									<source src="./assets/prototypes/chat-panel/inline-static.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="chat-inline-border-label">Inline + animated border<span class="prototype-option-description" id="chat-inline-border-description">Progress scrolls with the chat; input border animates.</span><span class="prototype-cpu-label">CPU: Highest matched &middot; 84.37%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/chat-panel/inline-border.jpg" aria-labelledby="chat-inline-border-label" aria-describedby="chat-inline-border-description">
+									<source src="./assets/prototypes/chat-panel/inline-border.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="chat-tabbed-grid-label">Tabbed grid<span class="prototype-option-description" id="chat-tabbed-grid-description">Four panes with tabs; sticky progress and static input borders.</span><span class="prototype-cpu-label">CPU: Layout result &middot; 66.89%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/chat-panel/tabbed-grid.jpg" aria-labelledby="chat-tabbed-grid-label" aria-describedby="chat-tabbed-grid-description">
+									<source src="./assets/prototypes/chat-panel/tabbed-grid.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="chat-tabbed-single-label">Tabbed single pane<span class="prototype-option-description" id="chat-tabbed-single-description">One pane with four tabs; sticky progress and a static input border.</span><span class="prototype-cpu-label">CPU: Layout result &middot; 54.67%</span></figcaption>
+								<video controls muted playsinline preload="metadata" poster="./assets/prototypes/chat-panel/tabbed-single.jpg" aria-labelledby="chat-tabbed-single-label" aria-describedby="chat-tabbed-single-description">
+									<source src="./assets/prototypes/chat-panel/tabbed-single.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+						</div>
+						<p class="prototype-cpu-note"><strong>Sticky + static border used the least CPU among the four matched motion options.</strong> Animated borders increased CPU with both sticky and inline progress.</p>
+						<p class="prototype-cpu-note">Median total native OSS CPU from eight 15-second trials per option on one Mac; executable extensions off, AC power, matched streaming, Sessions sidebar collapsed. 100% = one CPU core. Tabbed results include different visible/background chat workloads, so compare layouts separately. Sessions-panel values above are from a separate run.</p>
+					</section>
+					<section class="prototype-comparison" aria-labelledby="combined-panels-prototypes-title">
+						<h3 id="combined-panels-prototypes-title">Sessions + chat panels</h3>
+						<div class="prototype-comparison-row prototype-comparison-row-combined">
+							<figure class="prototype-recording">
+								<figcaption id="combined-static-label">Option 1: Static sessions <span class="prototype-recommend-badge">Recommend</span><span class="prototype-option-description" id="combined-static-description">Sessions input-needed indicators stay still; chat progress stays pinned above a static input border.</span></figcaption>
+								<video controls muted playsinline preload="metadata" width="3086" height="2106" poster="./assets/prototypes/chat-panel/sticky-static.jpg" aria-labelledby="combined-static-label" aria-describedby="combined-static-description">
+									<source src="./assets/prototypes/chat-panel/sticky-static.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="combined-icon-label">Option 2: Icon pulse (3 times)<span class="prototype-option-description" id="combined-icon-description">Sessions icons pulse; chat progress stays pinned above a static input border.</span></figcaption>
+								<video controls muted playsinline preload="metadata" width="3098" height="2108" poster="./assets/prototypes/combined-panels/icon-pulse-sticky.jpg" aria-labelledby="combined-icon-label" aria-describedby="combined-icon-description">
+									<source src="./assets/prototypes/combined-panels/icon-pulse-sticky.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+							<figure class="prototype-recording">
+								<figcaption id="combined-background-label">Option 3: Background pulse (3 times)<span class="prototype-option-description" id="combined-background-description">Sessions row backgrounds pulse; chat progress stays pinned above a static input border.</span></figcaption>
+								<video controls muted playsinline preload="metadata" width="3098" height="2108" poster="./assets/prototypes/combined-panels/background-pulse-sticky.jpg" aria-labelledby="combined-background-label" aria-describedby="combined-background-description">
+									<source src="./assets/prototypes/combined-panels/background-pulse-sticky.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</figure>
+						</div>
+					</section>
 				</div>
 			</section>
 		</main>

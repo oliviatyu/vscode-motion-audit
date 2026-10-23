@@ -29,8 +29,8 @@ index = index
 	.replace(/^\s*<script src="\.\/previewFrame\.js" defer><\/script>\s*$/m, '')
 	.replace(/^\s*<p class="component-explorer-reference">.*<\/p>\s*$/gm, '')
 	.replace(
-		'<script src="./app.js?v=43" defer></script>',
-		'<script>window.__MOTION_AUDIT_PUBLIC__ = true;</script>\n\t<script src="./app.js?v=43" defer></script>'
+		'<script src="./app.js?v=45" defer></script>',
+		'<script>window.__MOTION_AUDIT_PUBLIC__ = true;</script>\n\t<script src="./app.js?v=45" defer></script>'
 	);
 
 if (index.includes('PUBLIC_BUILD_REMOVE_') || index.includes('/___explorer')) {
