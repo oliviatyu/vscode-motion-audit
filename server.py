@@ -41,6 +41,8 @@ LOCAL_FILES = {
 	'/assets/opportunities-chats-list-production.mp4',
 	'/assets/opportunities-customizations-loading.mp4',
 	'/assets/opportunities-customizations-loading.jpg',
+	'/assets/opportunities-function-search.mp4',
+	'/assets/opportunities-function-search.jpg',
 	'/assets/opportunities-dot-matrix-states.mp4',
 	'/assets/opportunities-dot-matrix-states.jpg',
 	'/assets/opportunities-browser-loading.mp4',

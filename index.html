@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A motion audit and motion-library foundation for VS Code.">
 	<title>VS Code Motion Audit</title>
-	<link rel="stylesheet" href="./styles.css?v=71">
+	<link rel="stylesheet" href="./styles.css?v=73">
 	<script src="./previewFrame.js" defer></script>
 	<script src="./app.js?v=45" defer></script>
 </head>
@@ -1078,24 +1078,38 @@
 						<p>Added October 22, 2026. Start here for the latest observations and directions to discuss.</p>
 					</header>
 					<figure class="opportunity-card">
-						<video controls muted preload="metadata" playsinline poster="./assets/opportunities-customizations-loading.jpg" aria-describedby="customizations-loading-opportunity-caption">
-							<source src="./assets/opportunities-customizations-loading.mp4" type="video/mp4">
-							Your browser does not support embedded video.
-						</video>
+						<div class="opportunity-loading-recordings">
+							<div>
+								<h4>Customizations loading</h4>
+								<video controls muted preload="metadata" playsinline poster="./assets/opportunities-customizations-loading.jpg" aria-describedby="customizations-loading-opportunity-caption">
+									<source src="./assets/opportunities-customizations-loading.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</div>
+							<div>
+								<h4>Search progress (“function”)</h4>
+								<video controls muted preload="metadata" playsinline poster="./assets/opportunities-function-search.jpg" aria-describedby="customizations-loading-opportunity-caption">
+									<source src="./assets/opportunities-function-search.mp4" type="video/mp4">
+									Your browser does not support embedded video.
+								</video>
+							</div>
+						</div>
 						<figcaption id="customizations-loading-opportunity-caption">
-							<h3>One-off loading treatment in Customizations</h3>
-							<p>Product recording: October 21, 2026.</p>
+							<h3>Indeterminate loading bar: one-off treatments in Customizations and Search</h3>
+							<p>Product recordings: Customizations, October 21; Search, October 23, 2026.</p>
 							<h4>Problem</h4>
 							<ul>
-								<li>The Customizations window uses a distinct loading treatment instead of the shared spinner pattern, making loading feedback inconsistent across the product.</li>
+								<li>Customizations and Search use one-off loading treatments rather than a shared pattern.</li>
+								<li>The Search animation is subtle and may add little beyond the tab’s in-progress text.</li>
 							</ul>
-							<h4>Potential solution</h4>
+							<h4>Proposal</h4>
 							<ul>
-								<li>Add the shared spinner before “Loading customizations” and keep the source-count text as progress feedback.</li>
-								<li><strong>Guideline: Indeterminate progress.</strong> Use one familiar activity indicator beside the loading label; stop it when loading finishes.</li>
-								<li><strong>Reduced Motion:</strong> Keep a static status icon and loading text.</li>
+								<li><strong>Option 1 — Unify:</strong> Use a shared compact spinner for both, beside “Loading customizations” and the Search status. Keep useful progress text.</li>
+								<li><strong>Option 2 — Simplify Search:</strong> Remove its subtle animation and keep the tab’s in-progress text until the search finishes.</li>
+								<li><strong>Guideline: Indeterminate progress.</strong> Keep feedback clear without duplicating the same status through unnecessary motion.</li>
+								<li><strong>Reduced Motion:</strong> Keep loading text and a static icon where needed.</li>
 							</ul>
-							<p>Direction to prototype and review later.</p>
+							<p>Two directions to prototype and review; no option is selected yet.</p>
 						</figcaption>
 					</figure>
 					<figure class="opportunity-card">
@@ -1126,19 +1140,20 @@
 							Your browser does not support embedded video.
 						</video>
 						<figcaption id="browser-loading-opportunity-caption">
-							<h3>Different loading icons across surfaces</h3>
+							<h3>When to use a spinner or dot matrix</h3>
 							<p>Product recording: October 21, 2026.</p>
-							<h4>Problem</h4>
+							<h4>Current use</h4>
 							<ul>
-								<li>The browser uses a rotating spinner for loading, while Sessions and chat headers use a blue dot-matrix grid, giving ongoing activity different visual treatments across surfaces.</li>
+								<li>The browser uses a rotating spinner; Sessions and chat headers use a blue dot-matrix grid. Both can support loading, with different roles.</li>
 							</ul>
-							<h4>Potential solution</h4>
+							<h4>Proposal</h4>
 							<ul>
-								<li>Review with the team whether browser loading should use the shared blue dot-matrix grid, or remain a deliberate browser-specific exception.</li>
-								<li><strong>Guideline: Indeterminate progress.</strong> Reuse a familiar activity indicator for the same meaning; document any context-specific exception.</li>
+								<li><strong>Rotating spinner:</strong> Use for routine loading, including the browser, individual tool activities, background operations, and multiple active list items.</li>
+								<li><strong>Dot-matrix grid (PixelSpinner):</strong> Reserve for the primary “agent is working” status in the conversation or session the user is actively following.</li>
+								<li><strong>Guideline: Indeterminate progress.</strong> Keep one primary PixelSpinner per task hierarchy. Use compact spinners for subordinate activities, without duplicating progress at the same scope.</li>
 								<li><strong>Reduced Motion:</strong> Preserve a static loading icon and an accessible loading label.</li>
 							</ul>
-							<p>Open question for team review; unification is not yet a decided direction.</p>
+							<p>Proposal for team review: clarify when to use each indicator, rather than replace one with the other.</p>
 						</figcaption>
 					</figure>
 					<figure class="opportunity-card">

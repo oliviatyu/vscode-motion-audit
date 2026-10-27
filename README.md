@@ -151,11 +151,18 @@ Customizations loading treatment, similar grid/ring dot-matrix states, and the
 browser spinner versus Sessions/chat blue grid, and shared colors with different
 meanings. The color case pairs the supplied current-meaning screenshot with
 proposed semantic color guidelines; both open full size and remain proposals for
-team review. The browser case asks the team
-whether to unify or retain a documented exception; it is not a decided redesign.
+team review. The browser case proposes complementary roles rather than unifying
+the icons: rotating spinners for routine and subordinate loading, and one primary
+dot-matrix PixelSpinner per task hierarchy for agent activity the user is following.
+It uses **Current use / Proposal** headings and remains a proposal for team review.
 The first and third use product recordings; the second is explicitly labeled
 as Component Explorer evidence, not a live product capture or comprehension
-study. Proposed directions reuse a leading loading spinner and a consistent
+study. The Customizations case pairs its recording with the supplied October 23
+Search recording (“function”), stacked in the left column with text on the right,
+matching the other cases; narrow screens stack the media above the text.
+Its proposals are to unify the loading treatments with a compact spinner
+or remove the subtle Search animation while retaining the tab’s in-progress text.
+Neither option is selected. Other proposed directions include a consistent
 static question mark for input needed. They are documented for later prototyping;
 existing cases remain below them. Imported MP4s omit audio and preserve the
 original video streams; source recordings are unchanged.

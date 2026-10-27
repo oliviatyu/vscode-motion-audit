@@ -1307,6 +1307,17 @@ h3 {
 	border-top: 1px solid var(--border);
 }
 
+.opportunity-loading-recordings {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 24px;
+}
+
+.opportunity-loading-recordings h4 {
+	margin: 0 0 8px;
+	font-size: 0.875rem;
+}
+
 .opportunity-card video {
 	display: block;
 	width: 100%;
