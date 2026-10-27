@@ -213,6 +213,77 @@ h3 {
 	gap: 20px;
 }
 
+.current-motion-tabs {
+	margin-bottom: 24px;
+}
+
+.current-motion-patterns-frame {
+	display: block;
+	width: 100%;
+	min-height: 600px;
+	border: 0;
+}
+
+.native-cpu-report {
+	margin-bottom: 36px;
+	padding: 24px;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-medium);
+	background: var(--surface-1);
+}
+
+.native-cpu-report h3,
+.library-earlier-heading h3 {
+	margin: 0 0 12px;
+}
+
+.native-cpu-report p,
+.native-cpu-method li {
+	line-height: 1.6;
+}
+
+.native-cpu-results {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+	gap: 16px;
+	margin: 24px 0;
+}
+
+.native-cpu-results article {
+	min-width: 0;
+	padding: 18px;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-small);
+	background: var(--surface-2);
+}
+
+.native-cpu-results h4 {
+	margin: 0 0 14px;
+}
+
+.native-cpu-method {
+	margin: 20px 0;
+}
+
+.native-cpu-method summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.native-cpu-method li + li {
+	margin-top: 10px;
+}
+
+.native-cpu-method code {
+	overflow-wrap: anywhere;
+}
+
+.library-earlier-heading {
+	margin-bottom: 24px;
+	padding-top: 24px;
+	border-top: 1px solid var(--border);
+}
+
 .library-controls .library-tabs {
 	justify-self: start;
 }
@@ -672,6 +743,14 @@ h3 {
 	letter-spacing: -0.02em;
 }
 
+#transition-choices {
+	margin-top: 64px;
+}
+
+#transition-patterns > .transition-pattern:first-child {
+	padding-top: 0;
+}
+
 .transition-pattern-copy > p:not(.transition-eyebrow),
 .transition-pattern-guidance {
 	color: var(--text-secondary);
@@ -749,20 +828,6 @@ h3 {
 .transition-technical h5 {
 	margin: 0 0 20px;
 	font-size: 0.9rem;
-}
-
-.transition-shared {
-	margin-top: 24px;
-}
-
-.transition-shared h3 {
-	margin-bottom: 16px;
-}
-
-.transition-shared-note {
-	margin: 16px 0 0;
-	color: var(--text-secondary);
-	font-size: 0.78rem;
 }
 
 .transition-technical-grid {
@@ -4301,10 +4366,14 @@ legend {
 	padding-left: 24px;
 }
 
+.motion-guide-principles,
+.motion-guide-rules {
+	padding-left: 24px;
+}
+
 .motion-guide-principles {
 	display: grid;
 	gap: 20px;
-	padding-left: 24px;
 }
 
 .motion-guide-principles h4 {

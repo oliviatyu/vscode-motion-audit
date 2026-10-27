@@ -55,17 +55,12 @@
 				</button>
 				<div class="nav-divider" aria-hidden="true"></div>
 				<button class="nav-item nav-item-with-label" type="button" data-view="properties">
-					<span>Component motion</span>
+					<span>Components</span>
 					<span class="nav-item-label">Motion principle</span>
 				</button>
 				<div class="nav-divider" aria-hidden="true"></div>
 				<button class="nav-item nav-item-with-label" type="button" data-view="transitions">
-					<span>Interface transitions</span>
-					<span class="nav-item-label">Motion principle</span>
-				</button>
-				<div class="nav-divider" aria-hidden="true"></div>
-				<button class="nav-item nav-item-with-label" type="button" data-view="animation">
-					<span>Animated icons</span>
+					<span>Transitions</span>
 					<span class="nav-item-label">Motion principle</span>
 				</button>
 				<div class="nav-divider" aria-hidden="true"></div>
@@ -661,8 +656,57 @@
 				<div class="page-heading">
 					<div>
 						<h2 id="library-title">Current motion</h2>
-						<p>Compare the extra CPU used by individual animations to prioritize motion optimization.</p>
 					</div>
+				</div>
+				<div class="library-tabs current-motion-tabs" role="tablist" aria-label="Current motion sections">
+					<button id="current-motion-cpu-tab" class="library-tab active" type="button" role="tab" aria-selected="true" aria-controls="current-motion-cpu-panel" data-current-motion-tab>Latest CPU test</button>
+					<button id="current-motion-patterns-tab" class="library-tab" type="button" role="tab" aria-selected="false" aria-controls="current-motion-patterns-panel" tabindex="-1" data-current-motion-tab>Motion patterns</button>
+				</div>
+				<div id="current-motion-cpu-panel" role="tabpanel" aria-labelledby="current-motion-cpu-tab" tabindex="0">
+				<section class="native-cpu-report" aria-labelledby="native-cpu-title">
+					<p class="phase-eyebrow">Latest CPU performance test · <time datetime="2026-10-23">October 23, 2026</time></p>
+					<h3 id="native-cpu-title">Actual product: working logo and shimmering text</h3>
+					<p>Tested in the actual <strong>VS Code Insiders Agents Window</strong>, not Component Explorer, with <strong>all installed extensions temporarily disabled</strong> in an isolated test profile.</p>
+					<div class="native-cpu-results">
+						<article>
+							<h4>Working logo</h4>
+							<p class="performance-result performance-high"><strong>+6.5 CPU pp</strong><span>High</span></p>
+							<p>Prioritize optimization</p>
+							<p class="performance-method">Paired range: +5.7 to +8.2 pp<br>Logo playing; shimmer static.</p>
+						</article>
+						<article>
+							<h4>Shimmering text</h4>
+							<p class="performance-result performance-high"><strong>+10.9 CPU pp</strong><span>High</span></p>
+							<p>Prioritize optimization</p>
+							<p class="performance-method">Paired range: +7.9 to +12.5 pp<br>Shimmer playing; logo static.</p>
+						</article>
+						<article>
+							<h4>Both animations together</h4>
+							<p class="performance-result performance-high"><strong>+15.5 CPU pp</strong><span>High</span></p>
+							<p>Combined animation cost</p>
+							<p class="performance-method">Paired range: +12.4 to +17.2 pp<br>Both playing, compared with both static.</p>
+						</article>
+					</div>
+					<p><strong>Result:</strong> Both animations consistently added CPU overhead in this waiting-for-an-answer state and meet this audit's High threshold. The shimmer added more renderer CPU overhead than the logo when measured separately.</p>
+					<details class="native-cpu-method">
+						<summary>How and where we tested</summary>
+						<ul>
+							<li><strong>Build and device:</strong> VS Code Insiders 1.144.0-insider, commit <code>c797482ce0d1bc89497a5636b69da98493e54036</code>, macOS arm64. The device stayed on battery with the same power mode throughout.</li>
+							<li><strong>Environment:</strong> A separate Agents Window using an isolated profile and a scratch workspace. Installed extensions were disabled using <code>--disable-extensions</code>, and the product's disabled-extensions notice was verified. Built-in product services remained available.</li>
+							<li><strong>Scenario:</strong> A real multiple-choice question was left unanswered, keeping the working logo and thinking-text shimmer visible. No terminal command or active model generation was part of the measured waiting state. The user paused work during measurement.</li>
+							<li><strong>Comparison:</strong> Seven on/off pairs for each case, with 10 seconds per condition. Order alternated between on/off and off/on. The baseline kept both animations static; individual tests enabled only the target animation. All three cases took approximately eight minutes in total.</li>
+							<li><strong>Controls:</strong> The original production sprite-atlas logo was paused or played. The original shimmer's JavaScript timeline updates were stopped and resumed independently. Timeline movement, shimmer-driver writes, unchanged request content and window size were checked during each sample. Original animation playback was restored afterward.</li>
+							<li><strong>Calculation:</strong> For each pair, subtract baseline CPU from active CPU. The headline is the median of those seven paired differences; the range is the smallest to largest difference, not a confidence interval. Both-on cost was measured separately, not calculated by adding the individual results.</li>
+							<li><strong>Rating:</strong> High means every pair added at least 5 CPU percentage points; Moderate means every pair added at least 1; Low means every difference was strictly between -1 and +1. These are this audit's prioritization thresholds, not universal performance budgets.</li>
+						</ul>
+					</details>
+					<p class="supporting-text"><strong>Scope:</strong> CPU pp means extra renderer CPU in percentage points; 100% corresponds to one fully used CPU core, not the whole device. GPU-process and browser-process CPU are recorded separately in the raw data and are not included above. These results do not mean the product became that percentage slower. They apply to this build, device, window size and waiting state; background OS activity and instrumentation remain limitations.</p>
+					<p><a href="./assets/native-cpu-performance-2026-10-23.json" target="_blank" rel="noreferrer">Raw actual-product measurements and verification details</a></p>
+				</section>
+				<div class="library-earlier-heading">
+					<p class="phase-eyebrow">Earlier test · Component Explorer</p>
+					<h3>Individual-animation CPU screening</h3>
+					<p class="supporting-text">The older results below use local Component Explorer fixtures, not the actual-product test above. Implementations can differ; do not compare the numbers as identical workloads. Production recordings on these cards are visual references, not the source of their CPU measurements.</p>
 				</div>
 				<div class="library-controls">
 					<div class="library-tabs" role="tablist" aria-label="Current motion categories">
@@ -683,210 +727,76 @@
 				<p id="library-summary" class="library-summary" aria-live="polite"></p>
 				<p class="library-summary"><a href="./assets/library-animation-performance.json" target="_blank" rel="noreferrer">Raw individual-animation CPU measurements</a></p>
 				<div id="library-grid" class="library-grid" role="tabpanel" aria-labelledby="library-components-tab" tabindex="0"></div>
+				</div>
+				<div id="current-motion-patterns-panel" role="tabpanel" aria-labelledby="current-motion-patterns-tab" tabindex="0" hidden>
+					<iframe id="current-motion-patterns-frame" class="current-motion-patterns-frame" title="Functional, decorative, and expressive motion patterns with visual examples" data-src="./assets/motion-patterns/index.html"></iframe>
+				</div>
 			</section>
 
 			<section class="view phase-two-view motion-guide" id="properties-view" data-view-panel="properties" aria-labelledby="properties-title" hidden>
 				<div class="page-heading">
 					<div>
-						<p class="motion-guide-eyebrow">Proposed guidance</p>
-						<h2 id="properties-title">Component motion</h2>
-						<p>Proposed component-level motion guidance for VS Code. Choose a role based on what the interface needs to communicate, then apply its behavior, timing, and easing consistently.</p>
+						<h2 id="properties-title">Components</h2>
 					</div>
 				</div>
-				<nav class="motion-guide-nav" aria-label="Component motion sections">
-					<a href="#component-principles">Principles</a>
-					<a href="#component-roles">Choose a motion role</a>
-					<a href="#component-rules">Shared guidelines</a>
+				<nav class="motion-guide-nav" aria-label="Components sections">
+					<a href="#when-to-use-motion">When to use motion</a>
+					<a href="#component-rules">Motion requirements</a>
 					<a href="#component-evidence">Supporting evidence</a>
 				</nav>
-				<p class="guideline-notice"><strong>Direction for review.</strong> These roles and values are starting points for prototyping and team review, not approved motion tokens.</p>
-				<p class="supporting-text">For feedback within a component: acknowledgment, progress, attention, completion, time remaining, and emphasis. Use Interface transitions for relationships between surfaces and Animated icons for glyph-level behavior.</p>
 
-				<section class="motion-guide-section" id="component-principles" aria-labelledby="component-principles-title">
-					<h3 id="component-principles-title">Principles</h3>
-					<ol class="motion-guide-principles">
-						<li><h4>Choose by meaning</h4><p>Distinguish work in progress, a request for input, and a confirmed outcome. Select the role that explains the actual state rather than the most noticeable effect.</p></li>
-						<li><h4>Let the operation set the pace</h4><p>Measured progress and countdowns follow real values. Feedback starts promptly, stops when its state ends, and never delays the result or the next action.</p></li>
-						<li><h4>Keep emphasis proportional</h4><p>Use one primary progress signal per scope. Reserve added emphasis for meaningful moments, and preserve the same information without motion.</p></li>
-					</ol>
-				</section>
-				<section class="motion-guide-section" id="component-roles" aria-labelledby="component-roles-title">
-					<h3 id="component-roles-title">Choose a motion role</h3>
-					<p>Choose the feedback role first, then use its behavior and constraints to evaluate a prototype. Timings and easing below are proposals, not measured product specifications.</p>
-					<div class="table-wrap phase-two-table">
-					<table>
-						<caption class="visually-hidden">Proposed component motion guidelines for VS Code</caption>
-						<thead><tr><th scope="col">Motion role</th><th scope="col">Use when</th><th scope="col">Behavior</th><th scope="col">Timing</th><th scope="col">Easing</th><th scope="col">Constraints</th></tr></thead>
-						<tbody id="properties-body"></tbody>
-					</table>
-					</div>
+				<section class="motion-guide-section" id="when-to-use-motion" aria-labelledby="when-to-use-motion-title">
+					<h3 id="when-to-use-motion-title"><span id="icon-guidance">When to use motion</span></h3>
+					<p id="component-principles">For functional motion, ask <strong>"Would motion communicate feedback, state changes, or the next action more clearly than a static presentation?"</strong> If <strong>yes</strong>, use restrained motion and preserve the same information when Reduced Motion is enabled; if <strong>no</strong>, use a static presentation.</p>
+					<p class="supporting-text">Decorative and expressive motion are outside the scope of this guideline.</p>
 				</section>
 				<section class="motion-guide-section" id="component-rules" aria-labelledby="component-rules-title">
-					<h3 id="component-rules-title">Shared guidelines</h3>
+					<h3 id="component-rules-title"><span id="icon-rules">Motion requirements</span></h3>
 					<ul class="motion-guide-rules">
-						<li><strong>Behavior:</strong> Bind the treatment to the real component state. Preserve separate paused, failed, cancelled, and completed outcomes; do not invent progress.</li>
-						<li><strong>Constraints:</strong> Keep feedback local. Do not move unrelated content, block input, or layer multiple signals for the same scope.</li>
-						<li><strong>Reduced Motion:</strong> Honor the resolved workbench preference. Remove optional interpolation and repeating decoration while keeping state labels and meaningful measured updates.</li>
-						<li><strong>Validation:</strong> Check rapid input, interruption, failure, cancellation, simultaneous activity, keyboard and screen-reader feedback, and preference changes in the live product before standardizing values.</li>
+						<li><strong>Respond immediately to input:</strong> Confirm the action with a clear state change. Add motion only when it makes the feedback easier to understand.</li>
+						<li><strong>Show when input is needed:</strong> Stop active-work motion when a user response is required. Use a stable icon, a clear label such as "Input needed", and the available action. Do not loop while waiting.</li>
+						<li><strong>Keep feedback local:</strong> Keep controls, hit targets, labels, and surrounding layout stable. Do not block input or duplicate a signal for the same operation.</li>
+						<li><strong>Do not manufacture waiting:</strong> A context-tested indicator delay can avoid flashes during short operations; never delay acknowledgment, results, or the next action to show an animation.</li>
+						<li><strong>Preserve meaning without motion:</strong> Honor the resolved workbench Reduced Motion preference, including changes during playback. Use recognizable static glyphs, readable status, available actions, and meaningful measured updates, not slower decorative loops.</li>
+						<li><strong>Budget CPU as well as attention:</strong> Stop with the operation, pause when hidden or offscreen, and dispose animation work when removed. Measure CPU cost alongside clarity and accessibility before standardizing a pattern.</li>
+						<li><strong>Validate real states:</strong> Check rapid input, interruption, failure, cancellation, simultaneous activity, keyboard and screen-reader feedback, and preference changes before standardizing values. Never make paused work look active or rely on per-frame announcements.</li>
 					</ul>
-				</section>
-				<details class="motion-guide-evidence" id="component-evidence">
-					<summary>Supporting evidence</summary>
-					<p>The current audit documents overlapping progress signals, needs-input treatments, generated-image completion, and a real undo countdown. Those cases motivate state-based roles and scoped feedback; they do not validate the proposed timing ranges or prove that every role needs animation.</p>
-					<ul>
-						<li><a href="#findings-view" data-go-to="findings">Findings</a>: existing component observations and product recordings.</li>
-						<li><a href="#overlap-view" data-go-to="overlap">Coordination</a>: simultaneous activity across session, response, tool, and field scopes.</li>
-						<li><a href="#library-view" data-go-to="library">Current motion</a>: recordings and component states to compare against a proposal.</li>
-					</ul>
-					<p class="supporting-text">The audit is the research base, not an approval of these roles or values. Some directions need further live validation and user testing.</p>
-				</details>
-			</section>
-
-			<section class="view phase-two-view transitions-guide motion-guide" id="transitions-view" data-view-panel="transitions" aria-labelledby="transitions-title" hidden>
-				<div class="page-heading">
-					<div>
-						<p class="motion-guide-eyebrow">Proposed guidance</p>
-						<h2 id="transitions-title">Interface transitions</h2>
-						<p>Help people follow what changes without losing their place in the workspace.</p>
-					</div>
-				</div>
-
-				<nav class="motion-guide-nav" aria-label="Interface transitions sections">
-					<a href="#transition-principles">Principles</a>
-					<a href="#transition-choices">Choose a transition pattern</a>
-					<a href="#transition-shared">Shared guidelines</a>
-					<a href="#transition-evidence">Supporting evidence</a>
-				</nav>
-				<p class="guideline-notice"><strong>Direction for review.</strong> Seven proposed patterns informed by live observations and existing audit evidence. Schematics and prototype values are not current product specifications.</p>
-				<p class="supporting-text">For changes between content, details, surfaces, and layouts. Use Component motion for feedback roles and Animated icons for motion inside individual glyphs.</p>
-				<section class="motion-guide-section" id="transition-principles" aria-labelledby="transition-principles-title">
-					<h3 id="transition-principles-title">Principles</h3>
-					<ol class="motion-guide-principles">
-						<li><h4>Start with no animation</h4><p>Animate only when the change needs explanation. Keep rapid, repeated, and already-clear changes immediate; never delay input or results.</p></li>
-						<li><h4>Preserve the workspace relationship</h4><p>Keep the surrounding editor stable. Connect a changed surface to its origin without moving the whole workbench or implying an unintended hierarchy.</p></li>
-						<li><h4>Keep context and control</h4><p>Preserve selection and reading position. Let new input interrupt, and retain state, labels, and the appropriate focus behavior when motion is off.</p></li>
-					</ol>
-				</section>
-				<section class="motion-guide-section" id="transition-choices" aria-labelledby="transition-choices-title">
-					<h3 id="transition-choices-title">Choose a transition pattern</h3>
-					<p>Choose by the relationship that changes. Each pattern separates the recommendation, prototype values, and supporting observations.</p>
-					<div id="transition-patterns"></div>
-				</section>
-				<section class="motion-guide-section transition-technical transition-shared" id="transition-shared" aria-labelledby="transition-shared-title">
-					<h3 id="transition-shared-title">Shared guidelines</h3>
-					<dl class="transition-technical-grid" id="transition-shared-values"></dl>
-					<p class="transition-shared-note">VS Code uses <code>workbench.reduceMotion</code>; web demos follow <code>prefers-reduced-motion</code>. Demos are manual and keep focus on their controls.</p>
-				</section>
-				<details class="motion-guide-evidence" id="transition-evidence">
-					<summary>Supporting evidence</summary>
-					<p class="transition-coverage-note">Live audit: Insiders 1.143.0, build <code>341e0fa</code>, macOS, October 19, 2026. Tested 18 actions with Reduced Motion off and on in an isolated profile. Agent handoffs remain unverified. Each pattern's supporting details distinguish observed behavior from the proposal; documentation links establish interactions, not proposed motion.</p>
-					<p>For the measured view, folder, Panel, Quick Open, side-bar, split, tab, and definition-navigation actions, no surface transition was detected. The Find widget used a 200 ms linear transform, suppressed with Reduced Motion. This does not mean those actions have zero processing latency.</p>
-					<p class="supporting-text">Chat disclosure and selection, state handoffs, Panel maximization, typing, and drag-resizing were not measured in this run. The proposals and their examples are not claims of live validation for those cases.</p>
-				</details>
-			</section>
-
-			<section class="view phase-two-view icon-research motion-guide" id="animation-view" data-view-panel="animation" aria-labelledby="animation-title" hidden>
-				<div class="page-heading">
-					<div>
-						<p class="motion-guide-eyebrow">Proposed guidance</p>
-						<h2 id="animation-title">Animated icons</h2>
-						<p>Give every moving icon a clear job. Show where work is happening, distinguish a request for attention, and preserve meaning when motion is off.</p>
-					</div>
-				</div>
-
-				<nav class="motion-guide-nav" aria-label="Animated icons sections">
-					<a href="#icon-guidance">Principles</a>
-					<a href="#icon-directions">Choose a motion role</a>
-					<a href="#icon-rules">Shared guidelines</a>
-					<a href="#icon-components">Supporting evidence</a>
-				</nav>
-
-				<p class="guideline-notice"><strong>Direction for review.</strong> Recommendations grounded in current product and Component Explorer research. The shared timing baseline is a proposal to test, not a shipped standard.</p>
-				<p class="supporting-text">For motion within individual icons, not layout transitions, text shimmer, composer borders, or large progress surfaces.</p>
-
-				<section class="icon-research-section" id="icon-guidance" aria-labelledby="icon-guidance-title">
-					<h3 id="icon-guidance-title">Principles</h3>
-					<ol class="icon-proposal-list">
-						<li><h4>Make the state clear</h4><p>Distinguish ongoing work, input needed, and outcomes through recognizable glyphs and labels. Motion alone is not a status.</p></li>
-						<li><h4>Coordinate by purpose</h4><p>Choose one primary indicator per operation; retain local feedback for distinct work. Test a shared rhythm for comparable activity loops, not every animation.</p></li>
-						<li><h4>Preserve meaning without motion</h4><p>Keep status and available actions understandable when animation is off. Never make a paused operation look like work is continuing.</p></li>
-					</ol>
-				</section>
-
-				<section class="icon-research-section" id="icon-directions" aria-labelledby="icon-directions-title">
-					<h3 id="icon-directions-title">Choose a motion role</h3>
-					<p>Choose by what the user needs to understand. These are proposed roles, not existing component families.</p>
-					<div class="icon-direction-grid">
-						<article class="icon-direction-card">
-							<p class="icon-evidence-label">01 / Work is continuing</p>
-							<h4>Indeterminate activity</h4>
-							<dl>
-								<div><dt>Use when</dt><dd>Work is active and its completion time is unknown.</dd></div>
-								<div><dt>Behavior</dt><dd>Loop beside the operation's label, only while it runs. Loop speed must not imply a completion percentage.</dd></div>
-							</dl>
-							<details class="icon-direction-rationale"><summary>Why this direction</summary><p>The working logo and local tool PixelSpinner already show unknown-duration activity at different scopes. PR fields and submission use separate loading states. This supports operation-bound feedback, not a universal spinner for every wait.</p><a href="#icon-working-logo">Working-logo evidence</a> · <a href="#icon-pixel-spinner">Local-activity evidence</a> · <a href="#icon-loading-glyph">Field and connection evidence</a></details>
-						</article>
-						<article class="icon-direction-card">
-							<p class="icon-evidence-label">02 / A person needs to act</p>
-							<h4>Attention needed</h4>
-							<dl>
-								<div><dt>Use when</dt><dd>Work is paused for approval, input, or another decision.</dd></div>
-								<div><dt>Behavior</dt><dd>Show a stable attention glyph and “Input needed” label. Do not keep a loading loop running while waiting.</dd></div>
-							</dl>
-							<details class="icon-direction-rationale"><summary>Why this direction</summary><p>Current session and subagent implementations distinguish running grid from waiting ring, but the ring is also used for loading elsewhere. Existing input-needed product captures show competing icon and row signals. A non-looping waiting state is a proposed change, not a claim about today's behavior.</p><a href="#icon-pixel-spinner">Current state semantics</a> · <a href="#opportunities-view" data-go-to="opportunities">Input-needed product cases in Opportunities</a></details>
-						</article>
-						<article class="icon-direction-card">
-							<p class="icon-evidence-label">03 / A live signal is changing</p>
-							<h4>Live input / output feedback</h4>
-							<dl>
-								<div><dt>Use when</dt><dd>Genuine listening or speaking benefits from visible signal feedback.</dd></div>
-								<div><dt>Behavior</dt><dd>Follow the real signal within the glyph. Keep connecting and idle distinct from capture; validate with live audio.</dd></div>
-							</dl>
-							<details class="icon-direction-rationale"><summary>Why this direction — needs live validation</summary><p>Voice source separates connecting, idle, listening, and speaking, with audio-reactive bars and a CSS fallback. Reviewed listening/speaking fixtures were static. This role is grounded in that implementation but needs a live audio check before choosing a waveform or rhythm.</p><a href="#icon-static">Voice observations and verification gap</a></details>
-						</article>
-					</div>
-					<p class="supporting-text">Show completion, failure, and cancellation as stable outcomes. Use measured progress, not a decorative loop, when a real value is available.</p>
-				</section>
-
-				<section class="icon-research-section" id="icon-rules" aria-labelledby="icon-rules-title">
-					<h3 id="icon-rules-title">Shared guidelines</h3>
-					<section class="icon-technical-guide" id="icon-technical" aria-labelledby="icon-technical-title">
-						<h4 id="icon-technical-title">Technical motion guidance</h4>
-						<p><strong>Test 1,500 ms per complete activity cycle</strong>, using existing Codicon rotation as the baseline. Equal durations may feel different across mechanisms; compare before adopting a shared value.</p>
-						<div class="table-wrap icon-research-table">
-							<table>
-								<caption class="visually-hidden">Proposed animated icon timing baseline and exceptions, with easing guidance</caption>
-								<thead><tr><th scope="col">Motion family</th><th scope="col">Timing</th><th scope="col">Easing and rhythm</th></tr></thead>
-								<tbody>
-									<tr><th scope="row">Activity loops</th><td><strong>1,500 ms / cycle</strong><br>Proposed shared baseline for rotation, ring, and grid. <a href="#icon-loading-glyph">Existing Codicon value</a>.</td><td>Retain <code>steps(30)</code> for Codicon and sequenced keyframes for dots. Test <code>linear</code> for new constant-speed rotation; one duration does not require one easing.</td></tr>
-									<tr><th scope="row">Multi-stage working logo</th><td><strong>2,667 ms / cycle</strong><br>Retain the <a href="#icon-working-logo">existing Draw cycle</a> as an initial exception.</td><td>Preserve the draw, hold, unravel, and rest sequence. Evaluate alongside the shared activity baseline.</td></tr>
-									<tr><th scope="row">Attention / one-time cues</th><td><strong>0 ms</strong> for the proposed static attention state. Any one-time cue needs separate duration testing.</td><td>No ongoing loop. If a settling cue is needed, test <code>ease-out</code>; no cue duration is standardized yet.</td></tr>
-									<tr><th scope="row">Live signal feedback</th><td><strong>Signal-driven</strong>, not a fixed cycle. <a href="#icon-static">Needs live validation</a>.</td><td>Follow actual input / output; tune smoothing in live tests rather than using a decorative loop.</td></tr>
-								</tbody>
-							</table>
-						</div>
-						<p class="supporting-text"><a href="#icon-validation">Comparison and implementation checklist</a> · <a href="#icon-pixel-spinner">Current grid / ring baselines</a></p>
-					</section>
-					<ul class="motion-guide-rules">
-						<li><strong>Keep motion local:</strong> Animate within a stable icon slot. Keep the control, hit target, label, and surrounding layout still.</li>
-						<li><strong>Stop with the operation:</strong> Show new states immediately, without waiting for a cycle to finish. Pause when hidden and dispose animation work when removed.</li>
-						<li><strong>Honor Reduced Motion:</strong> Replace optional motion with a recognizable static glyph and explicit status, not a slower loop. Respond to preference changes during playback.</li>
-					</ul>
-				</section>
-
-				<details class="icon-evidence-appendix motion-guide-evidence">
-					<summary>Supporting evidence</summary>
-					<p>The observations support these proposals, not a validated redesign. Review simultaneous activity in <a href="#overlap-view" data-go-to="overlap">Coordination</a> and the supporting <a href="#findings-view" data-go-to="findings">Findings</a>. Repeated indicators suggest a coordination question, not proven user confusion.</p>
-					<details class="icon-direction-rationale" id="icon-validation">
-						<summary>Comparison and implementation checklist</summary>
-						<ul class="motion-guide-rules">
-							<li><strong>Compare rhythms:</strong> Test the proposed 1,500 ms cycle against the current <a href="#icon-pixel-spinner">1,200 ms ring and 1,820 ms grid</a>, alongside Codicon and the 2,667 ms logo. Compare perceived speed, clarity, distraction, and loop boundaries individually and together at real icon sizes in the editor. Document justified exceptions.</li>
-							<li><strong>Specify the mechanism:</strong> Reuse an appropriate component. Record animated properties, ranges, transform origin, cycle or cue duration, repeat count, easing / keyframes, delays, and holds. Mark observed versus proposed values; for live feedback, document signal mapping, update rate, smoothing, and idle thresholds instead.</li>
-							<li><strong>Test interruption:</strong> Exercise rapid start / stop, replacement, failure, cancellation, hiding, removal, and becoming visible again. Cancel stale callbacks; do not replay old states or restart a one-time cue on focus or re-render.</li>
-							<li><strong>Verify accessibility:</strong> Test state recognition, keyboard use, and screen-reader feedback without per-frame announcements. Check browser preference, workbench setting, and changes during playback separately; fixture overrides do not validate the live setting. See the <a href="#icon-coverage">motion-policy checks and limits</a>.</li>
-							<li><strong>Validate live signals:</strong> Test genuine listening / speaking, connecting, idle, and failure. Smoothing must not mask meaningful changes or imply idle capture. Static voice fixtures do not establish responsiveness or user comprehension.</li>
-						</ul>
+					<details class="icon-direction-rationale icon-research" id="animation-view">
+						<summary>Icon-specific timing and implementation</summary>
+						<p>For motion within individual glyphs, not text shimmer, composer borders, or large progress surfaces. These are observed implementation references, not shared design tokens.</p>
+						<section class="icon-technical-guide" id="icon-technical" aria-labelledby="icon-technical-title">
+							<h4 id="icon-technical-title">Technical motion guidance</h4>
+							<p><strong>Preserve each component's rhythm.</strong> Matching cycle durations does not preserve perceived speed or coordinated dot phases.</p>
+							<div class="table-wrap icon-research-table">
+								<table>
+									<caption class="visually-hidden">Observed animated icon timings and component-specific implementation constraints</caption>
+									<thead><tr><th scope="col">Motion family</th><th scope="col">Timing</th><th scope="col">Easing and rhythm</th></tr></thead>
+									<tbody>
+										<tr><th scope="row">Rotating Codicon</th><td><strong>1,500 ms / cycle</strong><br><a href="#icon-loading-glyph">Existing rotation</a>.</td><td>Retain <code>steps(30)</code> and the centered transform origin. Replacing stepped rotation with smooth rotation requires visual and CPU validation.</td></tr>
+										<tr><th scope="row">PixelSpinner grid</th><td><strong>1,820 ms / cycle</strong><br><a href="#icon-pixel-spinner">Existing cascading dots</a>.</td><td>Keep the six-dot delays, sequenced keyframes, and <code>steps(6, jump-none)</code> together. Changing only the duration alters the choreography.</td></tr>
+										<tr><th scope="row">PixelSpinner ring</th><td><strong>1,200 ms / cycle</strong><br><a href="#icon-pixel-spinner">Existing orbiting highlight</a>.</td><td>Preserve the 200 ms phase spacing and <code>steps(4, jump-none)</code>. A duration-only change to 1,500 ms creates a 500 ms wrap gap.</td></tr>
+										<tr><th scope="row">Multi-stage working logo</th><td><strong>2,667 ms / cycle</strong><br><a href="#icon-working-logo">Existing Draw sequence</a>.</td><td>Preserve draw, hold, unravel, and rest. This sequence is JavaScript-driven; CSS duration changes do not retime it.</td></tr>
+										<tr><th scope="row">Live signal feedback</th><td><strong>Signal-driven</strong>, not a fixed cycle. <a href="#icon-static">Needs live validation</a>.</td><td>Follow actual input / output; tune smoothing in live tests rather than using a decorative loop.</td></tr>
+									</tbody>
+								</table>
+							</div>
+							<p class="supporting-text">Scaling dot delays with the duration preserves relative phases, but does not establish a better appearance or lower CPU cost. <a href="#component-timing-review">Timing verification</a>.</p>
+						</section>
 					</details>
+				</section>
+				<details class="motion-guide-evidence icon-research" id="component-evidence">
+					<summary>Supporting evidence</summary>
+					<p><a href="#findings-view" data-go-to="findings">Findings</a> · <a href="#overlap-view" data-go-to="overlap">Coordination</a> · <a href="#library-view" data-go-to="library">Current motion</a></p>
+				<section class="icon-research-section" id="component-timing-review" aria-labelledby="component-timing-review-title">
+					<h3 id="component-timing-review-title">Timing verification</h3>
+					<ul class="motion-guide-rules">
+						<li><strong>Component-specific cycles:</strong> The local Explorer comparison did not support one 1,500 ms cycle for rotation, grid, and ring. Duration-only changes altered dot phases; proportional delay changes preserved phases but remain a design proposal.</li>
+						<li><strong>Completion is not one short cue:</strong> The 400 × 400 px generated-image fixture revealed in approximately 3.6 seconds. Its sequence depends on reveal geometry and pacing, not a 120–200 ms ease-out. Reduced Motion skipped the reveal and kept the image visible.</li>
+						<li><strong>Progress has separate clocks:</strong> Source uses 100 ms linear width interpolation between measured updates, a 4-second indeterminate bar cycle, and a 10-second Undo deadline. Countdown hover pause and resume were verified; interpolation is not the task duration.</li>
+						<li><strong>Lifecycle remains a requirement:</strong> The grid paused offscreen; the ring's pause class was applied but its animation kept running in the local CSS-variant probe. Both dot variants became static with the browser's Reduced Motion preference. The ring needs implementation follow-up.</li>
+					</ul>
+					<p class="supporting-text">Local source and Component Explorer checks, not installed-product or user validation. No shared acknowledgment, entrance, completion, or emphasis duration is established. <a href="./assets/component-timing-verification.json" target="_blank" rel="noopener">Verification data and source hashes</a>.</p>
+				</section>
 				<section class="icon-research-section" id="icon-components" aria-labelledby="icon-components-title">
 					<h3 id="icon-components-title">Observed components</h3>
 					<p>These are implementation families found in the research, not a new classification of UI transitions. Timings describe the inspected code; they are not proposed motion tokens.</p>
@@ -933,7 +843,7 @@
 									<a href="#icon-coverage" data-icon-fixture="sessions/sessionsList/SessionsList_CollapsedNeedsInputSections/Dark">Inspect needs-input ring in context</a>
 									<a href="#icon-coverage" data-icon-fixture="platform/buttonBar/IconToSpinnerWidth/Dark">Inspect button icon replacement</a>
 								</div>
-								<details><summary>Implementation evidence</summary><p><code>vs/base/browser/ui/pixelSpinner/pixelSpinner.ts</code><br><code>vs/base/browser/ui/pixelSpinner/pixelSpinner.css</code><br><code>vs/sessions/browser/sessionStatusIcon.ts</code><br><code>vs/workbench/contrib/chat/browser/widget/chatContentParts/chatSubagentOpenChat.ts</code><br><code>vs/platform/actions/browser/buttonbar.ts</code></p><p>The component tracks visibility and pauses offscreen CSS motion. The button implementation puts the spinner in the existing leading icon slot when there is one, rather than showing both glyphs.</p></details>
+								<details><summary>Implementation evidence</summary><p><code>vs/base/browser/ui/pixelSpinner/pixelSpinner.ts</code><br><code>vs/base/browser/ui/pixelSpinner/pixelSpinner.css</code><br><code>vs/sessions/browser/sessionStatusIcon.ts</code><br><code>vs/workbench/contrib/chat/browser/widget/chatContentParts/chatSubagentOpenChat.ts</code><br><code>vs/platform/actions/browser/buttonbar.ts</code></p><p>The component registers visibility tracking. The local timing check confirmed offscreen pause for the grid, but the ring continued animating despite the pause class. The button implementation puts the spinner in the existing leading icon slot when there is one, rather than showing both glyphs.</p></details>
 							</div>
 							<figure>
 								<video controls muted playsinline preload="none" poster="./assets/live-insiders/local-tool-pixel-spinner-poster.jpg" aria-label="Existing live product recording showing a local terminal-tool PixelSpinner">
@@ -1028,12 +938,48 @@
 			</section>
 
 
+			<section class="view phase-two-view transitions-guide motion-guide" id="transitions-view" data-view-panel="transitions" aria-labelledby="transitions-title" hidden>
+				<div class="page-heading">
+					<div>
+						<h2 id="transitions-title">Transitions</h2>
+					</div>
+				</div>
+
+				<nav class="motion-guide-nav" aria-label="Transitions sections">
+					<a href="#transition-principles">Principles</a>
+					<a href="#transition-shared">Motion requirements</a>
+					<a href="#transition-choices">Choose a transition pattern</a>
+					<a href="#transition-evidence">Supporting evidence</a>
+				</nav>
+				<section class="motion-guide-section" id="transition-principles" aria-labelledby="transition-principles-title">
+					<h3 id="transition-principles-title">Principles</h3>
+					<ol class="motion-guide-principles">
+						<li><h4>Start with no animation</h4><p>Animate only when the change needs explanation. Keep rapid, repeated, and already-clear changes immediate.</p></li>
+						<li><h4>Preserve the workspace relationship</h4><p>Keep the surrounding editor stable. Connect a changed surface to its origin without moving the whole workbench or implying an unintended hierarchy.</p></li>
+						<li><h4>Keep context and control</h4><p>Preserve selection and reading position so changes do not make users lose their place or next action.</p></li>
+					</ol>
+				</section>
+				<section class="motion-guide-section" id="transition-shared" aria-labelledby="transition-shared-title">
+					<h3 id="transition-shared-title">Motion requirements</h3>
+					<ul class="motion-guide-rules" id="transition-shared-values"></ul>
+					<p class="supporting-text">VS Code uses <code>workbench.reduceMotion</code>; web demos follow <code>prefers-reduced-motion</code>. Demos are manual and keep focus on their controls.</p>
+				</section>
+				<section class="motion-guide-section" id="transition-choices" aria-labelledby="transition-choices-title">
+					<h3 id="transition-choices-title">Choose a transition pattern</h3>
+					<div id="transition-patterns"></div>
+				</section>
+				<details class="motion-guide-evidence" id="transition-evidence">
+					<summary>Supporting evidence</summary>
+					<p class="transition-coverage-note">Live audit: Insiders 1.143.0, build <code>341e0fa</code>, macOS, October 19, 2026. Tested 18 actions with Reduced Motion off and on in an isolated profile. Agent handoffs remain unverified. Each pattern's supporting details distinguish observed behavior from the proposal; documentation links establish interactions, not proposed motion.</p>
+					<p>For the measured view, folder, Panel, Quick Open, side-bar, split, tab, and definition-navigation actions, no surface transition was detected. The Find widget used a 200 ms linear transform, suppressed with Reduced Motion. This does not mean those actions have zero processing latency.</p>
+					<p class="supporting-text">Chat disclosure and selection, state handoffs, Panel maximization, typing, and drag-resizing were not measured in this run. The proposals and their examples are not claims of live validation for those cases.</p>
+				</details>
+			</section>
+
 			<section class="view phase-two-view motion-guide" id="accessibility-view" data-view-panel="accessibility" aria-labelledby="accessibility-title" hidden>
 				<div class="page-heading">
 					<div>
-						<p class="motion-guide-eyebrow">Proposed guidance</p>
 						<h2 id="accessibility-title">Accessibility</h2>
-						<p>Communicate change without making motion a requirement for understanding it. People must be able to reduce motion without losing status, progress, or control in VS Code.</p>
 					</div>
 				</div>
 				<nav class="motion-guide-nav" aria-label="Accessibility sections">
@@ -1043,8 +989,6 @@
 					<a href="#accessibility-validation">Review checklist</a>
 					<a href="#accessibility-standards">Standards and sources</a>
 				</nav>
-				<p class="guideline-notice"><strong>Direction for review.</strong> These are proposed product guidelines, not a claim that VS Code meets every criterion. WCAG references are identified separately from our design recommendations.</p>
-
 				<section class="motion-guide-section" id="accessibility-principles" aria-labelledby="accessibility-principles-title">
 					<h3 id="accessibility-principles-title">Principles</h3>
 					<ol class="motion-guide-principles">

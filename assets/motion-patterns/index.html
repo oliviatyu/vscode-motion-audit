@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="data:,">
+	<title>Motion usage reference</title>
+	<script src="./proposal.js" defer></script>
+	<style>
+		:root { color-scheme: dark; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #e7e7e7; background: #101112; }
+		* { box-sizing: border-box; }
+		body { margin: 0; padding: 0; }
+		nav { display: flex; gap: 24px; margin: 0 auto 24px; max-width: 1600px; }
+		a { color: #90caff; }
+		.chart { width: 1600px; max-width: 100%; margin: 0 auto 36px; background: #191b1d; border: 1px solid #393c40; border-radius: 16px; padding: 32px; }
+		.eyebrow { color: #90caff; font-size: 12px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 8px; }
+		h1, h2 { font-size: 30px; letter-spacing: -.025em; line-height: 1.2; margin: 0 0 12px; }
+		.intro { color: #c8cbd0; margin: 0 0 24px; max-width: 1250px; }
+		.table-wrap { overflow-x: auto; border: 1px solid #393c40; border-radius: 10px; }
+		table { border-collapse: collapse; width: 100%; min-width: 1000px; table-layout: fixed; }
+		col.reference { width: 17%; } col.name { width: 15%; } col.used { width: 21%; } col.avoid { width: 22%; } col.rule { width: 25%; }
+		th, td { text-align: left; padding: 20px; vertical-align: middle; border-bottom: 1px solid #393c40; }
+		th { color: #b9bec5; font-size: 13px; font-weight: 600; background: #222528; padding-top: 14px; padding-bottom: 14px; }
+		tbody th { font-size: 17px; color: #f0f1f2; background: none; }
+		td { font-size: 16px; color: #cdd0d4; }
+		tr:last-child > * { border-bottom: 0; }
+		strong { color: #f0f1f2; font-weight: 650; }
+		.visual { min-height: 76px; display: flex; align-items: center; justify-content: center; background: #111315; border: 1px solid #303438; border-radius: 8px; padding: 12px; }
+		.visual img { display: block; max-width: 100%; height: auto; }
+		.visual .spinner { width: 32px; height: 32px; image-rendering: pixelated; }
+		.visual .pet { width: 64px; height: 64px; image-rendering: pixelated; }
+		.visual .logo { width: 180px; }
+		.visual .bar { width: 100%; height: 2px; }
+		.visual .confetti { max-height: 88px; width: auto; }
+		.caption { display: block; margin-top: 8px; font-size: 12px; line-height: 1.4; color: #a7adb5; text-align: center; }
+		.caption + .visual { margin-top: 24px; }
+		.badge { display: inline-block; font-size: 11px; color: #decda3; border: 1px solid #65583a; border-radius: 4px; padding: 2px 6px; margin-top: 8px; font-weight: 500; }
+		.proposal-label { color: #f2cc60; border-color: #786225; background: #302918; }
+		.proposal-link { display: block; width: fit-content; margin-top: 8px; font-size: 12px; font-weight: 500; }
+		.proposal-link:focus-visible { outline: 2px solid #90caff; outline-offset: 3px; }
+		.notes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 32px; margin-top: 24px; }
+		.notes p { margin: 0; color: #adb4bd; font-size: 13px; }
+		.sources { margin-top: 24px; border-top: 1px solid #393c40; padding-top: 16px; color: #929ba6; font-size: 12px; }
+		.sources p { margin: 6px 0 0; }
+		.sources summary { cursor: pointer; font-weight: 650; color: #f0f1f2; }
+		#functional tr[id]:focus, #functional tr.is-linked-pattern { outline: 2px solid #90caff; outline-offset: -2px; }
+		.reference-only { max-width: 1600px; margin: 72px auto 0; padding: 32px 0 0; border-top: 1px dashed #65583a; }
+		.reference-only .eyebrow { color: #decda3; }
+		.reference-only h2 { font-size: 22px; }
+		.reference-only .visual { max-width: 1000px; }
+		@media (max-width: 700px) { body { padding: 12px; } .chart { padding: 20px; } .notes { grid-template-columns: 1fr; } nav { flex-wrap: wrap; } }
+		@media print { body { padding: 0; } nav { display: none; } .chart { break-after: page; max-width: none; } }
+	</style>
+</head>
+<body>
+	<section class="chart" id="functional" aria-labelledby="functional-title">
+		<h1 id="functional-title">Functional motion</h1>
+		<div class="table-wrap">
+			<table>
+				<colgroup><col class="name"><col class="reference"><col class="used"><col class="avoid"><col class="rule"></colgroup>
+				<thead><tr><th scope="col">Animation / pattern</th><th scope="col">Visual examples / static references</th><th scope="col">Used for</th><th scope="col">Avoid when</th><th scope="col">Recommendation</th></tr></thead>
+				<tbody>
+					<tr id="pattern-rotating-spinner" tabindex="-1">
+						<th scope="row">Rotating spinner</th>
+						<td><div class="visual"><img class="spinner" src="arc.png" alt="A partial-circle loading icon"></div><span class="caption">Rotates continuously / enlarged 2x</span></td>
+						<td>Routine loading, individual chat tool activities, background operations, and multiple active list items.</td>
+						<td>Completion is measurable, or another indicator already communicates the same operation at the same scope.</td>
+						<td><strong>Default compact loading indicator.</strong> Use for subordinate activities instead of repeating PixelSpinner.</td>
+					</tr>
+					<tr id="pattern-pixel-spinner-grid" tabindex="-1">
+						<th scope="row">PixelSpinner grid</th>
+						<td><div class="visual"><img class="spinner" src="pixel.png" alt="Six-dot PixelSpinner grid at a visible animation phase"></div><span class="caption">Sequenced dot grid / enlarged 2x</span></td>
+						<td>The primary "agent is working" status in the conversation or session the user is actively following.</td>
+						<td>Repeated tool rows, nested subagents, dense lists, or incidental loading.</td>
+						<td><strong>Keep selectively.</strong> One primary PixelSpinner per task hierarchy; not one per activity beneath it.</td>
+					</tr>
+					<tr id="pattern-indeterminate-loading-bar" tabindex="-1">
+						<th scope="row">Indeterminate loading bar<br><span class="badge proposal-label">Visual unification proposed</span><a class="proposal-link" href="./loading-bar-proposal/index.html" target="_blank" rel="noopener" aria-haspopup="dialog">View proposal</a></th>
+						<td>
+							<div class="visual"><img src="loading-customizations-user.png" alt="Short gray loading segment above Search customizations"></div><span class="caption">Customizations / short traveling segment above search</span>
+							<div class="visual"><img src="loading-search-editor-user.png" alt="Search Editor tabs and function search field, showing the below-tab progress location"></div><span class="caption">Search Editor / below-tab progress location<br>Playback not established by this still</span>
+						</td>
+						<td>A whole view or region is loading and the completion amount is unknown.</td>
+						<td>A compact item needs a status icon, or real completion can be measured.</td>
+						<td><strong>Keep as a region-level pattern.</strong> Document surface-specific appearance: above the Customizations search field versus below the Search Editor tabs. Same unknown-completion role, not necessarily identical visuals; not an interchangeable compact spinner.</td>
+					</tr>
+					<tr id="pattern-determinate-progress-bar" tabindex="-1">
+						<th scope="row">Determinate progress bar</th>
+						<td>
+							<div class="visual"><img src="determinate-user.png" alt="Component Explorer Discrete Progress - 30% label and determinate progress bar"></div><span class="caption">Completion progress / 30% complete<br>Supplied fixture screenshot</span>
+							<div class="visual"><img src="countdown.png" alt="Marked-done notification with Undo and a time-remaining line"></div><span class="caption">Time remaining / countdown to Undo expiry</span>
+						</td>
+						<td>Showing measurable progress toward a known endpoint, so users can understand how much is complete or how much remains.</td>
+						<td>The total is unknown, progress would be invented, or a countdown creates artificial urgency. Never present elapsed time as work completed.</td>
+						<td><strong>One bar pattern, two variants.</strong> Match completion progress to measured work and countdown to the actual deadline; never use a shared loading cycle. Label what the bar measures. Live Agents appearance of the work-progress variant remains unverified; its fixture shows fixed fill states.</td>
+					</tr>
+					<tr id="pattern-working-status" tabindex="-1">
+						<th scope="row">Working status</th>
+						<td>
+							<div class="visual"><img src="working-status-user.png" alt="Teal VS Code working logo beside Working status text"></div><span class="caption">Logo + shimmering text</span>
+							<div class="visual"><img src="progress-shimmer-user.png" alt="Text-only progress status: 2 background commands running"></div><span class="caption">Shimmering text only / supplied static references</span>
+						</td>
+						<td>The primary, persistent AI working status. Two presentations of the same role: logo + shimmering text, or shimmering text only.</td>
+						<td>Repeated tool rows, completed messages, competing shimmers, or another primary indicator already covering the same operation.</td>
+						<td><strong>One status pattern, two variants.</strong> The installed build supports a No Icon option. Keep one active shimmer per response; subordinate text stays static. Use solid, static text with Reduced Motion; do not duplicate the same status with PixelSpinner.</td>
+					</tr>
+					<tr id="pattern-dictation" tabindex="-1">
+						<th scope="row">Dictation</th>
+						<td><div class="visual"><img src="dictation-recording-user.png" alt="Recording dictation microphone control with blue glow"></div><span class="caption">Recording / supplied static screenshot</span></td>
+						<td>Showing that speech-to-text capture is active while the user dictates a message.</td>
+						<td>Microphone capture is inactive, permission is pending, or speech resources are still preparing.</td>
+						<td><strong>Distinguish preparing from recording.</strong> Reserve capture feedback for actual microphone capture. Validate any audio-reactive motion against real input; retain a clear recording state and stop action with Reduced Motion.</td>
+					</tr>
+					<tr id="pattern-voice-mode" tabindex="-1">
+						<th scope="row">Voice mode</th>
+						<td>
+							<div class="visual"><img src="voice-mode-user.png" alt="Chat composer with Voice Mode waveform control and blue glow"></div><span class="caption">Listening / speaking shared visual reference<br>Supplied static screenshot</span>
+						</td>
+						<td>Communicating listening and spoken output during a voice conversation.</td>
+						<td>Connecting, muted, idle, or disconnected; do not imply that audio is being captured or played when it is not.</td>
+						<td><strong>Separate connecting, listening, and speaking.</strong> Validate signal-driven feedback with live audio, not a decorative loading loop. Preserve explicit states with Reduced Motion; stop audio visualization when inactive to avoid unnecessary CPU work.</td>
+					</tr>
+					<tr id="pattern-image-generation" tabindex="-1">
+						<th scope="row">Image-generation loading / reveal</th>
+						<td><div class="visual"><img src="generation.png" alt="Character matrix during image generation"></div><span class="caption">Generation frame / reveal not shown</span></td>
+						<td>Communicating image generation and bridging the wait to the generated result.</td>
+						<td>Unrelated loading or visual decoration without a connection to the output.</td>
+						<td><strong>Feature-specific loading with an expressive layer.</strong> Keep outside the purely decorative bucket; validate its added value and CPU cost.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="notes">
+			<p><strong>Performance:</strong> PixelSpinner cost more CPU in our browser prototype, especially with many instances. Native cost is unverified; the one-primary rule is a design constraint, not a measured CPU threshold.</p>
+			<p><strong>Lifecycle and accessibility:</strong> Stop when work ends; pause when hidden or offscreen. Reduced Motion must retain understandable status without continuous animation.</p>
+			<p><strong>Timing:</strong> Retain current 1,820 ms PixelSpinner and 1,500 ms rotating-spinner baselines for now. Shared 1,500 ms timing remains an experiment, not an adopted rule.</p>
+			<p><strong>Scope:</strong> Bars and countdowns are included as related motion patterns, not small animated icons. Dictation and voice mode use supplied screenshots. Hypothetical spinner-in-button placements remain excluded.</p>
+		</div>
+		<details class="sources">
+			<summary>Reference provenance</summary>
+			<p>The determinate progress reference is a user-supplied screenshot of Component Explorer's Discrete Progress - 30% fixture. Its code sets total(100) and worked(30); it is a fixed determinate state, not a live Agents capture.</p>
+			<p>The indeterminate loading bar row includes two user-supplied surface references: the short segment above Search customizations and the below-tab progress location in Search Editor. Customizations playback was previously verified in Component Explorer. Search Editor's implementation uses editor progress for a long-running search, but this supplied still does not establish that the pictured line is actively animating. Search-field focus outlines are not progress indicators.</p>
+			<p>Dictation uses a user-supplied recording screenshot. Voice mode uses one user-supplied screenshot as the shared reference for listening and speaking. Both features were tested live by the user. The images are static references, not playback recordings. Native CPU measurement remains outstanding.</p>
+			<p>Static PNG crops from local Component Explorer: DiscoverLoading, ProgressBars, BulkDoneNotificationAnimated, and CopilotGenerating. Both working-status references are user-supplied stills. Text-only progress was also checked in the live Agents app on October 26, 2026: with chat.experimental.persistentProgress set to Draw (Monochrome, No Icon), an approved sleep 20 test showed text-only progress and a shimmering Thinking label without the logo. The setting was reset to its original Draw default afterward. Earlier read-only inspection of installed Insiders 1.144.0-insider, commit 6e85dcfba62c2ea90aba2106eb3f071443b1a18e, confirmed percentage increments for cleanup scheduling; cleanup progress remains unobserved live. Spinner crops use product CSS and the Codicon font in the local comparison. Fixture references are not live-product screenshots; sizes are normalized for identification.</p>
+		</details>
+	</section>
+	<section class="chart" id="decorative" aria-labelledby="decorative-title">
+		<h2 id="decorative-title">Decorative and expressive motion</h2>
+		<div class="table-wrap">
+			<table>
+				<colgroup><col class="name"><col class="reference"><col class="used"><col class="avoid"><col class="rule"></colgroup>
+				<thead><tr><th scope="col">Animation / pattern</th><th scope="col">Visual examples / static references</th><th scope="col">Used for</th><th scope="col">Avoid when</th><th scope="col">Recommendation</th></tr></thead>
+				<tbody>
+					<tr>
+						<th scope="row">Confetti</th>
+						<td><div class="visual"><img class="confetti" src="confetti.png" alt="A burst of small colored confetti particles"></div><span class="caption">Single captured celebration burst</span></td>
+						<td>Brief celebration of a meaningful, confirmed achievement.</td>
+						<td>Routine success, frequent actions, ongoing work, errors, or repeating celebration.</td>
+						<td><strong>Keep sparingly; play once.</strong> Never make it the only confirmation of success. Omit the burst with Reduced Motion.</td>
+					</tr>
+					<tr>
+						<th scope="row">Animated pet</th>
+						<td><div class="visual"><img class="pet" src="pet.png" alt="Blue pixel-art chat pet"></div><span class="caption">Optional character / static fixture frame</span></td>
+						<td>Optional personality and personalization.</td>
+						<td>Communicating operational status or competing with focused work.</td>
+						<td><strong>Separate from loading.</strong> Keep optional and easy to disable; pause offscreen and respect Reduced Motion.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="notes">
+			<p><strong>Performance:</strong> Bound particle counts and duration; avoid perpetual decorative updates when the user cannot see them.</p>
+			<p><strong>Keep or consolidate:</strong> A one-off is not automatically wasteful. Keep it only when its distinct benefit outweighs distraction, maintenance, and runtime cost.</p>
+		</div>
+		<div class="sources">
+			<strong>Reference provenance</strong>
+			<p>Clean static crops from Component Explorer: SessionsList_Confetti (burst triggered in fixture data only) and newChatInput / WithPet. The confetti fixture reported a setup timeout, but its rendered action produced the captured particle burst. No real sessions were marked done.</p>
+		</div>
+	</section>
+	<aside class="reference-only" id="reference-only" aria-labelledby="reference-only-title">
+		<p class="eyebrow">Reference only / excluded from future guidelines</p>
+		<h2 id="reference-only-title">Chat input border animation</h2>
+		<p class="intro">Planned removal after progressMessage becomes sticky.</p>
+		<div class="visual"><img src="chat-input-border-user.png" alt="Chat input border animation, captured as a still"></div>
+		<p class="caption">User-supplied static reference / October 26, 2026</p>
+	</aside>
+</body>
+</html>

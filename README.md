@@ -11,19 +11,56 @@ The planned GitHub Pages URL is:
 The public build includes:
 
 - **Phase 1:** the existing Findings, Coordination, Principles, and Next steps.
-- **Phase 2:** Current motion, Component motion, Interface transitions, Animated icons, Accessibility, and Opportunities.
+- **Phase 2:** Current motion, Components (including Animated icons), Transitions, Accessibility, and Opportunities.
 
 It excludes the hidden Inventory, hidden research tables, editing dialog, and local Component Explorer links.
 
 ## Phase 2 foundation
 
+**When to use motion**, at the start of Components, gives one yes/no decision rule:
+would motion communicate feedback, state changes, or the next action more clearly
+than a static presentation? If yes, use restrained motion and preserve the same
+information when Reduced Motion is enabled; if no, use a static presentation.
+Decorative and expressive motion are outside this guideline's scope. Lifecycle, accessibility, and CPU guidance
+remain in Motion requirements. Open it with
+`?view=properties#when-to-use-motion`.
+
 Use the phase buttons in the header to switch between the original audit and
 the new foundation. Each phase retains its last selected page during the visit.
-The current page and Opportunities tab are reflected in the URL, so refreshing
+The current page, Current motion tab, and Opportunities tab are reflected in the URL, so refreshing
 or reopening that URL restores them instead of returning to Current motion.
 
-Current motion groups existing audit evidence into Components, Transition
-states, and Delights. Recordings and live Component Explorer previews are
+Current motion has **Latest CPU test** and **Motion patterns** tabs below its
+heading. The CPU tab retains the native test and the earlier Components,
+Transition states, and Delights evidence. The Motion patterns tab embeds the
+self-contained reference charts in `assets/motion-patterns/`, including static
+visual examples, functional and decorative guidance, PNG exports, and the
+separate reference-only chat input border. These assets work locally and in the
+public build without depending on the standalone chart server. The charts load
+only when their tab is selected, and hidden CPU videos/previews stop playing.
+Use `?view=library&currentMotionTab=current-motion-patterns-tab` to link directly
+to the patterns.
+
+The indeterminate loading-bar row includes a yellow **Visual unification
+proposed** label. **View proposal** opens the bundled top-border gradient
+prototype in a modal, with gray Customizations and blue Search Editor examples.
+Both use a consistent border on all four sides, with only a soft top-edge
+gradient moving. Border colors match the installed Dark 2026 theme:
+`input.border` (`#333536`) and `focusBorder` (`#3994BCB3`, including its alpha).
+Close or Escape returns to the chart and unloads the prototype to stop its
+animation. The proposal works in local and public builds without port 4196.
+
+The CPU tab leads with **Latest CPU performance test · October 23,
+2026**, an actual Insiders Agents Window retest with installed extensions
+disabled. Seven alternating ten-second pairs per case found extra renderer CPU
+of +6.5 percentage points for the logo, +10.9 for shimmer, and +15.5 for both;
+each meets the audit's High rule. The page documents the native build, isolated
+profile, waiting-question workload, independent controls, calculation and
+limitations. Raw evidence is in `assets/native-cpu-performance-2026-10-23.json`.
+The older Component Explorer results remain below a separate heading; production
+recordings on those cards do not supply their CPU measurements.
+
+Recordings and live Component Explorer previews are
 paused by default. Each card reports **individual-animation CPU cost**:
 animation name, High/Moderate/Low, extra CPU percentage points, on/off CPU,
 paired range, and optimization priority. Logo and shimmer are measured
@@ -39,10 +76,10 @@ or a fixture error). None met this screen's repeatable input-delay or
 frame-scheduling-delay threshold. The 64 CPU candidates are fixture states,
 often sharing the same motion family, not 64 independently attributed product
 problems. Native follow-up is partial and described below.
-Component motion proposes role-based timing, easing,
+Components proposes role-based timing, easing,
 behavior, and constraints as working hypotheses rather than approved tokens.
 
-Accessibility is a separate Phase 2 page between Animated icons and Opportunities.
+Accessibility is a separate Phase 2 page between Transitions and Opportunities.
 It proposes VS Code motion guidelines, reduced-motion alternatives, and a review
 checklist, with WCAG references separated from product design recommendations.
 Open `?view=accessibility` to link directly to it.
@@ -127,14 +164,32 @@ screenshots in a manual carousel: use Previous/Next or the left/right arrow keys
 while focused inside it. Select a screenshot to open the full-size image.
 The carousel does not advance automatically or animate between images.
 
-The three guidance pages share a reading order: **Principles**, **Choose a motion role**
-(or **Choose a transition pattern**), **Shared guidelines**, and **Supporting evidence**.
-They use the same proposal label, section navigation, and evidence disclosure.
-Component motion keeps its comparison table, Interface transitions keeps its
-interactive schematics and prototype values, and Animated icons keeps its
-role cards. Where applicable, pattern details use **Use when**, **Behavior**,
+Components starts with **When to use motion**, immediately followed by
+**Motion requirements** and collapsed **Supporting evidence**. The decision rule
+already supplies its guiding principle, so there is no separate Principles
+section or duplicate Choose a pattern table. Requirements cover immediate
+acknowledgment, a static input-needed state, lifecycle, accessibility, CPU cost,
+and validation. Verified component-specific timing and implementation references
+remain expandable within Motion requirements.
+
+Transitions retains **Principles** for design intent, immediately followed by
+**Motion requirements** for playback, interruption, and Reduced Motion behavior,
+then **Choose a transition pattern** and **Supporting evidence**. Repeated
+interruption and Reduced Motion details are omitted from Principles. Its seven
+interactive schematics and prototype values are unchanged.
+Both pages present Motion requirements as plain bulleted text with bold lead-ins,
+using the same typography and spacing rather than a card or multi-column grid.
+Numbered principles and bulleted requirements share a 24 px text indent.
+
+The visual **Functional motion** table stays unchanged under Current motion as
+the single visual reference. Existing row deep links remain reloadable and work
+in the public build. Expressive celebration references remain in its decorative
+and expressive inventory. Components retains observed implementations and
+recordings in its collapsed evidence section.
+Legacy `?view=animation` links open Components with icon-specific guidance expanded.
+Where applicable, pattern details use **Use when**, **Behavior**,
 **Avoid**, and **Reduced Motion**. Evidence remains separate from recommendations;
-the structure does not imply equal research coverage across the three pages.
+the structure does not imply equal research coverage across the topics.
 
 ### Library motion benchmark
 
@@ -326,7 +381,7 @@ preferences always suppress the animation. Examples and timings are proposals,
 not production evidence or approved specifications.
 Each example documents animated properties, timing, the exact easing curve,
 range and direction, and focus. Playback, interruption, and Reduced Motion
-are documented once under Shared guidelines.
+are documented once under Motion requirements.
 The displayed timing and easing are driven by the same values as the demo.
 These are labeled Prototype values, separate from the live observations.
 Connected navigation applies motion only to an optional destination highlight;
@@ -342,12 +397,30 @@ Phase 2 does not itself publish the changes.
 
 ## Animated icons
 
-Choose **Phase 2** in the header, then **Animated icons** in the navigation to explore the proposed VS Code guidance.
-The page leads with proposed principles, three purpose-based motion roles (indeterminate activity, attention needed, and live input/output feedback), and shared usage guidelines. These are a synthesis of current product research, not a classification copied from implementations or an existing shipped standard. Each direction links to its supporting observations and distinguishes a proposal from what the product currently does.
+Choose **Phase 2** in the header, then **Components**. Icon feedback shares the decision rule and Motion requirements rather than restarting with a second introduction or role table. Input-needed guidance lives in Motion requirements; supporting icon observations remain in the evidence section. These are a synthesis of current product research, not an existing shipped standard.
 
-The main page is deliberately concise: three principles, three compact role cards, one technical table, and three shared rules. Within Shared guidelines, **Technical motion guidance** proposes testing **1,500 ms per activity cycle**, based on existing Codicon rotation, across comparable rotation/ring/grid indicators. It initially retains the working logo's observed **2,667 ms** Draw cycle as an exception, proposes **0 ms** static attention, and keeps live feedback signal-driven. Equal durations do not imply equal perceived speed or a shared easing curve; steps, keyframes, and holds remain mechanism-specific. These are review proposals, not product changes or approved tokens.
+Within Motion requirements, expand **Icon-specific timing and implementation** for component-specific implementation references: Codicon **1,500 ms** with `steps(30)`, grid **1,820 ms** with `steps(6, jump-none)`, ring **1,200 ms** with `steps(4, jump-none)`, and the JavaScript-driven logo **2,667 ms**. These are observed cycles, not ideal values or shared design tokens. Attention remains immediately static by default; optional entrances and live-signal smoothing need contextual validation.
 
-A collapsed comparison and implementation checklist retains rhythm comparisons against the current **1,200 ms** ring and **1,820 ms** grid, mechanism specifications, lifecycle/interruption, accessibility, and live-signal validation. Evidence links reveal the appropriate appendix and nested checklist. Linear rotation and ease-out settling are conditional prototype candidates, not claims about every existing icon. New cue durations and live-signal smoothing values require contextual validation before standardization.
+Evidence links reveal the relevant observed component inside Supporting evidence.
+Motion requirements cover lifecycle, accessibility, CPU cost, and validation without
+a second implementation checklist. The unsupported role-level acknowledgment,
+entrance, completion, and emphasis ranges and generic easing curves were removed
+rather than presented as validated guidelines.
+
+The [timing verification data](assets/component-timing-verification.json) records
+isolated local Explorer checks and source hashes. A 1,500 ms duration-only edit
+changed grid/ring delay-to-cycle ratios; for the ring it changed the wrap gap from
+200 ms to 500 ms. Scaling delays with the duration preserved relative phases,
+but does not demonstrate a better appearance or lower CPU cost. No shared cycle
+was adopted. The real 400 × 400 px generated-image fixture revealed in about
+3.6 seconds, not 120–200 ms; its geometry-dependent sequence was skipped with
+the fixture's Reduced Motion input while the result stayed visible. Source
+distinguishes 100 ms determinate-width interpolation, a 4-second indeterminate
+bar cycle, and the 10-second Undo deadline; countdown hover pause/resume was
+checked. Grid offscreen pause worked, but the fresh ring CSS-variant probe kept
+animating despite its pause class and needs implementation follow-up.
+The source snapshot has no Git metadata; this is not verification of the
+installed native build, live audio, user preference, or CPU improvement.
 
 Recordings, implementation details, static/source-only cases, and review coverage are retained in a collapsed research appendix. Links from the guidelines expand that appendix to reveal the relevant evidence. The page uses existing product or fixture recordings and local Component Explorer links, not invented disclosure or sync demonstrations. Attention-needed guidance proposes a stable, non-looping status; live audio feedback remains a direction to validate, not a claimed live observation.
 

@@ -1,0 +1,2976 @@
+{
+	"status": "complete",
+	"startedAt": "2026-10-23T18:06:52.450Z",
+	"build": {
+		"version": "1.144.0-insider",
+		"commit": "c797482ce0d1bc89497a5636b69da98493e54036",
+		"architecture": "arm64",
+		"product": "Visual Studio Code - Insiders",
+		"chromium": "Chrome/150.0.7871.250"
+	},
+	"environment": {
+		"platform": "darwin",
+		"logicalCpus": 18,
+		"loadAverageAtStart": [
+			3.34619140625,
+			4.234375,
+			4.64404296875
+		],
+		"powerAtStart": {
+			"battery": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=35717219)\t94%; discharging; 5:36 remaining present: true",
+			"mode": "powermode            0"
+		},
+		"installedExtensionsDisabled": true,
+		"isolatedProfile": true,
+		"powerAtEnd": {
+			"battery": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=35717219)\t92%; discharging; 6:46 remaining present: true",
+			"mode": "powermode            0"
+		},
+		"loadAverageAtEnd": [
+			6.556640625,
+			5.44384765625,
+			4.99853515625
+		]
+	},
+	"scenario": "Actual Insiders Agents Window; synthetic multiple-choice question waiting unanswered. No terminal command or active model generation in the measured state.",
+	"method": {
+		"pairsPerCase": 7,
+		"secondsPerCondition": 10,
+		"order": "Alternating active/baseline and baseline/active within each case",
+		"cpuScope": "Sum of renderer CPU time in the isolated native instance; percentage of one CPU core. GPU and browser process CPU recorded separately.",
+		"cases": [
+			"logo",
+			"shimmer",
+			"both"
+		],
+		"baseline": "Both target animations static; native shimmer timeline driver stops scheduling further frame writes.",
+		"control": "Original native animations retained. Logo Web Animation paused/played. Shimmer is frozen using playbackRate=0 and play(), so its native paused-animation driver exits; restored with native pause mode and the native animation-start event listener.",
+		"verification": "Animation timeline deltas, shimmer driver currentTime writes, target identity/visibility, unchanged viewport and request content; no other running Web Animations.",
+		"thresholds": {
+			"High": "Every paired CPU delta >= 5 percentage points",
+			"Moderate": "Every delta >= 1 point",
+			"Low": "Every delta strictly between -1 and +1 point"
+		},
+		"limitations": [
+			"Single device, installed build, window size and synthetic waiting state; shared OS/background activity is not controlled.",
+			"Temporary runtime control is instrumentation, not a shipped user setting.",
+			"The targeted shimmer currentTime accessor counts writes identically in all conditions; its added overhead is not separately calibrated.",
+			"Renderer CPU excludes GPU process CPU; additional process scopes are reported separately.",
+			"This is CPU cost, not proof of user input slowdown, power consumption, or a universal hardware-independent rating.",
+			"Both-on CPU is measured separately; individual effects should not be added because rendering work can be shared."
+		]
+	},
+	"cases": {
+		"logo": {
+			"pairs": [
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.016278458,
+						"rendererCpuUtilization": 6.847892686651191,
+						"gpuProcessCpuUtilization": 17.08728453563523,
+						"browserCpuUtilization": 0.1604388303239006,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 691.7459999999555,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10013.299999952316,
+							"logoDelta": 9999.599999999977,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:07:04.214Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014170584,
+						"rendererCpuUtilization": 0.7367959171564706,
+						"gpuProcessCpuUtilization": 0.01772488280588066,
+						"browserCpuUtilization": 0.15818584142464806,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10010.799999952316,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:07:15.940Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.015617916000004,
+						"rendererCpuUtilization": 7.337799885775927,
+						"gpuProcessCpuUtilization": 19.538964209824357,
+						"browserCpuUtilization": 0.15064472433494477,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 691.5460000000312,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10013.299999952316,
+							"logoDelta": 10017.194000000018,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:07:39.391Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.015004667000001,
+						"rendererCpuUtilization": 0.8098748098166799,
+						"gpuProcessCpuUtilization": 0.23100338711001772,
+						"browserCpuUtilization": 0.1789514892494701,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.800000071526,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:07:27.663Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.014686207999999,
+						"rendererCpuUtilization": 9.1016531229093,
+						"gpuProcessCpuUtilization": 18.409113992281366,
+						"browserCpuUtilization": 0.14222113108867926,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 692.5460000000021,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10012.799999952316,
+							"logoDelta": 10016.293999999907,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:07:51.115Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.010780417000001,
+						"rendererCpuUtilization": 0.860352504123806,
+						"gpuProcessCpuUtilization": 0.019818634685374176,
+						"browserCpuUtilization": 0.15627153277114966,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10008.700000047684,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:08:02.835Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.012589915999998,
+						"rendererCpuUtilization": 7.2002849017910835,
+						"gpuProcessCpuUtilization": 18.530939702574344,
+						"browserCpuUtilization": 0.1425904797837111,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 691.7459999999555,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10010.599999904633,
+							"logoDelta": 10008.326000000117,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:08:26.282Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.010488874999995,
+						"rendererCpuUtilization": 0.8612466491553127,
+						"gpuProcessCpuUtilization": 0.015214042181319856,
+						"browserCpuUtilization": 0.1384048289050259,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10008.5,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:08:14.557Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.014536500000002,
+						"rendererCpuUtilization": 7.696192429874326,
+						"gpuProcessCpuUtilization": 20.51765451151936,
+						"browserCpuUtilization": 0.18055753254281617,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 690.8459999999614,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10012.299999952316,
+							"logoDelta": 10017.194000000018,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:08:38.011Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.013247457999999,
+						"rendererCpuUtilization": 0.9518690155195136,
+						"gpuProcessCpuUtilization": 0.0073203024600999485,
+						"browserCpuUtilization": 0.16481166643709805,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:08:49.735Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.016535458000012,
+						"rendererCpuUtilization": 6.553243911054482,
+						"gpuProcessCpuUtilization": 17.516885028332354,
+						"browserCpuUtilization": 0.17657802015640237,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 691.6459999999788,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10014.100000023842,
+							"logoDelta": 10016.294000000024,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:09:13.195Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.013786792,
+						"rendererCpuUtilization": 0.8230952157464169,
+						"gpuProcessCpuUtilization": 0.00801894444806017,
+						"browserCpuUtilization": 0.18353696140887807,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10009.5,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:09:01.460Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "logo",
+						"elapsedSeconds": 10.015887916999985,
+						"rendererCpuUtilization": 8.284337912684386,
+						"gpuProcessCpuUtilization": 21.451268402807205,
+						"browserCpuUtilization": 0.17439292596668468,
+						"beforeControl": {
+							"condition": "logo",
+							"milliseconds": 700,
+							"logoDelta": 691.6460000002407,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "running",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "logo",
+							"elapsedMs": 10013.5,
+							"logoDelta": 10025.07999999987,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:09:24.921Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.013883416999976,
+						"rendererCpuUtilization": 0.9002801035905154,
+						"gpuProcessCpuUtilization": 0.022328999718535043,
+						"browserCpuUtilization": 0.15154959737435036,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.899999976158,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:09:36.644Z"
+					}
+				}
+			],
+			"cpu": {
+				"active": 7.337799885775927,
+				"baseline": 0.860352504123806,
+				"delta": 6.527925075959247,
+				"range": [
+					5.730148695308065,
+					8.241300618785493
+				]
+			},
+			"gpuProcessCpu": {
+				"active": 18.530939702574344,
+				"baseline": 0.01772488280588066,
+				"delta": 18.515725660393024,
+				"range": [
+					17.06955965282935,
+					21.42893940308867
+				]
+			},
+			"browserCpu": {
+				"active": 0.1604388303239006,
+				"baseline": 0.15818584142464806,
+				"delta": 0.002252988899252545,
+				"range": [
+					-0.02830676491452533,
+					0.022843328592334317
+				]
+			},
+			"rating": "High"
+		},
+		"shimmer": {
+			"pairs": [
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.013738833999989,
+						"rendererCpuUtilization": 13.195880398971498,
+						"gpuProcessCpuUtilization": 9.415504195083765,
+						"browserCpuUtilization": 0.1671203960620552,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 699.8680000000168,
+							"driverWrites": 21,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10011.899999976158,
+							"logoDelta": 0,
+							"shimmerDelta": 10033.33200000017,
+							"driverWrites": 320,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:09:48.370Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.015438749999973,
+						"rendererCpuUtilization": 0.8108581363947083,
+						"gpuProcessCpuUtilization": 0.01868115862623885,
+						"browserCpuUtilization": 0.19486914639661196,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10013,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:10:00.095Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.015897999999986,
+						"rendererCpuUtilization": 11.43764642970609,
+						"gpuProcessCpuUtilization": 9.52484739760733,
+						"browserCpuUtilization": 0.1593666389174496,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 700.1000000000931,
+							"driverWrites": 23,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10013.600000023842,
+							"logoDelta": 0,
+							"shimmerDelta": 10033.699999999953,
+							"driverWrites": 311,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:10:23.550Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014334833000001,
+						"rendererCpuUtilization": 0.89914109625419,
+						"gpuProcessCpuUtilization": 0.028389304406221026,
+						"browserCpuUtilization": 0.19544982593853202,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.800000071526,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:10:11.818Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.01401787499999,
+						"rendererCpuUtilization": 11.878618700787964,
+						"gpuProcessCpuUtilization": 9.804715871849773,
+						"browserCpuUtilization": 0.15613113732333572,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 699.2000000001863,
+							"driverWrites": 21,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10011.800000071526,
+							"logoDelta": 0,
+							"shimmerDelta": 10034.199999999953,
+							"driverWrites": 312,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:10:35.280Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.016508875,
+						"rendererCpuUtilization": 0.9504009948775578,
+						"gpuProcessCpuUtilization": 0.01970746519209907,
+						"browserCpuUtilization": 0.14473106529344076,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10014,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:10:47.008Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.015671541999996,
+						"rendererCpuUtilization": 13.42903463197456,
+						"gpuProcessCpuUtilization": 9.486682905041324,
+						"browserCpuUtilization": 0.2104402077445844,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 700.0999999998603,
+							"driverWrites": 21,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10013.299999952316,
+							"logoDelta": 0,
+							"shimmerDelta": 9999.200000000186,
+							"driverWrites": 314,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:11:10.459Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014050959000015,
+						"rendererCpuUtilization": 0.8994461918435867,
+						"gpuProcessCpuUtilization": 0.009306922880806775,
+						"browserCpuUtilization": 0.16606666041632354,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.600000023842,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:10:58.735Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.013059083,
+						"rendererCpuUtilization": 11.703196698295205,
+						"gpuProcessCpuUtilization": 9.585681978343327,
+						"browserCpuUtilization": 0.16243787103597732,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 734.1000000000931,
+							"driverWrites": 23,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10010.800000071526,
+							"logoDelta": 0,
+							"shimmerDelta": 10000.065999999875,
+							"driverWrites": 311,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:11:22.184Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014705541999952,
+						"rendererCpuUtilization": 0.9989310177962732,
+						"gpuProcessCpuUtilization": 0.27160059660195135,
+						"browserCpuUtilization": 0.1690214448044527,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10012.699999928474,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:11:33.911Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.013203167000029,
+						"rendererCpuUtilization": 11.831738358255468,
+						"gpuProcessCpuUtilization": 9.714953185069987,
+						"browserCpuUtilization": 0.1704549454888738,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 700,
+							"driverWrites": 22,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10011.200000047684,
+							"logoDelta": 0,
+							"shimmerDelta": 10000,
+							"driverWrites": 313,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:11:57.355Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.01388949999999,
+						"rendererCpuUtilization": 0.8991411379165358,
+						"gpuProcessCpuUtilization": 0.004983078752815403,
+						"browserCpuUtilization": 0.15825019838695892,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.700000047684,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:11:45.635Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "shimmer",
+						"elapsedSeconds": 10.014297750000027,
+						"rendererCpuUtilization": 10.661596316127078,
+						"gpuProcessCpuUtilization": 9.022799426949257,
+						"browserCpuUtilization": 0.16480436683640012,
+						"beforeControl": {
+							"condition": "shimmer",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 700.4000000001397,
+							"driverWrites": 21,
+							"logoState": "paused",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "shimmer",
+							"elapsedMs": 10011.5,
+							"logoDelta": 0,
+							"shimmerDelta": 10000.899999999907,
+							"driverWrites": 312,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:12:09.081Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014146458000003,
+						"rendererCpuUtilization": 2.8087366325194667,
+						"gpuProcessCpuUtilization": 0.03047688600133048,
+						"browserCpuUtilization": 0.15268400621188763,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10012.100000023842,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:12:20.801Z"
+					}
+				}
+			],
+			"cpu": {
+				"active": 11.831738358255468,
+				"baseline": 0.8994461918435867,
+				"delta": 10.928217705910406,
+				"range": [
+					7.852859683607611,
+					12.529588440130972
+				]
+			},
+			"gpuProcessCpu": {
+				"active": 9.52484739760733,
+				"baseline": 0.01970746519209907,
+				"delta": 9.477375982160517,
+				"range": [
+					8.992322540947926,
+					9.785008406657674
+				]
+			},
+			"browserCpu": {
+				"active": 0.16480436683640012,
+				"baseline": 0.16606666041632354,
+				"delta": 0.011400072029894959,
+				"range": [
+					-0.03608318702108243,
+					0.044373547328260876
+				]
+			},
+			"rating": "High"
+		},
+		"both": {
+			"pairs": [
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.012809958999977,
+						"rendererCpuUtilization": 16.786007193607663,
+						"gpuProcessCpuUtilization": 21.16777416807863,
+						"browserCpuUtilization": 0.15542090645605663,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 690.6999999998661,
+							"shimmerDelta": 692.3999999999069,
+							"driverWrites": 21,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10011,
+							"logoDelta": 10017.466000000015,
+							"shimmerDelta": 10000,
+							"driverWrites": 300,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:12:32.530Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.01309362499998,
+						"rendererCpuUtilization": 0.9388007694774843,
+						"gpuProcessCpuUtilization": 0.024058498703991796,
+						"browserCpuUtilization": 0.16281681376968704,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10010.300000071526,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:12:44.259Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.01184612500004,
+						"rendererCpuUtilization": 16.10082675936038,
+						"gpuProcessCpuUtilization": 20.725598197305487,
+						"browserCpuUtilization": 0.1648347347128259,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 708.3340000001481,
+							"shimmerDelta": 733.3999999999069,
+							"driverWrites": 22,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10009.399999976158,
+							"logoDelta": 10008.29999999996,
+							"shimmerDelta": 9999.899999999907,
+							"driverWrites": 300,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:13:07.713Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014250707999977,
+						"rendererCpuUtilization": 0.929066015150513,
+						"gpuProcessCpuUtilization": 0.012332425420581002,
+						"browserCpuUtilization": 0.1782959156967812,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.300000071526,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:12:55.985Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.012493792000052,
+						"rendererCpuUtilization": 18.13310487593642,
+						"gpuProcessCpuUtilization": 20.824702050411876,
+						"browserCpuUtilization": 0.15561557713473173,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 699.9000000000233,
+							"shimmerDelta": 699.1000000000931,
+							"driverWrites": 21,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10010.400000095367,
+							"logoDelta": 10016.799999999872,
+							"shimmerDelta": 10026,
+							"driverWrites": 301,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:13:19.436Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.012030749999976,
+						"rendererCpuUtilization": 0.9145097761511879,
+						"gpuProcessCpuUtilization": 0.2669288645562646,
+						"browserCpuUtilization": 0.1738907963302047,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10009.799999952316,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:13:31.157Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.015608458000003,
+						"rendererCpuUtilization": 16.350898768331216,
+						"gpuProcessCpuUtilization": 20.60282217154535,
+						"browserCpuUtilization": 0.15463863293926286,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 700.0339999999269,
+							"shimmerDelta": 724.9679999998771,
+							"driverWrites": 22,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10011.400000095367,
+							"logoDelta": 10008.400000000198,
+							"shimmerDelta": 10008.40000000014,
+							"driverWrites": 300,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:13:54.615Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.013247583000048,
+						"rendererCpuUtilization": 0.8737524891378646,
+						"gpuProcessCpuUtilization": 0.005233067450446902,
+						"browserCpuUtilization": 0.16362323875637894,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:13:42.880Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.015281834000023,
+						"rendererCpuUtilization": 16.81300664234503,
+						"gpuProcessCpuUtilization": 21.281597815492816,
+						"browserCpuUtilization": 0.16533733423042832,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 690.699999999837,
+							"shimmerDelta": 691.5999999998603,
+							"driverWrites": 21,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10013.200000047684,
+							"logoDelta": 10025.934000000008,
+							"shimmerDelta": 10041.600000000093,
+							"driverWrites": 301,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:14:06.349Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.015192749999988,
+						"rendererCpuUtilization": 0.8958190045818635,
+						"gpuProcessCpuUtilization": 0.015935789153996783,
+						"browserCpuUtilization": 0.1656982587779012,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10012.5,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:14:18.074Z"
+					}
+				},
+				{
+					"order": "off/on",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.014084957999993,
+						"rendererCpuUtilization": 13.343096304895614,
+						"gpuProcessCpuUtilization": 17.98471859938863,
+						"browserCpuUtilization": 0.13341208963208892,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 700.2999999999302,
+							"shimmerDelta": 708.4000000001397,
+							"driverWrites": 21,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10011.299999952316,
+							"logoDelta": 9999.900000000023,
+							"shimmerDelta": 9991.59999999986,
+							"driverWrites": 300,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:14:41.523Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.014424667000014,
+						"rendererCpuUtilization": 0.9214408522545591,
+						"gpuProcessCpuUtilization": 0.30532957225942864,
+						"browserCpuUtilization": 0.16590069377372113,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10011.899999976158,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:14:29.798Z"
+					}
+				},
+				{
+					"order": "on/off",
+					"active": {
+						"condition": "both",
+						"elapsedSeconds": 10.015721790999988,
+						"rendererCpuUtilization": 14.50752157778268,
+						"gpuProcessCpuUtilization": 18.013649317029078,
+						"browserCpuUtilization": 0.15058325615186421,
+						"beforeControl": {
+							"condition": "both",
+							"milliseconds": 700,
+							"logoDelta": 690.8000000001048,
+							"shimmerDelta": 692.4660000000149,
+							"driverWrites": 21,
+							"logoState": "running",
+							"shimmerState": "paused",
+							"shimmerRate": 1
+						},
+						"sample": {
+							"condition": "both",
+							"elapsedMs": 10011.299999952316,
+							"logoDelta": 10017.63400000002,
+							"shimmerDelta": 10033.334000000032,
+							"driverWrites": 301,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:14:53.249Z"
+					},
+					"baseline": {
+						"condition": "baseline",
+						"elapsedSeconds": 10.011439416999988,
+						"rendererCpuUtilization": 0.7946509656234453,
+						"gpuProcessCpuUtilization": 0.014663226124206901,
+						"browserCpuUtilization": 0.1530549141013739,
+						"beforeControl": {
+							"condition": "baseline",
+							"milliseconds": 700,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"logoState": "paused",
+							"shimmerState": "running",
+							"shimmerRate": 0
+						},
+						"sample": {
+							"condition": "baseline",
+							"elapsedMs": 10008.5,
+							"logoDelta": 0,
+							"shimmerDelta": 0,
+							"driverWrites": 0,
+							"mutations": 0,
+							"contentChanges": 0
+						},
+						"processIds": [
+							{
+								"id": 56866,
+								"type": "browser"
+							},
+							{
+								"id": 56869,
+								"type": "renderer"
+							},
+							{
+								"id": 56867,
+								"type": "GPU"
+							},
+							{
+								"id": 56868,
+								"type": "network.mojom.NetworkService"
+							},
+							{
+								"id": 56870,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56871,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56872,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 56873,
+								"type": "node.mojom.NodeService"
+							},
+							{
+								"id": 57256,
+								"type": "node.mojom.NodeService"
+							}
+						],
+						"measuredAt": "2026-10-23T18:15:04.969Z"
+					}
+				}
+			],
+			"cpu": {
+				"active": 16.350898768331216,
+				"baseline": 0.9145097761511879,
+				"delta": 15.477146279193352,
+				"range": [
+					12.421655452641055,
+					17.218595099785233
+				]
+			},
+			"gpuProcessCpu": {
+				"active": 20.725598197305487,
+				"baseline": 0.015935789153996783,
+				"delta": 20.5975891040949,
+				"range": [
+					17.6793890271292,
+					21.26566202633882
+				]
+			},
+			"browserCpu": {
+				"active": 0.15542090645605663,
+				"baseline": 0.1656982587779012,
+				"delta": -0.008984605817116076,
+				"range": [
+					-0.03248860414163221,
+					-0.00036092454747288505
+				]
+			},
+			"rating": "High"
+		}
+	},
+	"setup": {
+		"viewport": {
+			"width": 793,
+			"height": 1043,
+			"scale": 2
+		},
+		"logo": {
+			"implementation": "native sprite atlas",
+			"duration": 2667
+		},
+		"shimmer": {
+			"implementation": "native CSS background-position animation with JS timeline driver",
+			"duration": 2000
+		}
+	},
+	"restoration": {
+		"logoState": "running",
+		"shimmerState": "paused",
+		"shimmerRate": 1,
+		"ownTimelineAccessorRemoved": true
+	},
+	"completedAt": "2026-10-23T18:15:05.522Z"
+}

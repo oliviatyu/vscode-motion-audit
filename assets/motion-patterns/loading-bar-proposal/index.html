@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="data:,">
+	<title>Unified indeterminate loading bar</title>
+	<link rel="stylesheet" href="./codicon.css">
+	<link rel="stylesheet" href="./prototype.css">
+	<script src="./prototype.js" defer></script>
+</head>
+<body>
+	<main>
+		<header class="page-header">
+			<div>
+				<p class="eyebrow">Motion proposal / local prototype</p>
+				<h1>One loading pattern. Two surfaces.</h1>
+				<p class="description">A subtle gradient travels within each search container's top border: gray for Customizations, blue for Search Editor.</p>
+			</div>
+			<div class="controls" role="group" aria-label="Motion controls">
+				<button id="playback" type="button" aria-pressed="false">Pause motion</button>
+				<button id="reduced-motion" type="button" aria-pressed="false">Preview Reduced Motion</button>
+			</div>
+		</header>
+
+		<div class="comparison">
+			<section class="scenario" aria-labelledby="customizations-title">
+				<div class="scenario-heading">
+					<span class="scenario-number">01</span>
+					<h2 id="customizations-title">Customizations</h2>
+				</div>
+				<div class="window">
+					<div class="tab-strip">
+						<div class="tab"><span class="codicon codicon-settings-gear" aria-hidden="true"></span> Customizations <span class="codicon codicon-close" aria-hidden="true"></span></div>
+						<span class="codicon codicon-ellipsis tab-actions" aria-hidden="true"></span>
+					</div>
+					<div class="loading-region" aria-busy="true">
+						<div class="customizations-content">
+							<div class="customizations-heading">
+								<h3>Browse customizations</h3>
+								<p>Tailor your agent to your tools, your team, and your workflow. <span class="product-link">Learn more</span></p>
+							</div>
+							<div class="search-container">
+								<div class="progress-track" aria-hidden="true"><div class="loading-line"></div></div>
+								<div class="search-field">
+									<span class="codicon codicon-search" aria-hidden="true"></span>
+									<input aria-label="Search customizations" placeholder="Search MCP servers, plugins, skills and more" readonly>
+									<span class="codicon codicon-filter" aria-hidden="true"></span>
+								</div>
+							</div>
+							<div class="filter-row" aria-label="Illustrative customization categories">
+								<span class="filter active">All</span><span class="filter">MCP servers</span><span class="filter">Plugins</span><span class="filter">Skills</span>
+							</div>
+							<div class="empty-loading">
+								<span class="codicon codicon-extensions" aria-hidden="true"></span>
+								<p role="status">Loading customizations…</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p class="scenario-caption">Consistent gray border on all four sides; only the soft gradient travels along the top.</p>
+			</section>
+
+			<section class="scenario" aria-labelledby="search-title">
+				<div class="scenario-heading">
+					<span class="scenario-number">02</span>
+					<h2 id="search-title">Search Editor</h2>
+				</div>
+				<div class="window">
+					<div class="tab-strip">
+						<div class="tab"><span class="codicon codicon-search" aria-hidden="true"></span> Search: function <span class="codicon codicon-close" aria-hidden="true"></span></div>
+						<span class="codicon codicon-ellipsis tab-actions" aria-hidden="true"></span>
+					</div>
+					<div class="loading-region" aria-busy="true">
+						<div class="search-editor-content">
+							<div class="editor-search-row">
+								<div class="search-container">
+									<div class="progress-track" aria-hidden="true"><div class="loading-line"></div></div>
+									<div class="search-field focused">
+										<input aria-label="Search query" value="function" readonly>
+										<span class="search-options" aria-hidden="true">Aa <span class="whole-word">ab</span> .*</span>
+									</div>
+								</div>
+								<div class="context-lines" aria-label="Context lines: 1">1</div>
+								<span class="codicon codicon-list-selection" aria-hidden="true"></span>
+								<span class="codicon codicon-ellipsis" aria-hidden="true"></span>
+							</div>
+							<p class="search-status" role="status">Searching workspace…</p>
+							<div class="code-results" aria-label="Illustrative partial search results">
+								<div class="file-result"><span class="codicon codicon-chevron-down" aria-hidden="true"></span> src / app.ts</div>
+								<div class="code-line"><span class="line-number">18</span><code><mark>function</mark> initializeWorkspace() {</code></div>
+								<div class="code-line"><span class="line-number">42</span><code>export async <mark>function</mark> loadSettings() {</code></div>
+								<div class="file-result"><span class="codicon codicon-chevron-down" aria-hidden="true"></span> src / search.ts</div>
+								<div class="code-line"><span class="line-number">9</span><code>export <mark>function</mark> searchFiles(query) {</code></div>
+								<div class="code-line"><span class="line-number">31</span><code>async <mark>function</mark> collectResults() {</code></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p class="scenario-caption">Consistent Dark 2026 focus-blue border on all four sides; only the top gradient travels.</p>
+			</section>
+		</div>
+
+		<footer>
+			<div class="spec"><span class="swatch" aria-hidden="true"></span><span>Dark 2026 borders: gray #333536 / blue #3994BCB3</span><span>1 px border all around</span><span>12.5% soft top highlight</span><span>4 s each way / 8 s round trip</span></div>
+			<p id="motion-status" role="status"></p>
+			<p class="disclaimer">Illustrative UI, not a product change. Timing is a prototype value, not an adopted standard. Reduced Motion keeps a static border highlight and explicit loading text; moving position never represents completion. CPU cost has not been measured. Icons: VS Code Codicons, <a href="./LICENSE">MIT license</a>.</p>
+		</footer>
+	</main>
+</body>
+</html>

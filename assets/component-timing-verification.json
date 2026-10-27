@@ -1,0 +1,640 @@
+{
+  "measuredAt": "2026-10-27T04:09:31.572Z",
+  "scope": "Actual local Component Explorer implementations; temporary browser-only timing changes, not an installed-product or user study.",
+  "origin": "http://localhost:5123",
+  "sourceRoot": "vscode-main (local source snapshot; no Git metadata)",
+  "limitations": [
+    "Technical behavior and phase consistency do not establish aesthetic preference or user comprehension.",
+    "No CPU reduction is inferred from a longer cycle. This is not a CPU benchmark.",
+    "The ring comparison applies the real product ring CSS to the fixture-created PixelSpinner dots.",
+    "Fixture motion overrides are not end-to-end verification of the installed workbench Reduced Motion setting."
+  ],
+  "cases": [
+    {
+      "name": "PixelSpinner grid",
+      "original": [
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 520,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.2857142857142857
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 650,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.35714285714285715
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 260,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.14285714285714285
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 390,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.21428571428571427
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-long",
+          "duration": 1820,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-short",
+          "duration": 1820,
+          "delay": 130,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.07142857142857142
+        }
+      ],
+      "durationOnly": [
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 520,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.3466666666666667
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 650,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.43333333333333335
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 260,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.17333333333333334
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 390,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.26
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-long",
+          "duration": 1500,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-short",
+          "duration": 1500,
+          "delay": 130,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.08666666666666667
+        }
+      ],
+      "scaledDurationAndDelay": [
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 428.57142857142856,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.2857142857142857
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 535.7142857142857,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.3571428571428571
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 214.28571428571428,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.14285714285714285
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1500,
+          "delay": 321.42857142857144,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.2142857142857143
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-long",
+          "duration": 1500,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-short",
+          "duration": 1500,
+          "delay": 107.14285714285714,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.07142857142857142
+        }
+      ],
+      "restored": [
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 520,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.2857142857142857
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 650,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.35714285714285715
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 260,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.14285714285714285
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle",
+          "duration": 1820,
+          "delay": 390,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.21428571428571427
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-long",
+          "duration": 1820,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-dot-cycle-short",
+          "duration": 1820,
+          "delay": 130,
+          "easing": "linear",
+          "cssTimingFunction": "steps(6, jump-none)",
+          "relativeDelay": 0.07142857142857142
+        }
+      ],
+      "hiddenPaused": true,
+      "visibleResumed": true,
+      "cleanLifecycle": {
+        "offscreenClassApplied": true,
+        "hiddenStates": [
+          "paused",
+          "paused",
+          "paused",
+          "paused",
+          "paused",
+          "paused"
+        ],
+        "visibleStates": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ]
+      },
+      "browserReducedMotion": {
+        "running": 0,
+        "dots": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      }
+    },
+    {
+      "name": "PixelSpinner ring",
+      "original": [
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 200,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.16666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 1000,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.8333333333333334
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 400,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.3333333333333333
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 800,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.6666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 600,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.5
+        }
+      ],
+      "durationOnly": [
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 200,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.13333333333333333
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 1000,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.6666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 400,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.26666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 800,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.5333333333333333
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 600,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.4
+        }
+      ],
+      "scaledDurationAndDelay": [
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 250,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.16666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 1250,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.8333333333333334
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 500,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.3333333333333333
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 1000,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.6666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1500,
+          "delay": 750,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.5
+        }
+      ],
+      "restored": [
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 0,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 200,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.16666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 1000,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.8333333333333334
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 400,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.3333333333333333
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 800,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.6666666666666666
+        },
+        {
+          "name": "monaco-pixel-spinner-ring-pulse",
+          "duration": 1200,
+          "delay": 600,
+          "easing": "linear",
+          "cssTimingFunction": "steps(4, jump-none)",
+          "relativeDelay": 0.5
+        }
+      ],
+      "hiddenPaused": false,
+      "visibleResumed": true,
+      "cleanLifecycle": {
+        "offscreenClassApplied": true,
+        "hiddenStates": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "visibleStates": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ]
+      },
+      "browserReducedMotion": {
+        "running": 0,
+        "dots": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      }
+    },
+    {
+      "fixture": "sessions/createPullRequest/Loading",
+      "baseline": {
+        "animations": [
+          {
+            "name": "codicon-spin",
+            "duration": 1500,
+            "delay": 0,
+            "easing": "linear",
+            "cssTimingFunction": "steps(30)",
+            "iterations": "Infinity",
+            "playState": "running",
+            "target": "codicon codicon-loading codicon-modifier-spin"
+          },
+          {
+            "name": "codicon-spin",
+            "duration": 1500,
+            "delay": 0,
+            "easing": "linear",
+            "cssTimingFunction": "steps(30)",
+            "iterations": "Infinity",
+            "playState": "running",
+            "target": "codicon codicon-loading codicon-modifier-spin"
+          }
+        ],
+        "logos": 0,
+        "buttons": [
+          "Retry",
+          "Merge Manually",
+          "Agent Merge",
+          "Auto-Merge",
+          "Off",
+          "If Unchanged",
+          "When Ready",
+          "Squash",
+          "Merge Commit",
+          "Rebase",
+          "Cancel",
+          "Create PR",
+          ""
+        ],
+        "text": "Create pull request\nmain\nfix/session-keyboard-focus\nTitle\nDescription\nCreate as Draft\nAfter creation\nMerge Manually\nAgent Merge\nAuto-Merge\nYou decide when to merge. No automatic fixes or merging.\nUncommitted changes will be committed and your branch pushed.\nCancel\nCreate PR"
+      }
+    },
+    {
+      "fixture": "chat/logoMotion/chatWorkingLogo/Performance/Draw",
+      "baseline": {
+        "animations": [],
+        "logos": 1,
+        "buttons": [],
+        "text": ""
+      },
+      "active": {
+        "pathsChanged": true
+      },
+      "disabled": {
+        "pathsStable": true,
+        "running": 0
+      }
+    },
+    {
+      "fixture": "sessions/sessionsListNotification/BulkDoneNotificationAnimated",
+      "baseline": {
+        "animations": [
+          {
+            "name": "sessions-list-notification-countdown",
+            "duration": 10000,
+            "delay": 0,
+            "easing": "linear",
+            "cssTimingFunction": "linear",
+            "iterations": "1",
+            "playState": "running",
+            "target": "sessions-list-notification-progress"
+          }
+        ],
+        "logos": 0,
+        "buttons": [
+          "Undo",
+          "Replay Countdown"
+        ],
+        "text": "12 marked done\nUndo\nReplay Countdown"
+      },
+      "pause": {
+        "paused": {
+          "state": "paused",
+          "delta": 0
+        },
+        "resumed": true
+      }
+    },
+    {
+      "fixture": "chat/generatedImages/chatGeneratedImages/GlyphRevealFinal",
+      "baseline": {
+        "animations": [
+          {
+            "name": "chat-thinking-shimmer",
+            "duration": 2000,
+            "delay": -173,
+            "easing": "linear",
+            "cssTimingFunction": "linear",
+            "iterations": "Infinity",
+            "playState": "running",
+            "target": ""
+          }
+        ],
+        "logos": 1,
+        "buttons": [
+          "Complete Generation",
+          "Send Follow-Up",
+          "Complete Follow-Up",
+          "Used 1 reference",
+          "Finished thinking",
+          "Generating image",
+          ""
+        ],
+        "text": "Complete Generation\nSend Follow-Up\nComplete Follow-Up\n\nGenerate an abstract mountain landscape\n\n9:09 PM\nFinished thinking\n\nGenerating image\n\nMixing the colors"
+      },
+      "reveal": {
+        "revealedAt": 63.800000071525574,
+        "finishedAt": 3649.8000000715256,
+        "revealDuration": 3586,
+        "imageVisible": true,
+        "images": [
+          {
+            "width": 400,
+            "height": 400
+          }
+        ]
+      },
+      "reducedFixture": {
+        "revealing": false,
+        "imageVisible": true
+      }
+    }
+  ],
+  "sourceHashes": {
+    "src/vs/base/browser/ui/pixelSpinner/pixelSpinner.css": "fb103ab6cf0fe47061d7a122aca11052cfe51ac1c6bbbca437255583e249061a",
+    "src/vs/base/browser/ui/codicons/codicon/codicon-modifiers.css": "9c55edb401956cae8fb84a135618593296af23c0c84bfd807e1b8056a86f45f6",
+    "src/vs/base/browser/ui/progressbar/progressbar.css": "8c67efa51409ab88aeb10e8c79e517b56193c7f852da8c5401865246b21d4460",
+    "src/vs/workbench/contrib/chat/browser/widget/chatWorkingLogo.ts": "ad0de93bdeb7ecab5aa2dd3ef6d8545a18935c855a8576022baa1fa9a89e971c",
+    "src/vs/workbench/contrib/chat/browser/attachments/chatImageTextures.ts": "e008d42552a9c3577cff5a4988ebb0717b31cf3ba55a53074c0f693a7c8c6c24",
+    "src/vs/sessions/contrib/sessions/browser/views/sessionsListNotification.ts": "b804f0c20d10be107357d1afad94db116b6f6b376e9b891aa4941d2ea280ee61"
+  },
+  "browser": "Chrome/155.0.8059.40",
+  "completedAt": "2026-10-27T04:09:53.746Z",
+  "review": {
+    "decision": "Keep component-specific references; retire shared activity-cycle and unsupported role-level millisecond ranges and bezier curves.",
+    "dotRetiming": "Changing duration alone alters delay/cycle ratios. Scaling delays with duration preserves phases but does not validate appearance or CPU cost.",
+    "ringOffscreenFinding": "The paused class is applied, but the ring animation keeps running in a fresh, otherwise unmodified CSS-variant probe. The later ring shorthand overrides the equally specific pause rule.",
+    "progressSourceReview": {
+      "discrete": "100 ms linear width interpolation between measured updates, not a task duration.",
+      "infinite": "4000 ms linear activity cycle; long-running CSS uses steps(100).",
+      "countdown": "10000 ms actual Undo expiry; hover/focus/undo/help pauses both countdown and dismiss scheduler."
+    },
+    "revealSourceReview": "ChatImageReveal derives a deadline from RevealPace and the glyph surface reveal length; the observed sample is not a universal completion duration.",
+    "sourceProvenance": "Local source snapshot without Git metadata. Relevant source files are SHA-256 hashed below; this does not establish equivalence to the installed native product."
+  }
+}

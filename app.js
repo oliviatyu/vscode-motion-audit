@@ -64,72 +64,6 @@ const categories = [
 	}
 ];
 
-const proposedComponentMotionGuidelines = [
-	{
-		role: 'Acknowledge',
-		useWhen: 'Confirm that VS Code received a click, command, answer, or accepted action.',
-		behavior: 'Use a small change in color, opacity, or scale that begins immediately.',
-		timing: '80–120ms',
-		easing: 'Ease out',
-		curve: 'cubic-bezier(0.2, 0, 0, 1)',
-		constraint: 'Never delay the action or become a second confirmation step.'
-	},
-	{
-		role: 'Indeterminate progress',
-		useWhen: 'Work is active but its remaining duration cannot be measured.',
-		behavior: 'Use one localized, continuously repeating indicator close to the active work.',
-		timing: 'Continuous while active',
-		easing: 'Linear rhythm',
-		curve: 'linear',
-		constraint: 'Use one primary progress signal per scope. Stop it as soon as work pauses or completes.'
-	},
-	{
-		role: 'Determinate progress',
-		useWhen: 'VS Code can report meaningful completion or elapsed progress.',
-		behavior: 'Map movement directly to the measured operation instead of simulating activity.',
-		timing: 'Matches the operation',
-		easing: 'Linear',
-		curve: 'linear',
-		constraint: 'Do not invent progress or let the visual reach completion before the operation does.'
-	},
-	{
-		role: 'Attention needed',
-		useWhen: 'Work has paused and cannot continue without a user response.',
-		behavior: 'Transition once into a persistent icon and status label, then stop moving.',
-		timing: '120–180ms',
-		easing: 'Ease out',
-		curve: 'cubic-bezier(0, 0, 0, 1)',
-		constraint: 'Do not keep loading motion active after the session begins waiting for input.'
-	},
-	{
-		role: 'Completion',
-		useWhen: 'A meaningful task, response, or background operation has finished.',
-		behavior: 'Use one short transition into a stable completed state.',
-		timing: '120–200ms',
-		easing: 'Ease out',
-		curve: 'cubic-bezier(0, 0, 0, 1)',
-		constraint: 'Do not loop the completion treatment or compete with the result.'
-	},
-	{
-		role: 'Time remaining',
-		useWhen: 'An action or recovery option expires after a real period.',
-		behavior: 'Map the motion directly to elapsed time and pair it with persistent text or state.',
-		timing: 'Matches actual time',
-		easing: 'Linear',
-		curve: 'linear',
-		constraint: 'Provide an understandable non-motion indication and never use a decorative countdown.'
-	},
-	{
-		role: 'Emphasis',
-		useWhen: 'A rare, meaningful result benefits from added focus or product character.',
-		behavior: 'Use a finite, one-time treatment that supports the content rather than covering it.',
-		timing: '250–500ms',
-		easing: 'Purpose-specific',
-		curve: 'Define with the prototype',
-		constraint: 'Do not use during ongoing work, required input, or routine completion.'
-	}
-];
-
 const currentFindings = [
 	{
 		finding: 'Motion feels heavier when it repeats or appears in several places.',
@@ -957,7 +891,7 @@ let records = loadRecords();
 let currentView = 'findings';
 const phaseViews = {
 	1: ['findings', 'inventory', 'overlap', 'principles', 'next-steps'],
-	2: ['library', 'properties', 'transitions', 'animation', 'accessibility', 'opportunities']
+	2: ['library', 'properties', 'transitions', 'accessibility', 'opportunities']
 };
 const lastPhaseViews = { 1: 'findings', 2: 'library' };
 let currentPage = 1;
@@ -1356,9 +1290,8 @@ async function initialize() {
 	bindEvents();
 	render();
 	renderLibrary('components');
-	renderProperties();
 	const requestedView = new URL(window.location.href).searchParams.get('view');
-	const availableView = elements.viewPanels.some(panel => panel.dataset.viewPanel === requestedView);
+	const availableView = requestedView === 'animation' || elements.viewPanels.some(panel => panel.dataset.viewPanel === requestedView);
 	if (requestedView && !availableView) {
 		console.error(`Cannot restore motion audit page: ${requestedView}`);
 	}
@@ -1367,7 +1300,11 @@ async function initialize() {
 
 function updateNavigationParameter(name, value) {
 	const url = new URL(window.location.href);
-	url.searchParams.set(name, value);
+	if (value === null) {
+		url.searchParams.delete(name);
+	} else {
+		url.searchParams.set(name, value);
+	}
 	window.history.replaceState(null, '', url);
 }
 
@@ -1616,9 +1553,9 @@ function initializeTransitionPatterns() {
 		}
 	];
 	document.getElementById('transition-shared-values').innerHTML = `
-		<div><dt>Playback</dt><dd>${timing.delay} ms delay; ${timing.iterations} run per action. No loops or stagger.</dd></div>
-		<div><dt>Interruption</dt><dd>Cancel the current run for new input. Never queue actions.</dd></div>
-		<div><dt>Reduced Motion</dt><dd>0 ms; retain state and labels. Follow each pattern's focus rules.</dd></div>
+		<li><strong>Playback:</strong> ${timing.delay} ms delay; ${timing.iterations} run per action. No loops or stagger.</li>
+		<li><strong>Interruption:</strong> Cancel the current run for new input. Never queue actions.</li>
+		<li><strong>Reduced Motion:</strong> 0 ms; retain state and labels. Follow each pattern's focus rules.</li>
 	`;
 	const container = document.getElementById('transition-patterns');
 	container.innerHTML = patterns.map(pattern => `
@@ -1831,6 +1768,84 @@ function populateCategoryOptions() {
 
 function bindEvents() {
 	bindMotionGuidance();
+	const currentMotionTabs = [...document.querySelectorAll('[data-current-motion-tab]')];
+	const patternsFrame = document.getElementById('current-motion-patterns-frame');
+	let patternsResizeObserver;
+	patternsFrame.addEventListener('load', () => {
+		patternsResizeObserver?.disconnect();
+		const body = patternsFrame.contentDocument?.body;
+		if (!body) {
+			console.error('Cannot load Current motion pattern references. Reload the page to retry.');
+			return;
+		}
+		const resizePatternsFrame = () => {
+			patternsFrame.style.height = `${Math.ceil(body.getBoundingClientRect().height)}px`;
+		};
+		resizePatternsFrame();
+		patternsResizeObserver = new ResizeObserver(resizePatternsFrame);
+		patternsResizeObserver.observe(body);
+		const patternId = new URL(window.location.href).searchParams.get('motionPattern');
+		if (patternId !== null && currentView === 'library' && !document.getElementById('current-motion-patterns-panel').hidden) {
+			const target = patternsFrame.contentDocument.getElementById(patternId);
+			if (!target?.matches('#functional tbody > tr[id]')) {
+				console.error(`Cannot open Functional motion example: ${patternId}`);
+				return;
+			}
+			target.classList.add('is-linked-pattern');
+			target.focus({ preventScroll: true });
+			target.scrollIntoView({ block: 'center', behavior: 'auto' });
+		}
+	});
+	const selectCurrentMotionTab = selectedTab => {
+		updateNavigationParameter('currentMotionTab', selectedTab.id);
+		currentMotionTabs.forEach(tab => {
+			const active = tab === selectedTab;
+			tab.classList.toggle('active', active);
+			tab.setAttribute('aria-selected', String(active));
+			tab.tabIndex = active ? 0 : -1;
+			const panel = document.getElementById(tab.getAttribute('aria-controls'));
+			panel.hidden = !active;
+			if (!active) {
+				panel.querySelectorAll('video').forEach(video => video.pause());
+			}
+		});
+		if (selectedTab.id === 'current-motion-patterns-tab') {
+			stopLibraryFixturePreview();
+			if (!patternsFrame.hasAttribute('src')) {
+				patternsFrame.src = patternsFrame.dataset.src;
+			}
+		} else {
+			updateNavigationParameter('motionPattern', null);
+		}
+	};
+	currentMotionTabs.forEach((tab, index) => {
+		tab.addEventListener('click', () => selectCurrentMotionTab(tab));
+		tab.addEventListener('keydown', event => {
+			let nextIndex;
+			switch (event.key) {
+				case 'ArrowRight': nextIndex = (index + 1) % currentMotionTabs.length; break;
+				case 'ArrowLeft': nextIndex = (index + currentMotionTabs.length - 1) % currentMotionTabs.length; break;
+				case 'Home': nextIndex = 0; break;
+				case 'End': nextIndex = currentMotionTabs.length - 1; break;
+				default: return;
+			}
+			event.preventDefault();
+			currentMotionTabs[nextIndex].focus();
+			selectCurrentMotionTab(currentMotionTabs[nextIndex]);
+		});
+	});
+	const navigationParameters = new URL(window.location.href).searchParams;
+	const requestedCurrentMotionTab = navigationParameters.get('view') === 'library' && navigationParameters.has('motionPattern')
+		? 'current-motion-patterns-tab'
+		: navigationParameters.get('currentMotionTab');
+	if (requestedCurrentMotionTab) {
+		const savedTab = currentMotionTabs.find(tab => tab.id === requestedCurrentMotionTab);
+		if (savedTab) {
+			selectCurrentMotionTab(savedTab);
+		} else {
+			console.error(`Cannot restore Current motion tab: ${requestedCurrentMotionTab}`);
+		}
+	}
 	const opportunitiesTabs = [...document.querySelectorAll('[data-opportunities-tab]')];
 	const selectOpportunitiesTab = selectedTab => {
 		updateNavigationParameter('opportunitiesTab', selectedTab.id);
@@ -2314,6 +2329,10 @@ function bindMotionGuidance() {
 }
 
 function switchView(view) {
+	const showAnimatedIcons = view === 'animation';
+	if (showAnimatedIcons) {
+		view = 'properties';
+	}
 	const phase = Object.keys(phaseViews).find(phase => phaseViews[phase].includes(view));
 	if (!phase || !elements.viewPanels.some(panel => panel.dataset.viewPanel === view)) {
 		console.error(`Cannot open motion audit page: ${view}`);
@@ -2327,6 +2346,9 @@ function switchView(view) {
 		document.querySelectorAll('video').forEach(video => video.pause());
 	}
 	currentView = view;
+	if (view !== 'library') {
+		updateNavigationParameter('motionPattern', null);
+	}
 	updateNavigationParameter('view', view);
 	lastPhaseViews[phase] = view;
 	document.querySelectorAll('[data-phase]').forEach(button => {
@@ -2356,6 +2378,11 @@ function switchView(view) {
 
 	document.getElementById('main-content').focus({ preventScroll: true });
 	window.scrollTo({ top: 0, behavior: 'auto' });
+	if (showAnimatedIcons) {
+		const iconDetails = document.getElementById('animation-view');
+		iconDetails.open = true;
+		iconDetails.scrollIntoView({ behavior: 'auto' });
+	}
 }
 
 function renderLibrary(category) {
@@ -2613,19 +2640,6 @@ function getLibraryFixtureThumbnailUrl(fixture) {
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-|-$/g, '');
 	return `./assets/library-thumbnails/${fileName}.jpg`;
-}
-
-function renderProperties() {
-	document.getElementById('properties-body').innerHTML = proposedComponentMotionGuidelines.map(guideline => `
-		<tr>
-			<th scope="row">${escapeHtml(guideline.role)}</th>
-			<td>${escapeHtml(guideline.useWhen)}</td>
-			<td>${escapeHtml(guideline.behavior)}</td>
-			<td>${escapeHtml(guideline.timing)}</td>
-			<td><strong>${escapeHtml(guideline.easing)}</strong><code class="property-value">${escapeHtml(guideline.curve)}</code></td>
-			<td>${escapeHtml(guideline.constraint)}</td>
-		</tr>
-	`).join('');
 }
 
 function render() {
